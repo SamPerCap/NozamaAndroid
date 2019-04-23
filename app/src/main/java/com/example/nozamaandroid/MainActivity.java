@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.ProductsMockData;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,45 +37,35 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         // Needs to initialize before creating an instance (Should be onCreate)
         FirebaseApp.initializeApp(this);
-
+        DatabaseReference dref;
         this.setTitle("NozamaGo");
 
         listView = findViewById(R.id.synchronizeProducts);
 
-        try {
-            // Write a message to the database
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("Mouse cake");
-            myRef.setValue("Hard chocklate");
-
-            // Read from the database
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    String value = dataSnapshot.getValue(String.class);
-                    Log.d(TAG, "Value is: " + value);
-                    listItems.add("Product : " + value);
-                    //adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w(TAG, "Failed to read value.", error.toException());
-                }
-            });
-        } catch (Exception e) {
-            Log.d(TAG, "Exception: " + e);
-        }
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                listItems );
-
-        listView.setAdapter(arrayAdapter);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,listItems);
+        listView.setAdapter(adapter);
+        dref=FirebaseDatabase.getInstance().getReference();
+        dref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                listItems.add(dataSnapshot.getValue(String.class));
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                listItems.remove(dataSnapshot.getValue(String.class));
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
     }
 
@@ -84,8 +75,8 @@ public class MainActivity extends AppCompatActivity
         try {
             // Write a message to the database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("Mouse cake");
-            myRef.setValue("Hard chocklate");
+            DatabaseReference myRef = database.getReference("Sam special ingredient");
+            myRef.setValue("something warm");
 
             // Read from the database
             myRef.addValueEventListener(new ValueEventListener() {
