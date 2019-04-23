@@ -41,23 +41,11 @@ public class MainActivity extends AppCompatActivity
 
         listView = findViewById(R.id.synchronizeProducts);
 
-       /* mockData = new ProductsMockData();
-
-        String[] product;
-
-        product = mockData.getProducts();
-        */
-
-    }
-
-    
-
-    public void openUserView(View view) {
         try {
             // Write a message to the database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("Kriss cake");
-            myRef.setValue("Soft chocklate");
+            DatabaseReference myRef = database.getReference("Mouse cake");
+            myRef.setValue("Hard chocklate");
 
             // Read from the database
             myRef.addValueEventListener(new ValueEventListener() {
@@ -68,7 +56,47 @@ public class MainActivity extends AppCompatActivity
                     String value = dataSnapshot.getValue(String.class);
                     Log.d(TAG, "Value is: " + value);
                     listItems.add("Product : " + value);
-                    adapter.notifyDataSetChanged();
+                    //adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e);
+        }
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                listItems );
+
+        listView.setAdapter(arrayAdapter);
+
+    }
+
+    
+
+    public void openUserView(View view) {
+        try {
+            // Write a message to the database
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("Mouse cake");
+            myRef.setValue("Hard chocklate");
+
+            // Read from the database
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    String value = dataSnapshot.getValue(String.class);
+                    Log.d(TAG, "Value is: " + value);
+                    listItems.add("Product : " + value);
+                    //adapter.notifyDataSetChanged();
                 }
 
                 @Override
