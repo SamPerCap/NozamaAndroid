@@ -11,6 +11,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.Models.ProductsMockData;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.ChildEventListener;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity
 {
     public static String TAG = "ProductApp";
 
-    ArrayList<String> listItems = new ArrayList<String>();
+    ArrayList<String> listItems = new ArrayList<>();
     ListView listView;
     ProductsMockData mockData;
 
@@ -66,39 +67,13 @@ public class MainActivity extends AppCompatActivity
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
     }
 
-    
-
-    public void openUserView(View view) {
-        try {
-            // Write a message to the database
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("Sam special ingredient");
-            myRef.setValue("something warm");
-
-            // Read from the database
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    String value = dataSnapshot.getValue(String.class);
-                    Log.d(TAG, "Value is: " + value);
-                    listItems.add("Product : " + value);
-                    //adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w(TAG, "Failed to read value.", error.toException());
-                }
-            });
-        } catch (Exception e) {
-            Log.d(TAG, "Exception: " + e);
-        }
+    public void openUserView(View view)
+    {
+        Intent intent = new Intent(this, AddProduct.class);
+        startActivity(intent);
+        //Bundle bundle = new Bundle();
     }
 }
 
