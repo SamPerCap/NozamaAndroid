@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
         dref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                listItems.add(dataSnapshot.getValue(String.class));
+                listItems.add(dataSnapshot.getValue().toString());
                 adapter.notifyDataSetChanged();
             }
             @Override
