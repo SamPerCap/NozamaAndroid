@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.Products;
+import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.R;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
@@ -48,7 +49,7 @@ public class AddUser extends AppCompatActivity
                 String id = dref.push().getKey();
 
                 // Send the data with id and name and value
-                Products prods = new Products(id,user,passw);
+                Users prods = new Users(id,user,passw);
 
                 dref.child(id).setValue(prods);
             }

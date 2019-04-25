@@ -49,13 +49,20 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 //adapter.notifyDataSetChanged();
-                for (DataSnapshot prod: dataSnapshot.getChildren())
-                {
-                    Log.i(TAG,"What is PROD: " + prod.child("prodDetails").getValue() + " " + prod.child("prodName").getValue());
-                    listItems.add(prod.child("prodName").getValue().toString());
+                try{
+                    for (DataSnapshot prod: dataSnapshot.getChildren())
+                    {
+                        Log.i(TAG,"What is PROD: " + prod.child("prodDetails").getValue() + " " + prod.child("prodName").getValue());
+                        Log.i(TAG, "User: " + prod.child("userName").getValue());
+                        listItems.add(prod.child("prodName").getValue().toString());
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
+                    listView.setAdapter(adapter);
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
-                listView.setAdapter(adapter);
+                catch(Exception e)
+                {
+                    Log.e(TAG, "Exception: " + e);
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
