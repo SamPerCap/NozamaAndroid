@@ -1,7 +1,9 @@
 package com.example.nozamaandroid;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.DALUsers.AddUser;
+import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.ProductsMockData;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.ChildEventListener;
@@ -28,12 +31,18 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
 {
     public static String TAG = "ProductApp";
-
+    Products f = new Products();
+    Context context;
     ArrayList<String> listItems = new ArrayList<>();
+    ArrayList<String> listItems2 = new ArrayList<>();
     ListView listView;
+    String prodKey = "nameKey";
+    String prodKey2 = "detailKey";
     ProductsMockData mockData;
     DatabaseReference dref;
     ArrayAdapter<String> adapter;
+    public String details;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +65,8 @@ public class MainActivity extends AppCompatActivity
                         Log.i(TAG,"What is PROD: " + prod.child("prodDetails").getValue() + " " + prod.child("prodName").getValue());
                         Log.i(TAG, "User: " + prod.child("userName").getValue());
                         listItems.add(prod.child("prodName").getValue().toString());
+                        listItems2.add(prod.child("prodDetails").getValue().toString());
+
                     }
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
                     listView.setAdapter(adapter);
@@ -97,12 +108,35 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    private void addData(Intent x, Products f) {
+        prodKey = "key";
+        Log.d(TAG, "adding Data to details");
+
+    }
+
     private void clickOnList()
     {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Product: " + listItems.get(position), Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                try
+                {
+                    Toast.makeText(MainActivity.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+                    final Products f = new Products();
+                    final Intent appInfo = new Intent(MainActivity.this, ProductDetails.class);
+                    f.setProdName(listView.getItemAtPosition(position).toString());
+                    Log.i(TAG, "what is string details: " + listItems2.get(position));
+                    f.setProdDetails(listItems2.get(position));
+                    Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
+                    Log.i(TAG, "f.getProdName is: " + f.getProdName());
+                    appInfo.putExtra(prodKey, f.getProdName().toString());
+                    appInfo.putExtra(prodKey2, f.getProdDetails().toString());
+                    startActivity(appInfo);
+                }
+                catch (Exception e)
+                {
+                    Log.i(TAG, "Opening Product Details error" + e );
+                }
             }
         });
     }
