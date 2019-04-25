@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> listItems = new ArrayList<>();
     ListView listView;
     ProductsMockData mockData;
-
+    DatabaseReference dref;
     ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         // Needs to initialize before creating an instance (Should be onCreate)
         FirebaseApp.initializeApp(this);
-        DatabaseReference dref;
+
         this.setTitle("NozamaGo");
 
         listView = findViewById(R.id.synchronizeProducts);
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        clickOnList();
     }
 
     public void openUserView(View view)
@@ -92,6 +95,16 @@ public class MainActivity extends AppCompatActivity
     {
         Intent intent = new Intent(this, AddUser.class);
         startActivity(intent);
+    }
+
+    private void clickOnList()
+    {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "Product: " + listItems.get(position), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
 
