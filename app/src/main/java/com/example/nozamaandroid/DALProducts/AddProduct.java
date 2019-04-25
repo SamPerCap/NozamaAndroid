@@ -1,4 +1,5 @@
 package com.example.nozamaandroid.DALProducts;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -6,13 +7,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.nozamaandroid.Models.BEProducts;
+
+import com.example.nozamaandroid.MainActivity;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import java.util.ArrayList;
 
 public class AddProduct extends AppCompatActivity {
 
@@ -55,8 +56,8 @@ public class AddProduct extends AppCompatActivity {
             {
                 Log.e(TAG,"Something Went Wrong: " + d);
             }
-            dbName.setText("");
-            dbValue.setText("");
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
         else {
             Toast.makeText(this, "Please type in a name of the DB and the value", Toast.LENGTH_SHORT).show();
