@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DALProducts.AddProduct" ></activity>
-
+        <activity android:name=".DALUsers.AddUser"></activity>
     </application>
 
 </manifest>

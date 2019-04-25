@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.DALProducts.AddProduct;
+import com.example.nozamaandroid.DALUsers.AddUser;
 import com.example.nozamaandroid.Models.ProductsMockData;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.ChildEventListener;
@@ -78,6 +79,12 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, AddProduct.class);
         startActivity(intent);
         //Bundle bundle = new Bundle();
+    }
+
+    public void openUser(View view)
+    {
+        Intent intent = new Intent(this, AddUser.class);
+        startActivity(intent);
     }
 }
 
