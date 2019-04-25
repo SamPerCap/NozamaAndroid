@@ -8,10 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.MainActivity;
-import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.R;
 import com.google.firebase.database.DatabaseException;

@@ -7,15 +7,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.nozamaandroid.MainActivity;
-import com.example.nozamaandroid.Models.BEProducts;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import java.util.ArrayList;
 
 public class AddProduct extends AppCompatActivity {
 
