@@ -37,10 +37,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         // Needs to initialize before creating an instance (Should be onCreate)
         FirebaseApp.initializeApp(this);
+
         DatabaseReference dref;
-        this.setTitle("NozamaGo");
 
         listView = findViewById(R.id.synchronizeProducts);
 
