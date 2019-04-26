@@ -2,6 +2,7 @@ package com.example.nozamaandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,41 +15,85 @@ import android.widget.Toast;
 import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.DALUsers.AddUser;
 import com.example.nozamaandroid.Models.Products;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
 {
     public static String TAG = "ProductApp";
     Products f = new Products();
     Context context;
+
     ArrayList<String> listItems = new ArrayList<>();
     ArrayList<String> listItems2 = new ArrayList<>();
+    Products products;
     ListView listView;
-    String prodKey = "nameKey";
-    String prodKey2 = "detailKey";
+    String nameKey = "nameKey";
+    String detailKey = "detailKey";
     DatabaseReference dref;
     ArrayAdapter<String> adapter;
     public String details;
+
+    Map<String, Object> productMap = new HashMap<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Needs to initialize before creating an instance (Should be onCreate)
-        FirebaseApp.initializeApp(this);
-
-        this.setTitle("NozamaGo");
 
         listView = findViewById(R.id.synchronizeProducts);
 
-        dref=FirebaseDatabase.getInstance().getReference();
+
+
+        // Needs to initialize before creating an instance (Should be onCreate)
+        // FirebaseApp.initializeApp(this);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        this.setTitle("NozamaGo");
+
+        db.collection("products")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                listItems.add(document.getData().values().toString());
+                                //listItems2.add(detailData);
+
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
+                            listView.setAdapter(adapter);
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+
+
+        /*dref=FirebaseDatabase.getInstance().getReference();
         dref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -86,7 +131,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        clickOnList();
+        clickOnList();*/
     }
 
     public void openUserView(View view)
@@ -103,7 +148,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void addData(Intent x, Products f) {
-        prodKey = "key";
+        //prodKey = "key";
         Log.d(TAG, "adding Data to details");
 
     }
@@ -123,8 +168,8 @@ public class MainActivity extends AppCompatActivity
                     f.setProdDetails(listItems2.get(position));
                     Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
                     Log.i(TAG, "f.getProdName is: " + f.getProdName());
-                    appInfo.putExtra(prodKey, f.getProdName().toString());
-                    appInfo.putExtra(prodKey2, f.getProdDetails().toString());
+                    appInfo.putExtra(nameKey, f.getProdName().toString());
+                    appInfo.putExtra(detailKey, f.getProdDetails().toString());
                     startActivity(appInfo);
                 }
                 catch (Exception e)
