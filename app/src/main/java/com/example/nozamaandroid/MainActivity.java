@@ -36,106 +36,106 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
 {
-    public static String TAG = "ProductApp";
-    Products f = new Products();
-    Context context;
+     /*public static String TAG = "ProductApp";
+      Products f = new Products();
+      Context context;
 
-    ArrayList<String> listItemName = new ArrayList<>();
-    ArrayList<String> listItemDetail = new ArrayList<>();
-    ArrayList<String> listItemId = new ArrayList<>();
+      ArrayList<String> listItemName = new ArrayList<>();
+      ArrayList<String> listItemDetail = new ArrayList<>();
+      ArrayList<String> listItemId = new ArrayList<>();
 
-    Products products;
-    ListView listView;
-    String nameKey = "nameKey";
-    String detailKey = "detailKey";
-    String idKey = "idKey";
-    DatabaseReference dref;
-    ArrayAdapter<String> adapter;
-    public String details;
+      Products products;
+      ListView listView;
+      String nameKey = "nameKey";
+      String detailKey = "detailKey";
+      String idKey = "idKey";
+      DatabaseReference dref;
+      ArrayAdapter<String> adapter;
+      public String details;
 
-    Map<String, Object> productMap = new HashMap<>();
+      Map<String, Object> productMap = new HashMap<>();
 
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+      @Override
+      protected void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.synchronizeProducts);
+          listView = findViewById(R.id.synchronizeProducts);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+          FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        listView = findViewById(R.id.synchronizeProducts);
+          listView = findViewById(R.id.synchronizeProducts);
 
-        this.setTitle("NozamaGo");
+          this.setTitle("NozamaGo");
 
-        db.collection("products")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String getFireStoreFieldName = document.getString("Product Name");
-                                String getFireStoreFieldDetails = document.getString("Product Details");
-                                String getFireStoreId = document.getId();
+          db.collection("products")
+                  .get()
+                  .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                      @Override
+                      public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                          if (task.isSuccessful()) {
+                              for (QueryDocumentSnapshot document : task.getResult()) {
+                                  String getFireStoreFieldName = document.getString("Product Name");
+                                  String getFireStoreFieldDetails = document.getString("Product Details");
+                                  String getFireStoreId = document.getId();
 
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Log.i(TAG, "What is value: " + getFireStoreFieldName);
-                                listItemName.add(getFireStoreFieldName);
-                                listItemDetail.add(getFireStoreFieldDetails);
-                                listItemId.add(getFireStoreId);
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItemName);
-                            listView.setAdapter(adapter);
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+                                  Log.d(TAG, document.getId() + " => " + document.getData());
+                                  Log.i(TAG, "What is value: " + getFireStoreFieldName);
+                                  listItemName.add(getFireStoreFieldName);
+                                  listItemDetail.add(getFireStoreFieldDetails);
+                                  listItemId.add(getFireStoreId);
+                              }
+                              ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItemName);
+                              listView.setAdapter(adapter);
+                          } else {
+                              Log.w(TAG, "Error getting documents.", task.getException());
+                          }
+                      }
+                  });
 
-        // Old code for the FireBase Database, it's a little different from FireStore, since it uses snapshots
-            // It's a little bit more complicated to use, but the same idea applies.
+          // Old code for the FireBase Database, it's a little different from FireStore, since it uses snapshots
+              // It's a little bit more complicated to use, but the same idea applies.
 
-        /*dref=FirebaseDatabase.getInstance().getReference();
-        dref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //adapter.notifyDataSetChanged();
-                try{
-                    for (DataSnapshot prod: dataSnapshot.getChildren())
-                    {
-                        Log.i(TAG,"What is PROD: " + prod.child("prodDetails").getValue() + " " + prod.child("prodName").getValue());
-                        Log.i(TAG, "User: " + prod.child("userName").getValue());
-                        listItems.add(prod.child("prodName").getValue().toString());
-                        listItems2.add(prod.child("prodDetails").getValue().toString());
+          /*dref=FirebaseDatabase.getInstance().getReference();
+          dref.addChildEventListener(new ChildEventListener() {
+              @Override
+              public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                  //adapter.notifyDataSetChanged();
+                  try{
+                      for (DataSnapshot prod: dataSnapshot.getChildren())
+                      {
+                          Log.i(TAG,"What is PROD: " + prod.child("prodDetails").getValue() + " " + prod.child("prodName").getValue());
+                          Log.i(TAG, "User: " + prod.child("userName").getValue());
+                          listItems.add(prod.child("prodName").getValue().toString());
+                          listItems2.add(prod.child("prodDetails").getValue().toString());
 
-                    }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
-                    listView.setAdapter(adapter);
-                }
-                catch(Exception e)
-                {
-                    Log.e(TAG, "Exception: " + e);
-                }
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                listItems.remove(dataSnapshot.getValue(String.class));
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-*/
+                      }
+                      ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
+                      listView.setAdapter(adapter);
+                  }
+                  catch(Exception e)
+                  {
+                      Log.e(TAG, "Exception: " + e);
+                  }
+              }
+              @Override
+              public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+              }
+              @Override
+              public void onChildRemoved(DataSnapshot dataSnapshot) {
+                  listItems.remove(dataSnapshot.getValue(String.class));
+                  adapter.notifyDataSetChanged();
+              }
+              @Override
+              public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+              }
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+              }
+          });
+
         clickOnList();
     }
 
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-    }
+    }*/
 }
 
 

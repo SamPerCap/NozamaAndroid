@@ -10,18 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".home_view"
+            android:name=".HomeView"
             android:label="@string/company_name"
 
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter></activity>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".MainActivity">
 
         </activity>
-        <activity android:name=".DALProducts.AddProduct" ></activity>
+        <activity android:name=".DALProducts.AddProduct"></activity>
         <activity android:name=".DALUsers.AddUser"></activity>
         <activity android:name=".ProductDetails"></activity>
     </application>
