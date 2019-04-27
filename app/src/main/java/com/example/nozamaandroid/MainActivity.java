@@ -77,11 +77,13 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String value = document.getString("Product Name:");
+                                String getFireStoreFieldName = document.getString("Product Name:");
+                                String getFireStoreFieldDetails = document.getString("Product Details:");
+
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                Log.i(TAG, "What is value: " + value);
-                                listItems.add(value);
-                                //listItems2.add(detailData);
+                                Log.i(TAG, "What is value: " + getFireStoreFieldName);
+                                listItems.add(getFireStoreFieldName);
+                                listItems2.add(getFireStoreFieldDetails);
 
                             }
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
@@ -92,7 +94,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-
+        // Old code for the FireBase Database, it's a little different from FireStore, since it uses snapshots
+            // It's a little bit more complicated to use, but the same idea applies.
 
         /*dref=FirebaseDatabase.getInstance().getReference();
         dref.addChildEventListener(new ChildEventListener() {
@@ -131,8 +134,8 @@ public class MainActivity extends AppCompatActivity
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-        clickOnList();*/
+*/
+        clickOnList();
     }
 
     public void openUserView(View view)
@@ -148,12 +151,6 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void addData(Intent x, Products f) {
-        //prodKey = "key";
-        Log.d(TAG, "adding Data to details");
-
-    }
-
     private void clickOnList()
     {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -167,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                     f.setProdName(listView.getItemAtPosition(position).toString());
                     Log.i(TAG, "what is string details: " + listItems2.get(position));
                     f.setProdDetails(listItems2.get(position));
-                    Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
+                    //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
                     Log.i(TAG, "f.getProdName is: " + f.getProdName());
                     appInfo.putExtra(nameKey, f.getProdName().toString());
                     appInfo.putExtra(detailKey, f.getProdDetails().toString());
