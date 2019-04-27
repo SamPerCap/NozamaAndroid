@@ -8,7 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.nozamaandroid.MainActivity;
+
+import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.R;
 import com.google.firebase.database.DatabaseException;
@@ -66,7 +67,7 @@ public class AddUser extends AppCompatActivity
 
     private void goToMain()
     {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, HomeView.class);
         startActivity(intent);
     }
 

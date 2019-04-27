@@ -3,17 +3,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-import com.example.nozamaandroid.MainActivity;
+
+import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -78,7 +76,7 @@ public class AddProduct extends AppCompatActivity {
 
     private void goToMain()
     {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, HomeView.class);
         startActivity(intent);
     }
 
@@ -108,7 +106,7 @@ public class AddProduct extends AppCompatActivity {
                             Log.i(TAG, "What is products: " + products.getProdName().toString());
                             Log.d(TAG, "What is products: " + products.getProdName().toString());
 
-                            Intent intent = new Intent(AddProduct.this,MainActivity.class);
+                            Intent intent = new Intent(AddProduct.this,HomeView.class);
                             intent.putExtra(nameKey, products.getProdName());
                             intent.putExtra(detailKey, products.getProdDetails());
                             startActivity(intent);
