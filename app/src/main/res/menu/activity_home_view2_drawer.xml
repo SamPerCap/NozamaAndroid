@@ -2,22 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_books"
             android:icon="@drawable/ic_books"
             android:title="@string/menu_books" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_clothes"
             android:icon="@drawable/ic_clothes"
             android:title="@string/menu_clothes" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_decoration"
             android:icon="@drawable/ic_decoration"
             android:title="@string/menu_decoration" />
         <item
-            android:id="@+id/nav_tools"
+            android:id="@+id/nav_electrical_appliance"
             android:icon="@drawable/ic_home"
             android:title="@string/menu_electrical_appliance" />
     </group>
@@ -25,11 +24,11 @@
     <item android:title="Settings">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_account"
                 android:icon="@drawable/ic_account"
                 android:title="@string/menu_account" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_log_out"
                 android:icon="@drawable/ic_off"
                 android:title="@string/menu_log_out" />
         </menu>
