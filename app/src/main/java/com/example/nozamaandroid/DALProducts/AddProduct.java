@@ -92,8 +92,8 @@ public class AddProduct extends AppCompatActivity {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference usersCollectionRef = db.collection("users");
 
-            productMap.put("Product Name:", dbName.getText().toString());
-            productMap.put("Product Details:", dbValue.getText().toString());
+            productMap.put("Product Name", dbName.getText().toString());
+            productMap.put("Product Details", dbValue.getText().toString());
 
             // Add a new document with a generated ID
             db.collection("products")

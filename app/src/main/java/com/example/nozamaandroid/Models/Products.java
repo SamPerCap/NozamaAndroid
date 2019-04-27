@@ -8,6 +8,7 @@ public class Products
     private String prodId;
     private String prodName;
     private String prodDetails;
+    private Float ratings;
 
     public Products()
     {
@@ -21,9 +22,12 @@ public class Products
         this.prodDetails = prodDetails;
     }
 
-    public String getProductId()
-    {
+    public String getProdId() {
         return prodId;
+    }
+
+    public void setProdId(String prodId) {
+        this.prodId = prodId;
     }
 
     public void setProdName(String prodName)
@@ -46,5 +50,13 @@ public class Products
     public String getProdDetails()
     {
         return prodDetails;
+    }
+
+    public Float getRating() {
+        return ratings;
+    }
+
+    public void setRating(Float ratings) {
+        this.ratings = ratings;
     }
 }

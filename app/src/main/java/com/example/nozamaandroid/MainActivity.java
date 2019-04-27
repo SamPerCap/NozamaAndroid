@@ -40,12 +40,15 @@ public class MainActivity extends AppCompatActivity
     Products f = new Products();
     Context context;
 
-    ArrayList<String> listItems = new ArrayList<>();
-    ArrayList<String> listItems2 = new ArrayList<>();
+    ArrayList<String> listItemName = new ArrayList<>();
+    ArrayList<String> listItemDetail = new ArrayList<>();
+    ArrayList<String> listItemId = new ArrayList<>();
+
     Products products;
     ListView listView;
     String nameKey = "nameKey";
     String detailKey = "detailKey";
+    String idKey = "idKey";
     DatabaseReference dref;
     ArrayAdapter<String> adapter;
     public String details;
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         listView = findViewById(R.id.synchronizeProducts);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        
+
         listView = findViewById(R.id.synchronizeProducts);
 
         this.setTitle("NozamaGo");
@@ -74,16 +77,17 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String getFireStoreFieldName = document.getString("Product Name:");
-                                String getFireStoreFieldDetails = document.getString("Product Details:");
+                                String getFireStoreFieldName = document.getString("Product Name");
+                                String getFireStoreFieldDetails = document.getString("Product Details");
+                                String getFireStoreId = document.getId();
 
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.i(TAG, "What is value: " + getFireStoreFieldName);
-                                listItems.add(getFireStoreFieldName);
-                                listItems2.add(getFireStoreFieldDetails);
-
+                                listItemName.add(getFireStoreFieldName);
+                                listItemDetail.add(getFireStoreFieldDetails);
+                                listItemId.add(getFireStoreId);
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItems);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,listItemName);
                             listView.setAdapter(adapter);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -155,16 +159,22 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 try
                 {
+                    // Here we want to initiate the product class so we can pass in data between views, it also gets the
+                    // It also gets the position in the listview by using onitemclick adapter view click listener, which has a built in position
+                    // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
+
                     Toast.makeText(MainActivity.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
                     final Products f = new Products();
                     final Intent appInfo = new Intent(MainActivity.this, ProductDetails.class);
                     f.setProdName(listView.getItemAtPosition(position).toString());
-                    Log.i(TAG, "what is string details: " + listItems2.get(position));
-                    f.setProdDetails(listItems2.get(position));
+                    Log.i(TAG, "what is string details: " + listItemDetail.get(position));
+                    f.setProdDetails(listItemDetail.get(position));
+                    f.setProdId(listItemId.get(position));
                     //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
                     Log.i(TAG, "f.getProdName is: " + f.getProdName());
                     appInfo.putExtra(nameKey, f.getProdName().toString());
                     appInfo.putExtra(detailKey, f.getProdDetails().toString());
+                    appInfo.putExtra(idKey, f.getProdId());
                     startActivity(appInfo);
                 }
                 catch (Exception e)
