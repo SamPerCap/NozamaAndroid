@@ -77,9 +77,10 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
+                                String value = document.getString("Product Name:");
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                listItems.add(document.getData().values().toString());
+                                Log.i(TAG, "What is value: " + value);
+                                listItems.add(value);
                                 //listItems2.add(detailData);
 
                             }
