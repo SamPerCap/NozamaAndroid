@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ public class HomeView extends AppCompatActivity
     Products products;
     Toolbar toolbar;
     Context context;
-    FloatingActionButton fab;
+    ImageButton imageButton;
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -128,7 +129,7 @@ public class HomeView extends AppCompatActivity
 
     private void setupSideNavBar() {
         Log.d(TAG,"Setting up the side navigation bar");
-        fab.setOnClickListener(new View.OnClickListener() {
+        imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Open cart view
@@ -176,7 +177,7 @@ public class HomeView extends AppCompatActivity
     private void setupItems(){
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fab = findViewById(R.id.fab);
+        imageButton = findViewById(R.id.imageButton);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         listView = findViewById(R.id.synchronizeProducts);
@@ -189,13 +190,6 @@ public class HomeView extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home_view, menu);
-        return true;
     }
 
     @Override
