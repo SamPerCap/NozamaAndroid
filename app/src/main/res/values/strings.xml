@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">NozamaAndroid</string>
+    <string name="company_name">Nozama Go</string>
+    <string name="title_activity_home_view">home_view</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <!--Items for the side menu -->
+    <string name="menu_decoration">Decoration</string>
+    <string name="menu_books">Books</string>
+    <string name="menu_electrical_appliance">Electrical appliance</string>
+    <string name="menu_clothes">Clothes</string>
+    <string name="menu_account">Account</string>
+    <string name="menu_log_out">Log out</string>
 </resources>
