@@ -21,6 +21,9 @@
         <activity android:name=".MainActivity">
 
         </activity>
+        <activity android:name=".DALProducts.AddProduct" ></activity>
+        <activity android:name=".DALUsers.AddUser"></activity>
+        <activity android:name=".ProductDetails"></activity>
     </application>
 
 </manifest>
