@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.DALUsers.AddUser;
 import com.example.nozamaandroid.Models.Products;
+import com.example.nozamaandroid.Models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     String nameKey = "nameKey";
     String detailKey = "detailKey";
     String idKey = "idKey";
+    String userKey = "userKey", passwordKey = "passwordKey";
     DatabaseReference dref;
     ArrayAdapter<String> adapter;
     public String details;
@@ -137,6 +139,8 @@ public class MainActivity extends AppCompatActivity
         });
 */
         clickOnList();
+
+        getUser();
     }
 
     public void openUserView(View view)
@@ -183,6 +187,30 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    private void getUser()
+    {
+        Users user = new Users();
+
+        try {
+            String getUser = getIntent().getExtras().getString(userKey, user.getUserName());
+            String getPassword = getIntent().getExtras().getString(passwordKey, user.getPassword());
+
+            Log.d(TAG, "getUser: " + getUser + " Password:" + getPassword);
+            Toast.makeText(this, "You are logged in as: " + getUser, Toast.LENGTH_SHORT).show();
+        }
+        catch(Exception e)
+        {
+            Log.d(TAG, "Exception with getting user: " + e);
+            Toast.makeText(this, "No one is currently logged in, please login", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void loginView(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 }
 
