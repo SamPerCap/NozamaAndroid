@@ -13,11 +13,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +39,8 @@ public class ProductDetails extends AppCompatActivity
     // the getters where we saved the prodNameData from mainactivity
     Products p = new Products();
 
-    Map<String, Float> ratingMap = new HashMap<>();
-    Map<String, String> prodIdMap = new HashMap<>();
+    Map<String, Object> ratingMap = new HashMap<>();
+    Map<String, Object> prodIdMap = new HashMap<>();
 
 
 
@@ -82,25 +84,29 @@ public class ProductDetails extends AppCompatActivity
         document = p.getProdId();
         // create the variable db so we can use that to save data to firestore
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        ratingMap.put("Product rating",prodRating.getRating());
-        prodIdMap.put("ProductId", prodIdData);
 
+        //ratingMap.put("Product rating", Arrays.asList(prodRating.getRating()));
+
+        DocumentReference washingtonRef = db.collection("products").document(prodIdData);
+
+        // Atomically add a new region to the "regions" array field.
+        washingtonRef.update("Product rating", FieldValue.arrayUnion(prodRating.getRating()));
 
         // We want to add data to the document called ratings, on success we could do an if statement and test the
         // method, or just put out in log that it is complete.  We can do some things if we want ones it is successful or
         // just like in this case, leave it empty.
-        db.collection("ratings")
+        /*db.collection("products")
                 .add(ratingMap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
 
                     }
-                });
-
+                });*/
+       /* Log.d(TAG, "What is the id " + document);
         // Let's get the rating id so we are able to put the data in the correct document,
         // this is how we link the rating with the products
-        db.collection("ratings")
+        db.collection("products")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -110,11 +116,11 @@ public class ProductDetails extends AppCompatActivity
                             {
                                 prodIdData = document.getId();
                             }
-                            db.collection("ratings").document(prodIdData).set(prodIdMap, SetOptions.merge());
+                            //db.collection("products").document(document).set(document, SetOptions.merge());
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
-                });
+                });*/
     }
 }
