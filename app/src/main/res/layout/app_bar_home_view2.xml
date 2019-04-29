@@ -9,6 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/lightgray"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -30,20 +31,24 @@
                 android:layout_width="230dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
-                android:drawableLeft="@drawable/ic_search"
+                android:drawableStart="@drawable/ic_search"
                 android:ems="10"
-                android:textColor="@color/lightgray"
                 android:gravity="center"
-                android:hint="@string/find_product"/>
+                android:layout_marginStart="65dp"
+                android:hint="@string/find_product"
+                android:textColor="@color/black" />
 
             <ImageButton
                 android:id="@+id/imageButton"
+
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                app:backgroundTint="@color/white"
-                android:scaleType="fitCenter"
+                android:layout_marginStart="35dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/cart_icon" />
+                android:gravity="right|center"
+                android:scaleType="fitCenter"
+                android:src="@drawable/cart_icon"
+                app:backgroundTint="@color/lightgray" />
         </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
