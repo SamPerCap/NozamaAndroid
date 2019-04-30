@@ -1,11 +1,13 @@
 package com.example.nozamaandroid;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -21,12 +23,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.Adaptor.AdaptorProduct;
 import com.example.nozamaandroid.Cart.CartView;
 import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.DALUsers.AddUser;
+import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,7 +48,7 @@ import java.util.Map;
 
 public class HomeView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    CartModel cartModel;
     public static String TAG = "ProductApp";
     Products products;
     Toolbar toolbar;
@@ -57,6 +61,8 @@ public class HomeView extends AppCompatActivity
     ArrayList<String> listItemName = new ArrayList<>();
     ArrayList<String> listItemDetail = new ArrayList<>();
     ArrayList<String> listItemId = new ArrayList<>();
+String[] options = new String[]{"Show detail",
+        "Add to cart"};
 
     ListView listView;
     String nameKey = "nameKey";
@@ -68,7 +74,7 @@ public class HomeView extends AppCompatActivity
     public String details;
     FirebaseFirestore db;
     Map<String, Object> productMap;
-
+    TextView cartCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,7 @@ public class HomeView extends AppCompatActivity
         productMap = new HashMap<>();
         setContentView(R.layout.activity_home_view2);
         Log.d(TAG,"View has been setted. Lets setup the items");
+        cartModel = CartModel.getInstance();
         setupItems();
         //Side nav bar code
         setupSideNavBar();
@@ -90,6 +97,7 @@ public class HomeView extends AppCompatActivity
         clickOnList();
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     }
 
     public void openUserView(View view)
@@ -108,35 +116,59 @@ public class HomeView extends AppCompatActivity
     private void clickOnList()
     {
 
+
         Log.d(TAG, "clickOnList: ");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                Log.d(TAG, "onItemClick: "+view);
-                try
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
+                builder.setItems(options, new DialogInterface.OnClickListener()
                 {
-                    // Here we want to initiate the product class so we can pass in data between views, it also gets the
-                    // It also gets the position in the listview by using onitemclick adapter view click listener, which has a built in position
-                    // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
+                    /*
+                     * Give the user an option to either choose an image that already exists on the phone
+                     * or to take a picture
+                     * */
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if(options[which].equals(options[0]))
+                        {
+                            try
+                            {
+                                // Here we want to initiate the product class so we can pass in data between views, it also gets the
+                                // It also gets the position in the listview by using onitemclick adapter view click listener, which has a built in position
+                                // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
 
-                    Toast.makeText(HomeView.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-                    final Products f = new Products();
-                    final Intent appInfo = new Intent(HomeView.this, ProductDetails.class);
-                    f.setProdName(listView.getItemAtPosition(position).toString());
-                    Log.i(TAG, "what is string details: " + listItemDetail.get(position));
-                    f.setProdDetails(listItemDetail.get(position));
-                    f.setProdId(listItemId.get(position));
-                    //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
-                    Log.i(TAG, "f.getProdName is: " + f.getProdName());
-                    appInfo.putExtra(nameKey, productsArrayList.get(position).getProdName());
-                    appInfo.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
-                    appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
-                    startActivity(appInfo);
-                }
-                catch (Exception e)
-                {
-                    Log.i(TAG, "Opening Product Details error" + e );
-                }
+                                Toast.makeText(HomeView.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+                                final Products f = new Products();
+                                final Intent appInfo = new Intent(HomeView.this, ProductDetails.class);
+                                f.setProdName(listView.getItemAtPosition(position).toString());
+                                Log.i(TAG, "what is string details: " + listItemDetail.get(position));
+                                f.setProdDetails(listItemDetail.get(position));
+                                f.setProdId(listItemId.get(position));
+                                //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
+                                Log.i(TAG, "f.getProdName is: " + f.getProdName());
+                                appInfo.putExtra(nameKey, productsArrayList.get(position).getProdName());
+                                appInfo.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
+                                appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
+                                startActivity(appInfo);
+                                Log.d(TAG, "cart size: "+ cartModel.getProductInCart().size());
+                                cartCount.setText(cartModel.getProductInCart().size());
+                            }
+                            catch (Exception e)
+                            {
+                                Log.i(TAG, "Opening Product Details error" + e );
+                            }
+                        }
+                        if(options[which].equals(options[1]))
+                        {
+                           cartModel.addProductToCart(productsArrayList.get(position));
+                           cartCount.setText(cartModel.getProductInCart().size()+"");
+                        }
+                    }
+                });
+                builder.show();
+
             }
         });
     }
@@ -230,6 +262,7 @@ public class HomeView extends AppCompatActivity
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         listView = findViewById(R.id.synchronizeProducts);
+        cartCount = findViewById(R.id.countCartSize);
     }
     @Override
     public void onBackPressed() {

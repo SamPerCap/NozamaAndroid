@@ -36,16 +36,39 @@
                 android:hint="@string/find_product"
                 android:textColor="@color/black" />
 
-            <ImageButton
-                android:id="@+id/imageButton"
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="230px"
+                android:layout_height="match_parent"
+                tools:layout_editor_absoluteX="230dp">
 
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:adjustViewBounds="true"
-                android:gravity="right|center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/cart_icon"
-                app:backgroundTint="@color/lightgray" />
+                <ImageButton
+                    android:id="@+id/imageButton"
+
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="16dp"
+                    android:adjustViewBounds="true"
+                    android:gravity="right|center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/cart_icon"
+                    app:backgroundTint="@color/lightgray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:background="@drawable/rounded_textview"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:id="@+id/countCartSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:layout_weight="1"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageButton" />
+            </android.support.constraint.ConstraintLayout>
+
         </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
