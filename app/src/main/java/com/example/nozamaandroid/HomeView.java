@@ -201,6 +201,7 @@ public class HomeView extends AppCompatActivity
                                 String getFireStoreId = document.getId();
                                 Products products = new Products();
                                 products.setProdName(getFireStoreFieldName);
+                                products.setProdDetails(getFireStoreFieldDetails);
                                 products.setProdId(getFireStoreId);
                                 productsArrayList.add(products);
 
