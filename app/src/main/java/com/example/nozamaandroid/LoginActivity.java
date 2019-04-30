@@ -7,19 +7,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity
 {
-    EditText userName, password;
+    EditText email, password;
     String TAG = "Login Activity";
     String userKey = "userKey", passwordKey = "passwordKey";
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,46 +29,53 @@ public class LoginActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        userName = findViewById(R.id.usernameTxt);
+        email = findViewById(R.id.userName);
         password = findViewById(R.id.passwordTxt);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public void loginUser(View view)
     {
-        Users user = new Users();
-        Intent intent = new Intent(this, HomeView.class);
+        mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            goToMainView();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
+
+    }
+
+    private void goToMainView()
+    {
+        Users userClass = new Users();
+        Intent intent = new Intent(LoginActivity.this, HomeView.class);
         // we want to save the username to the user class to pass it onwards and so we can grab it later
         // This particular information will be grabbed in everyclass for now with getIntent
 
-        String userNameStr = userName.getText().toString();
+        String userNameStr = email.getText().toString();
         String passwordStr = password.getText().toString();
-        user.setUserName(userNameStr);
-        user.setPassword(passwordStr);
+        userClass.setUserName(userNameStr);
+        userClass.setPassword(passwordStr);
         Log.d(TAG, "What is the username: " + userNameStr);
-        Log.d(TAG, "Can we get the username: " + user.getUserName());
-        Log.d(TAG, "Can we get the password: " + user.getPassword());
+        Log.d(TAG, "Can we get the username: " + userClass.getUserName());
+        Log.d(TAG, "Can we get the password: " + userClass.getPassword());
 
         intent.putExtra(userKey, userNameStr);
         intent.putExtra(passwordKey, passwordStr);
 
         startActivity(intent);
-
-        fireStoreData();
-    }
-
-    private void fireStoreData()
-    {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot doc: task.getResult())
-                {
-                    Log.d(TAG, "Get all the users" + doc.getData());
-                }
-            }
-        });
     }
 }

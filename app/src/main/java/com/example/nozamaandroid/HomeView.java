@@ -29,6 +29,8 @@ import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -58,13 +60,13 @@ public class HomeView extends AppCompatActivity
     String nameKey = "nameKey";
     String detailKey = "detailKey";
     String idKey = "idKey";
-    String userKey = "userKey", passwordKey = "passwordKey";
+    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey";
     DatabaseReference dref;
     ArrayAdapter<String> adapter;
     public String details;
     FirebaseFirestore db;
-
     Map<String, Object> productMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,8 @@ public class HomeView extends AppCompatActivity
         clickOnList();
 
         getUser();
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
     }
 
     public void openUserView(View view)
@@ -92,7 +96,7 @@ public class HomeView extends AppCompatActivity
         //Bundle bundle = new Bundle();
     }
 
-    public void openUser(View view)
+    public void openUser()
     {
         Intent intent = new Intent(this, AddUser.class);
         startActivity(intent);
@@ -136,10 +140,10 @@ public class HomeView extends AppCompatActivity
         Users user = new Users();
 
         try {
-            String getUser = getIntent().getExtras().getString(userKey, user.getUserName());
+            String getUser = getIntent().getExtras().getString(userKey, user.getEmail());
             String getPassword = getIntent().getExtras().getString(passwordKey, user.getPassword());
-
-            Log.d(TAG, "getUser: " + getUser + " Password:" + getPassword);
+            String getAddress = getIntent().getExtras().getString(addressKey, user.getAddress());
+            Log.d(TAG, "getUser: " + getUser + " Password:" + getPassword + " address: " + getAddress);
             Toast.makeText(this, "You are logged in as: " + getUser, Toast.LENGTH_SHORT).show();
         }
         catch(Exception e)
@@ -149,13 +153,14 @@ public class HomeView extends AppCompatActivity
         }
     }
 
-    public void loginView(View view)
+    public void loginView()
     {
         Intent intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
     }
 
-    private void setupSideNavBar() {
+    private void setupSideNavBar()
+    {
         Log.d(TAG,"Setting up the side navigation bar");
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,7 +175,6 @@ public class HomeView extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     private void setupDataBase() {
@@ -228,7 +232,8 @@ public class HomeView extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
@@ -241,7 +246,8 @@ public class HomeView extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        switch (id){
+        switch (id)
+        {
             case R.id.nav_books:
                 break;
             case R.id.nav_clothes:
@@ -251,8 +257,10 @@ public class HomeView extends AppCompatActivity
             case R.id.nav_electrical_appliance:
                 break;
             case R.id.nav_account:
+                openUser();
                 break;
             case R.id.nav_log_out:
+                loginView();
                 break;
         }
 
