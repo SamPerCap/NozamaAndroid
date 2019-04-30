@@ -33,8 +33,6 @@
                 android:background="@color/white"
                 android:drawableStart="@drawable/ic_search"
                 android:ems="10"
-                android:gravity="center"
-                android:layout_marginStart="65dp"
                 android:hint="@string/find_product"
                 android:textColor="@color/black" />
 
@@ -43,7 +41,6 @@
 
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:layout_marginStart="35dp"
                 android:adjustViewBounds="true"
                 android:gravity="right|center"
                 android:scaleType="fitCenter"
