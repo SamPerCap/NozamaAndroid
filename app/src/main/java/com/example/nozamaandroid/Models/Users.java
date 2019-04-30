@@ -31,4 +31,19 @@ public class Users
     {
         return password;
     }
+
+    public void setUserId(String userId)
+    {
+        this.userId = userId;
+    }
+
+    public void setUserName(String userName)
+    {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
 }
