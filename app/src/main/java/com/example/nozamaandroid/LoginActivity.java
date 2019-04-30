@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity
     public void loginUser(View view)
     {
         Users user = new Users();
-        Intent intent = new Intent(this, HomeView.class);
+        Intent intent = new Intent(this, MainActivity.class);
         // we want to save the username to the user class to pass it onwards and so we can grab it later
         // This particular information will be grabbed in everyclass for now with getIntent
 
