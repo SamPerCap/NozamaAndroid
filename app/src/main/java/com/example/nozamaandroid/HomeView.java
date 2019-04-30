@@ -23,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.nozamaandroid.Adaptor.AdaptorProduct;
+import com.example.nozamaandroid.Cart.CartView;
 import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.DALUsers.AddUser;
 import com.example.nozamaandroid.Models.Products;
@@ -103,6 +105,7 @@ public class HomeView extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                Log.d(TAG, "onItemClick: "+view);
                 try
                 {
                     // Here we want to initiate the product class so we can pass in data between views, it also gets the
@@ -156,11 +159,13 @@ public class HomeView extends AppCompatActivity
     }
 
     private void setupSideNavBar() {
-        Log.d(TAG,"Setting up the side navigation bar");
+        Log.d(TAG,"Setting up xthe side navigation bar");
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Open cart view
+                Intent intent = new Intent(HomeView.this, CartView.class);
+                startActivity(intent);
                 Snackbar.make(view, "Open cart view", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -182,10 +187,15 @@ public class HomeView extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            ArrayList<Products> productsArrayList=  new ArrayList<Products>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String getFireStoreFieldName = document.getString("Product Name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");
                                 String getFireStoreId = document.getId();
+                                Products products = new Products();
+                                products.setProdName(getFireStoreFieldName);
+                                products.setProdId(getFireStoreId);
+                                productsArrayList.add(products);
 
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.i(TAG, "What is value: " + getFireStoreFieldName);
@@ -193,8 +203,11 @@ public class HomeView extends AppCompatActivity
                                 listItemDetail.add(getFireStoreFieldDetails);
                                 listItemId.add(getFireStoreId);
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeView.this,android.R.layout.simple_dropdown_item_1line,listItemName);
-                            listView.setAdapter(adapter);
+                          /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeView.this,android.R.layout.simple_dropdown_item_1line,listItemName);
+                            listView.setAdapter(adapter);*/
+                            Log.d(TAG, "onComplete: "+productsArrayList);
+                            AdaptorProduct adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList );
+                            listView.setAdapter(adapterProduct);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }

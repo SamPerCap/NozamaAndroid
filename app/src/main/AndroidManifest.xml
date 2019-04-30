@@ -23,6 +23,8 @@
         <activity android:name=".DALUsers.AddUser"></activity>
         <activity android:name=".ProductDetails"></activity>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".Cart.CartView"></activity>
+
     </application>
 
 </manifest>
