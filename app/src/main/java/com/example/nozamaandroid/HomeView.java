@@ -51,7 +51,7 @@ public class HomeView extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     NavigationView navigationView;
-
+    ArrayList<Products> productsArrayList;
     ArrayList<String> listItemName = new ArrayList<>();
     ArrayList<String> listItemDetail = new ArrayList<>();
     ArrayList<String> listItemId = new ArrayList<>();
@@ -82,9 +82,10 @@ public class HomeView extends AppCompatActivity
         setupDataBase();
 
 
-        clickOnList();
+
 
         getUser();
+        clickOnList();
     }
 
     public void openUserView(View view)
@@ -102,6 +103,8 @@ public class HomeView extends AppCompatActivity
 
     private void clickOnList()
     {
+
+        Log.d(TAG, "clickOnList: ");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -121,9 +124,9 @@ public class HomeView extends AppCompatActivity
                     f.setProdId(listItemId.get(position));
                     //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
                     Log.i(TAG, "f.getProdName is: " + f.getProdName());
-                    appInfo.putExtra(nameKey, f.getProdName().toString());
-                    appInfo.putExtra(detailKey, f.getProdDetails().toString());
-                    appInfo.putExtra(idKey, f.getProdId());
+                    appInfo.putExtra(nameKey, productsArrayList.get(position).getProdName());
+                    appInfo.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
+                    appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
                     startActivity(appInfo);
                 }
                 catch (Exception e)
@@ -187,7 +190,7 @@ public class HomeView extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<Products> productsArrayList=  new ArrayList<Products>();
+                            productsArrayList=  new ArrayList<Products>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String getFireStoreFieldName = document.getString("Product Name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");

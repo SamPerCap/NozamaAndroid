@@ -25,6 +25,7 @@ import java.util.Map;
 
 public class ProductDetails extends AppCompatActivity
 {
+
     TextView productName, productDetail;
     String TAG = "Product Details class";
     String prodKey = "nameKey";

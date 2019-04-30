@@ -41,14 +41,13 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
         txtTitle.setText(_arrayData.get(position).getProdName());
-        Button button =(Button) rowView.findViewById(R.id.addToCart);
-        button.setOnClickListener(new Button.OnClickListener() {
+        TextView button =(TextView) rowView.findViewById(R.id.addToCart);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cartModel.addProductToCart(_arrayData.get(position));
 
                 Log.d(TAG, "onClick: "+_arrayData.get(position).getProdName());
-
             }
         });
 
