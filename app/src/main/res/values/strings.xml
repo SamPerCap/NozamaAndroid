@@ -14,7 +14,7 @@
     <string name="menu_electrical_appliance">Electrical appliance</string>
     <string name="menu_clothes">Clothes</string>
     <string name="menu_account">Account</string>
-    <string name="menu_log_out">Log out</string>
+    <string name="menu_log_out">Login</string>
     <string name="find_product">Find your product</string>
     <string name="textOrder">OrderList</string>
     <string name="buyNow">Buy now</string>
