@@ -9,6 +9,15 @@ public class Products
     private String prodName;
     private String prodDetails;
     private Float ratings;
+    int amount ;
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
     public Products()
     {

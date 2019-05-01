@@ -163,7 +163,12 @@ public class HomeView extends AppCompatActivity
                         }
                         if(options[which].equals(options[1]))
                         {
-                           cartModel.addProductToCart(productsArrayList.get(position));
+                            Products product = productsArrayList.get(position);
+                            product.setAmount(1);
+                            Log.d(TAG, "onClick: "+ product.getProdName());
+
+
+                           cartModel.addProductToCart(product);
                             cartCount.setVisibility(View.VISIBLE);
                            cartCount.setText(cartModel.getProductInCart().size()+"");
                         }
