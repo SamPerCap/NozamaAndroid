@@ -51,11 +51,11 @@ public class HomeView extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     NavigationView navigationView;
-
+    FirebaseAuth mAuth;
     ArrayList<String> listItemName = new ArrayList<>();
     ArrayList<String> listItemDetail = new ArrayList<>();
     ArrayList<String> listItemId = new ArrayList<>();
-
+    FirebaseUser currentUser;
     ListView listView;
     String nameKey = "nameKey";
     String detailKey = "detailKey";
@@ -86,7 +86,7 @@ public class HomeView extends AppCompatActivity
 
         getUser();
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public void openUserView(View view)
@@ -260,12 +260,42 @@ public class HomeView extends AppCompatActivity
                 openUser();
                 break;
             case R.id.nav_log_out:
-                loginView();
+                if ( currentUser == null )
+                {
+                    loginView();
+                }
+                else
+                {
+                    FirebaseAuth.getInstance().signOut();
+                    Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
 
         drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        currentUser = mAuth.getCurrentUser();
+        MenuItem menuItem = navigationView.getMenu().findItem(R.id.nav_log_out);
+
+        if ( currentUser == null)
+        {
+            Log.d(TAG, "No one is logged in");
+            Toast.makeText(this, "You are currently not logged in", Toast.LENGTH_SHORT).show();
+            menuItem.setTitle("Login");
+        }
+        else
+        {
+            Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
+            Toast.makeText(this, currentUser.getEmail() + " is currently logged in.", Toast.LENGTH_SHORT).show();
+            menuItem.setTitle("Logout");
+        }
     }
 }
