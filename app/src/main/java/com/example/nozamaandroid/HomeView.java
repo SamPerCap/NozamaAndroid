@@ -3,6 +3,7 @@ package com.example.nozamaandroid;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.collection.LLRBNode;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -152,7 +154,7 @@ public class HomeView extends AppCompatActivity
                                 appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
                                 startActivity(appInfo);
                                 Log.d(TAG, "cart size: "+ cartModel.getProductInCart().size());
-                                cartCount.setText(cartModel.getProductInCart().size());
+
                             }
                             catch (Exception e)
                             {
@@ -162,6 +164,7 @@ public class HomeView extends AppCompatActivity
                         if(options[which].equals(options[1]))
                         {
                            cartModel.addProductToCart(productsArrayList.get(position));
+                            cartCount.setVisibility(View.VISIBLE);
                            cartCount.setText(cartModel.getProductInCart().size()+"");
                         }
                     }
