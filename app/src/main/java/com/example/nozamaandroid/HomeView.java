@@ -288,7 +288,7 @@ public class HomeView extends AppCompatActivity
         if ( currentUser == null)
         {
             Log.d(TAG, "No one is logged in");
-            Toast.makeText(this, "You are currently not logged in", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are currently not logged in1", Toast.LENGTH_SHORT).show();
             menuItem.setTitle("Login");
         }
         else
