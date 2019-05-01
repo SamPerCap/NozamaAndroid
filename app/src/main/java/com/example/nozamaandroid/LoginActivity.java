@@ -76,6 +76,6 @@ public class LoginActivity extends AppCompatActivity
         intent.putExtra(userKey, userNameStr);
         intent.putExtra(passwordKey, passwordStr);*/
 
-        startActivity(intent);
+        finish();
     }
 }

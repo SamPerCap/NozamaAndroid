@@ -146,7 +146,7 @@ public class AddUser extends AppCompatActivity
                             intent.putExtra(addressKey, users.getAddress());
                             intent.putExtra(phoneKey, users.getPhoneNumber());
 
-                            startActivity(intent);
+                            finish();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
