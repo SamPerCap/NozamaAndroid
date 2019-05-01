@@ -78,6 +78,8 @@ public class HomeView extends AppCompatActivity
     FirebaseFirestore db;
     Map<String, Object> productMap;
     TextView cartCount;
+    MenuItem menuItemLogin;
+    MenuItem menuItemAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +110,7 @@ public class HomeView extends AppCompatActivity
         //Bundle bundle = new Bundle();
     }
 
-    public void openUser()
+    public void openCreateUser()
     {
         Intent intent = new Intent(this, AddUser.class);
         startActivity(intent);
@@ -309,7 +311,14 @@ public class HomeView extends AppCompatActivity
             case R.id.nav_electrical_appliance:
                 break;
             case R.id.nav_account:
-                openUser();
+                if ( currentUser == null )
+                {
+                    openCreateUser();
+                }
+                else
+                {
+                    openAccountDetails();
+                }
                 break;
             case R.id.nav_log_out:
                 if ( currentUser == null )
@@ -319,6 +328,9 @@ public class HomeView extends AppCompatActivity
                 else
                 {
                     FirebaseAuth.getInstance().signOut();
+                    getMenuItem();
+                    menuItemLogin.setTitle("Login");
+                    menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
                 }
 
@@ -330,24 +342,38 @@ public class HomeView extends AppCompatActivity
         return true;
     }
 
+    private void openAccountDetails()
+    {
+        Intent intent = new Intent(this, UserAccountDetails.class);
+        startActivity(intent);
+    }
+
+    private void getMenuItem()
+    {
+        menuItemLogin = navigationView.getMenu().findItem(R.id.nav_log_out);
+        menuItemAccount = navigationView.getMenu().findItem(R.id.nav_account);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
-        MenuItem menuItem = navigationView.getMenu().findItem(R.id.nav_log_out);
+        getMenuItem();
 
         if ( currentUser == null)
         {
             Log.d(TAG, "No one is logged in");
             Toast.makeText(this, "You are currently not logged in.", Toast.LENGTH_SHORT).show();
-            menuItem.setTitle("Login");
+            menuItemLogin.setTitle("Login");
+            menuItemAccount.setTitle("Create an account");
         }
         else
         {
             Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
             Toast.makeText(this, currentUser.getEmail() + " is currently logged in.", Toast.LENGTH_SHORT).show();
-            menuItem.setTitle("Logout");
+            menuItemLogin.setTitle("Logout");
+            menuItemAccount.setTitle("Account details");
         }
     }
 }

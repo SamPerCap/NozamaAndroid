@@ -21,10 +21,11 @@
         app:srcCompat="@drawable/bag_icon" />
 
     <TextView
+        android:id="@+id/currentUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Hard coded username"
+        android:text="You are not logged in"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="18sp" />
 
