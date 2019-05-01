@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,6 +31,7 @@ public class UserAccountDetails extends AppCompatActivity
     FirebaseFirestore db;
     String TAG = "userAccountDetails";
     String userId;
+
 
     @Override
     protected void onCreate (Bundle savedInstanceState)
@@ -65,44 +67,68 @@ public class UserAccountDetails extends AppCompatActivity
 
     private void getUserFirestore()
     {
+        currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                // This way we can get the fields from firestore and save them to a string.
-                                String getFireStoreFieldUserName = document.getString("Username");
-                                String getFireStoreFieldAddress = document.getString("Address");
-                                String getFireStoreFieldPhonenumber = document.getString("Phonenumber");
-                                userId = document.getId();
+        Log.d(TAG,"user id; " + currentUser.getUid());
+        DocumentReference docRef = db.collection("users").document(currentUser.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // This way we can get the fields from firestore and save them to a string.
+                        String getFireStoreFieldUserName = document.getString("Username");
+                        String getFireStoreFieldAddress = document.getString("Address");
+                        String getFireStoreFieldPhonenumber = document.getString("Phonenumber");
+                        userId = document.getId();
 
-                                userName.setText(getFireStoreFieldUserName);
-                                address.setText(getFireStoreFieldAddress);
-                                phoneNumber.setText(getFireStoreFieldPhonenumber);
-                            }
-                            // We can use this to add to the listview the items this user has purchased, but we need to get relations to work first
-                            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(UserAccountDetails.this,android.R.layout.simple_dropdown_item_1line,listItemName);
-                            //listView.setAdapter(adapter);
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
+                        userName.setText(getFireStoreFieldUserName);
+                        address.setText(getFireStoreFieldAddress);
+                        phoneNumber.setText(getFireStoreFieldPhonenumber);
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
-                });
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     public void saveEdit(View view)
     {
+        currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
         // Set the "isCapital" field of the city 'DC'
-        db.collection("users").document(userId)
+        db.collection("users").document(currentUser.getUid())
                 .update(
                         "Username", userName.getText().toString(),
                         "Address", address.getText().toString(),
                         "Phonenumber", phoneNumber.getText().toString()
                 );
+        finish();
+    }
+
+    public void removeAccount(View view)
+    {
+        currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        db.collection("users").document(currentUser.getUid())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
         finish();
     }
 }
