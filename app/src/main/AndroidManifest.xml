@@ -23,6 +23,7 @@
         <activity android:name=".DALUsers.AddUser"></activity>
         <activity android:name=".ProductDetails"></activity>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".UserAccountDetails"></activity>
     </application>
 
 </manifest>
