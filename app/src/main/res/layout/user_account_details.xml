@@ -37,42 +37,55 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Username"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="57dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="Address"
         android:inputType="textPostalAddress"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="125dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Phonenumber"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/address" />
 
     <EditText
         android:id="@+id/phoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:inputType="phone"
         android:hint="Phonenumber"
+        android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address" />
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <Button
         android:id="@+id/deleteUser"
@@ -86,4 +99,32 @@
         app:layout_constraintHorizontal_bias="0.235"
         app:layout_constraintStart_toEndOf="@+id/saveBtn"
         app:layout_constraintTop_toTopOf="@+id/saveBtn" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="125dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Address"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="125dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="8dp"
+        android:text="Username"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
