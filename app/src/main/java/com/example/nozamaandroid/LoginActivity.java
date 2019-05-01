@@ -60,12 +60,12 @@ public class LoginActivity extends AppCompatActivity
 
     private void goToMainView()
     {
-        Users userClass = new Users();
+        //Users userClass = new Users();
         Intent intent = new Intent(LoginActivity.this, HomeView.class);
         // we want to save the username to the user class to pass it onwards and so we can grab it later
         // This particular information will be grabbed in everyclass for now with getIntent
 
-        String userNameStr = email.getText().toString();
+        /*String userNameStr = email.getText().toString();
         String passwordStr = password.getText().toString();
         userClass.setUserName(userNameStr);
         userClass.setPassword(passwordStr);
@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity
         Log.d(TAG, "Can we get the password: " + userClass.getPassword());
 
         intent.putExtra(userKey, userNameStr);
-        intent.putExtra(passwordKey, passwordStr);
+        intent.putExtra(passwordKey, passwordStr);*/
 
         startActivity(intent);
     }
