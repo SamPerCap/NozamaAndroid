@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.nozamaandroid.Adaptor.AdapterCart;
 import com.example.nozamaandroid.Adaptor.AdaptorProduct;
 import com.example.nozamaandroid.BLL.BLLOrder;
 import com.example.nozamaandroid.DALProducts.AddProduct;
@@ -35,7 +36,7 @@ public class CartView extends AppCompatActivity {
         cartModel = CartModel.getInstance();
         ListView listView = (ListView) findViewById(R.id.listOrderProduct);
        // AdaptorProduct adapter = new AdaptorProduct(CartView.this,
-        AdaptorProduct adapterProduct = new AdaptorProduct(this, cartModel.getProductInCart() );
+        AdapterCart adapterProduct = new AdapterCart(this, cartModel.getProductInCart() );
         listView.setAdapter(adapterProduct);
         setupViewItems();
     }
