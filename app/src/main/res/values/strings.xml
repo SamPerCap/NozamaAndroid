@@ -17,6 +17,6 @@
     <string name="menu_log_out">Login</string>
     <string name="find_product">Find your product</string>
     <string name="textOrder">OrderList</string>
-    <string name="buyNow">Buy now</string>
+    <string name="buy">Buy now</string>
     <string name="lessThan">&lt;</string>
 </resources>

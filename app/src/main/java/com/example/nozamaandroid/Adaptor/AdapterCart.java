@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.nozamaandroid.HomeView;
@@ -45,7 +46,8 @@ public class AdapterCart  extends ArrayAdapter<Products> {
        /* TextView price = (TextView) rowView.findViewById(R.id.productPrice);
         price.setText(_arrayData.get(position).get());*/
 
-        final EditText amount = (EditText) rowView.findViewById(R.id.amount);
+        EditText amount = (EditText) rowView.findViewById(R.id.amount);
+
         amount.setText(_arrayData.get(position).getAmount()+"");
         TextView lessthan = (TextView) rowView.findViewById(R.id.lessAmount);
         lessthan.setOnClickListener(new View.OnClickListener() {
@@ -80,13 +82,16 @@ public class AdapterCart  extends ArrayAdapter<Products> {
     }
 
     private void changeNumber(int postion, int i) {
-       if( cartModel.changeAmount(postion,i))
-       {
-           notifyDataSetInvalidated();
-       }
-       else {
-           notifyDataSetChanged();
-       }
+        if(cartModel.getProductInCart().get(postion).getAmount()+i == 0)
+        {
+
+        }
+        else
+        {
+            cartModel.changeAmount(postion,i);
+            notifyDataSetInvalidated();
+        }
+
     }
 
 

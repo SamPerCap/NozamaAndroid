@@ -56,15 +56,9 @@ public class CartModel {
         cartList.remove(postion);
     }
 // return true if product deleted
-    public boolean changeAmount(int postion, int i) {
+    public void changeAmount(int postion, int i) {
 
-        if(cartList.get(postion).amount+i ==0)
-        {
-            cartList.remove(postion);
-            return  true;
 
-        }
         cartList.get(postion).setAmount(cartList.get(postion).getAmount()+i);
-        return false;
     }
 }
