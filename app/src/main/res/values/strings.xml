@@ -18,4 +18,6 @@
     <string name="find_product">Find your product</string>
     <string name="textOrder">OrderList</string>
     <string name="buyNow">Buy now</string>
+    <string name="activityClass">activityClass</string>
+    <string name="friendKey">friend</string>
 </resources>
