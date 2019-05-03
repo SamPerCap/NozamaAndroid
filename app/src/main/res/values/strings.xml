@@ -8,7 +8,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <!--Items for the side menu -->
     <string name="menu_decoration">Decoration</string>
     <string name="menu_books">Books</string>
     <string name="menu_electrical_appliance">Electrical appliance</string>
@@ -19,4 +18,9 @@
     <string name="textOrder">OrderList</string>
     <string name="buy">Buy now</string>
     <string name="lessThan">&lt;</string>
+    <string name="buyNow">Buy now</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_detail">Product Detail</string>
+    <string name="save_rating">Save Rating</string>
+    <string name="price">Price</string>
 </resources>
