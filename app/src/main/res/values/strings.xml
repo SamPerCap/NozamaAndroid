@@ -18,4 +18,8 @@
     <string name="find_product">Find your product</string>
     <string name="textOrder">OrderList</string>
     <string name="buyNow">Buy now</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_detail">Product Detail</string>
+    <string name="save_rating">Save Rating</string>
+    <string name="price">Price</string>
 </resources>

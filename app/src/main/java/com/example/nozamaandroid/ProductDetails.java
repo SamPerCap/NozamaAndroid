@@ -43,11 +43,7 @@ public class ProductDetails extends AppCompatActivity
         setContentView(R.layout.product_details);
         
         // save the id of the buttons to the button class variable so we can use that later and interact with it
-        productName = findViewById(R.id.productName);
-        productDetail = findViewById(R.id.productDetail);
-        prodRating = findViewById(R.id.ratingBar);
-        saveRatingBtn = findViewById(R.id.btnSave);
-
+        setupItems();
 
 
         // Here we grab the intent from main activity which saved it to the model BE product entity, so we should
@@ -66,6 +62,14 @@ public class ProductDetails extends AppCompatActivity
         productName.setText(prodNameData);
         productDetail.setText(prodDetailData);
         Log.i(TAG, "Rating value: " + prodRating.getRating());
+    }
+
+    private void setupItems() {
+        productName = findViewById(R.id.productName);
+        productDetail = findViewById(R.id.productDetail);
+        prodRating = findViewById(R.id.ratingBar);
+        saveRatingBtn = findViewById(R.id.btnSave);
+        prodRating.setNumStars(5);
     }
 
     public void saveRatingButton(View view)

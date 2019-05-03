@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +83,7 @@ public class HomeView extends AppCompatActivity
     FirebaseUser currentUser;
     ListView listView;
     String nameKey = "nameKey";
+    RatingBar ratingBar;
     String detailKey = "detailKey";
     String idKey = "idKey";
     String Keyword;
