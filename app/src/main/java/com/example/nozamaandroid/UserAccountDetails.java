@@ -129,6 +129,18 @@ public class UserAccountDetails extends AppCompatActivity
                         Log.w(TAG, "Error deleting document", e);
                     }
                 });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User account deleted.");
+                            Toast.makeText(UserAccountDetails.this, "User account has been successfully deleted.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
         finish();
     }
 }

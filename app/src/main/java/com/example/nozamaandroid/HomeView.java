@@ -40,9 +40,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.collection.LLRBNode;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -332,11 +336,15 @@ public class HomeView extends AppCompatActivity
                 }
                 else
                 {
+                    currentUser = null;
                     FirebaseAuth.getInstance().signOut();
                     getMenuItem();
                     menuItemLogin.setTitle("Login");
                     menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
+
+                    TextView textView = findViewById(R.id.currentUserName);
+                    textView.setText("Guest");
                 }
 
                 break;
@@ -362,6 +370,7 @@ public class HomeView extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
+        db = FirebaseFirestore.getInstance();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
         getMenuItem();
@@ -375,10 +384,38 @@ public class HomeView extends AppCompatActivity
         }
         else
         {
+            getUserFirestore();
             Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
             Toast.makeText(this, currentUser.getEmail() + " is currently logged in.", Toast.LENGTH_SHORT).show();
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");
         }
+    }
+
+    private void getUserFirestore()
+    {
+        db = FirebaseFirestore.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        Log.d(TAG,"user id; " + currentUser.getUid());
+        DocumentReference docRef = db.collection("users").document(currentUser.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // This way we can get the fields from firestore and save them to a string.
+                        String getFireStoreFieldUserName = document.getString("Username");
+                        TextView textView = findViewById(R.id.currentUserName);
+                        textView.setText("User: " + getFireStoreFieldUserName);
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 }
