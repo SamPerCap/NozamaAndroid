@@ -3,12 +3,15 @@ package com.example.nozamaandroid;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.gesture.Prediction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +40,8 @@ import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -49,6 +55,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,10 +70,12 @@ public class HomeView extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     NavigationView navigationView;
-    ArrayList<Products> productsArrayList;
+    ArrayList<Products> productsArrayList =  new ArrayList<Products>();;
     ArrayList<String> listItemName = new ArrayList<>();
     ArrayList<String> listItemDetail = new ArrayList<>();
     ArrayList<String> listItemId = new ArrayList<>();
+    ArrayList<Products> filteredArrayList = new ArrayList<>();
+    EditText searchBar;
     String[] options = new String[]{"Show detail",
         "Add to cart"};
     FirebaseAuth mAuth;
@@ -75,9 +84,10 @@ public class HomeView extends AppCompatActivity
     String nameKey = "nameKey";
     String detailKey = "detailKey";
     String idKey = "idKey";
+    String Keyword;
     String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey";
     DatabaseReference dref;
-    ArrayAdapter<String> adapter;
+    AdaptorProduct adapterProduct;
     public String details;
     FirebaseFirestore db;
     Map<String, Object> productMap;
@@ -98,7 +108,32 @@ public class HomeView extends AppCompatActivity
         setupSideNavBar();
         //Firebase code
         setupDataBase();
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                Keyword = s.toString().toLowerCase();
+                filteredArrayList.clear();
+                for(Products product: productsArrayList){
+                    if(product.getProdName().toLowerCase().contains(Keyword))
+                        filteredArrayList.add(product);
+                    adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
+                    listView.setAdapter(adapterProduct);
+                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
 
@@ -239,7 +274,7 @@ public class HomeView extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            productsArrayList=  new ArrayList<Products>();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String getFireStoreFieldName = document.getString("Product Name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");
@@ -259,7 +294,7 @@ public class HomeView extends AppCompatActivity
                           /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeView.this,android.R.layout.simple_dropdown_item_1line,listItemName);
                             listView.setAdapter(adapter);*/
                             Log.d(TAG, "onComplete: "+productsArrayList);
-                            AdaptorProduct adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList );
+                            adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList );
                             listView.setAdapter(adapterProduct);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -276,6 +311,8 @@ public class HomeView extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         listView = findViewById(R.id.synchronizeProducts);
         cartCount = findViewById(R.id.countCartSize);
+        searchBar = findViewById(R.id.searchBox);
+
     }
     @Override
     public void onBackPressed() {
