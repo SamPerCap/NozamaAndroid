@@ -19,6 +19,8 @@
     <string name="buy">Buy now</string>
     <string name="lessThan">&lt;</string>
     <string name="buyNow">Buy now</string>
+    <string name="activityClass">activityClass</string>
+    <string name="friendKey">friend</string>
     <string name="product_name">Product Name</string>
     <string name="product_detail">Product Detail</string>
     <string name="save_rating">Save Rating</string>
