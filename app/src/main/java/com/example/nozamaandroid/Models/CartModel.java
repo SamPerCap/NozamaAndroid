@@ -1,5 +1,9 @@
 package com.example.nozamaandroid.Models;
 
+import android.util.Log;
+
+import com.example.nozamaandroid.HomeView;
+
 import java.util.ArrayList;
 
 public class CartModel {
@@ -24,8 +28,37 @@ public class CartModel {
        return cartList;
     }
 
+
     public void addProductToCart(Products products)
     {
-        cartList.add(products);
+        boolean changed = false;
+        for (int i = 0; i <cartList.size() ; i++) {
+            if(cartList.get(i).getProdId()== products.getProdId())
+            {
+                products.setAmount(cartList.get(i).getAmount()+1);
+                Log.d(HomeView.TAG, "addProductToCart same product: " +  products.getProdName()+ ":"
+                + products.getAmount());
+                changed =true;
+
+                cartList.set(i,products);
+            }
+        }
+        if(!changed) {
+            cartList.add(products);
+        }
+    }
+
+    public void clearList() {
+        cartList.clear();
+    }
+
+    public void removeItem(int postion) {
+        cartList.remove(postion);
+    }
+// return true if product deleted
+    public void changeAmount(int postion, int i) {
+
+
+        cartList.get(postion).setAmount(cartList.get(postion).getAmount()+i);
     }
 }
