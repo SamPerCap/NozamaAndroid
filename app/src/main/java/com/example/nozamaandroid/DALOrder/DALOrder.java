@@ -31,7 +31,7 @@ public class DALOrder   {
             productMap.put("user id", order.getIdUser());
 
            // productMap.put("Products", order.getProducts());
-db.collection("order").add(order).
+db.collection("orders").add(order).
         addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
     @Override
     public void onSuccess(DocumentReference documentReferesnce) {
