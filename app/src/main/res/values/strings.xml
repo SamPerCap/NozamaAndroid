@@ -23,4 +23,22 @@
     <string name="product_detail">Product Detail</string>
     <string name="save_rating">Save Rating</string>
     <string name="price">Price</string>
+    <string name="save_edit">Save</string>
+    <string name="my_account">My account</string>
+    <string name="orders">Orders</string>
+    <string name="number_of_orders">0</string>
+    <string name="on_way">On Way</string>
+    <string name="personal_information">Personal information</string>
+    <string name="nick">Nick</string>
+    <string name="your_nickname">Your Nickname</string>
+    <string name="address">Address</string>
+    <string name="your_address">Your Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="your_phone_number">Your Phone Number</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="password">Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="user_email_com">user@email.com</string>
 </resources>

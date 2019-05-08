@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,7 +26,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class UserAccountDetails extends AppCompatActivity
 {
     ListView listView;
-    EditText userName, address, phoneNumber, email;
+    EditText userName, address, phoneNumber;
+    TextView email;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseFirestore db;
@@ -39,11 +41,11 @@ public class UserAccountDetails extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_account_details);
 
-        listView = findViewById(R.id.listView);
+       // listView = findViewById(R.id.listView);
         userName = findViewById(R.id.userName);
         address = findViewById(R.id.address);
         phoneNumber = findViewById(R.id.phoneNumber);
-        email = findViewById(R.id.usrEmail);
+        email = findViewById(R.id.userEmail);
         mAuth = FirebaseAuth.getInstance();
 
         getUserDetails();
@@ -81,8 +83,9 @@ public class UserAccountDetails extends AppCompatActivity
                         String getFireStoreFieldUserName = document.getString("Username");
                         String getFireStoreFieldAddress = document.getString("Address");
                         String getFireStoreFieldPhonenumber = document.getString("Phonenumber");
+                        String getFireStoreFieldEmail = document.getString("Email");
                         userId = document.getId();
-
+                        email.setText(getFireStoreFieldEmail);
                         userName.setText(getFireStoreFieldUserName);
                         address.setText(getFireStoreFieldAddress);
                         phoneNumber.setText(getFireStoreFieldPhonenumber);
