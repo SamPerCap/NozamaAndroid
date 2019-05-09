@@ -159,8 +159,6 @@ public class HomeView extends AppCompatActivity
 
     private void clickOnList()
     {
-
-
         Log.d(TAG, "clickOnList: ");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
