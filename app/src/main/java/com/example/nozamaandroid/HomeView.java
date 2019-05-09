@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.ObservableList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -61,7 +62,7 @@ import java.util.Map;
 
 public class HomeView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    CartModel cartModel;
+    static CartModel cartModel;
     public static String TAG = "ProductApp";
     Products products;
     Toolbar toolbar;
@@ -70,26 +71,25 @@ public class HomeView extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     NavigationView navigationView;
-    ArrayList<Products> productsArrayList =  new ArrayList<Products>();;
+    ArrayList<Products> productsArrayList = new ArrayList<Products>();
+    ;
     ArrayList<String> listItemName = new ArrayList<>();
     ArrayList<String> listItemDetail = new ArrayList<>();
     ArrayList<String> listItemId = new ArrayList<>();
     ArrayList<Products> filteredArrayList = new ArrayList<>();
     EditText searchBar;
     String[] options = new String[]{"Show detail",
-        "Add to cart"};
+            "Add to cart"};
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     ListView listView;
     String nameKey = "nameKey";
-    RatingBar ratingBar;
     String detailKey = "detailKey";
     String idKey = "idKey";
+    String productKey = "productKey";
     String Keyword;
     String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey";
-    DatabaseReference dref;
     AdaptorProduct adapterProduct;
-    public String details;
     FirebaseFirestore db;
     Map<String, Object> productMap;
     TextView cartCount;
@@ -103,7 +103,7 @@ public class HomeView extends AppCompatActivity
         products = new Products();
         productMap = new HashMap<>();
         setContentView(R.layout.activity_home_view2);
-        Log.d(TAG,"View has been setted. Lets setup the items");
+        Log.d(TAG, "View has been setted. Lets setup the items");
         cartModel = CartModel.getInstance();
         setupItems();
         //Side nav bar code
@@ -121,8 +121,8 @@ public class HomeView extends AppCompatActivity
 
                 Keyword = s.toString().toLowerCase();
                 filteredArrayList.clear();
-                for(Products product: productsArrayList){
-                    if(product.getProdName().toLowerCase().contains(Keyword))
+                for (Products product : productsArrayList) {
+                    if (product.getProdName().toLowerCase().contains(Keyword))
                         filteredArrayList.add(product);
                     adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
                     listView.setAdapter(adapterProduct);
@@ -142,23 +142,46 @@ public class HomeView extends AppCompatActivity
         getUser();
         clickOnList();
         mAuth = FirebaseAuth.getInstance();
+        //cartCount.setText(cartModel.getProductInCart().size() + "");
+        cartModel.cartList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Products>>() {
+            @Override
+            public void onChanged(ObservableList<Products> sender) {
+            }
+
+            @Override
+            public void onItemRangeChanged(ObservableList<Products> sender, int positionStart, int itemCount) {
+
+            }
+
+            @Override
+            public void onItemRangeInserted(ObservableList<Products> sender, int positionStart, int itemCount) {
+                cartCount.setText(cartModel.getProductInCart().size() + "");
+            }
+
+            @Override
+            public void onItemRangeMoved(ObservableList<Products> sender, int fromPosition, int toPosition, int itemCount) {
+
+            }
+
+            @Override
+            public void onItemRangeRemoved(ObservableList<Products> sender, int positionStart, int itemCount) {
+                cartCount.setText(cartModel.getProductInCart().size() + "");
+            }
+        });
     }
 
-    public void openUserView(View view)
-    {
+    public void openUserView(View view) {
         Intent intent = new Intent(this, AddProduct.class);
         startActivity(intent);
         //Bundle bundle = new Bundle();
     }
 
-    public void openCreateUser()
-    {
+    public void openCreateUser() {
         Intent intent = new Intent(this, AddUser.class);
         startActivity(intent);
     }
 
-    private void clickOnList()
-    {
+    private void clickOnList() {
 
 
         Log.d(TAG, "clickOnList: ");
@@ -166,19 +189,15 @@ public class HomeView extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
-                builder.setItems(options, new DialogInterface.OnClickListener()
-                {
+                builder.setItems(options, new DialogInterface.OnClickListener() {
                     /*
                      * Give the user an option to either choose an image that already exists on the phone
                      * or to take a picture
                      * */
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if(options[which].equals(options[0]))
-                        {
-                            try
-                            {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (options[which].equals(options[0])) {
+                            try {
                                 // Here we want to initiate the product class so we can pass in data between views, it also gets the
                                 // It also gets the position in the listview by using onitemclick adapter view click listener, which has a built in position
                                 // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
@@ -187,33 +206,29 @@ public class HomeView extends AppCompatActivity
                                 final Products f = new Products();
                                 final Intent appInfo = new Intent(HomeView.this, ProductDetails.class);
                                 f.setProdName(listView.getItemAtPosition(position).toString());
-                                Log.i(TAG, "what is string details: " + listItemDetail.get(position));
+                                Log.d(TAG, "what is string details: " + listItemDetail.get(position));
                                 f.setProdDetails(listItemDetail.get(position));
                                 f.setProdId(listItemId.get(position));
                                 //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
-                                Log.i(TAG, "f.getProdName is: " + f.getProdName());
+                                Log.d(TAG, "f.getProdName is: " + f.getProdName());
                                 appInfo.putExtra(nameKey, productsArrayList.get(position).getProdName());
                                 appInfo.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
                                 appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
                                 startActivity(appInfo);
-                                Log.d(TAG, "cart size: "+ cartModel.getProductInCart().size());
+                                Log.d(TAG, "cart size: " + cartModel.getProductInCart().size());
 
-                            }
-                            catch (Exception e)
-                            {
-                                Log.i(TAG, "Opening Product Details error" + e );
+                            } catch (Exception e) {
+                                Log.d(TAG, "Opening Product Details error" + e);
                             }
                         }
-                        if(options[which].equals(options[1]))
-                        {
-                            Products product = productsArrayList.get(position);
-                            product.setAmount(1);
-                            Log.d(TAG, "onClick: "+ product.getProdName());
+                        if (options[which].equals(options[1])) {
 
-
-                           cartModel.addProductToCart(product);
+                            products = productsArrayList.get(position);
+                            products.setAmount(1);
+                            Log.d(TAG, "onClick: " + products.getProdName());
+                            cartModel.addProductToCart(products);
                             cartCount.setVisibility(View.VISIBLE);
-                           cartCount.setText(cartModel.getProductInCart().size()+"");
+
                         }
                     }
                 });
@@ -223,8 +238,8 @@ public class HomeView extends AppCompatActivity
         });
     }
 
-    private void getUser()
-    {
+
+    private void getUser() {
         Users user = new Users();
 
         try {
@@ -233,23 +248,19 @@ public class HomeView extends AppCompatActivity
             String getAddress = getIntent().getExtras().getString(addressKey, user.getAddress());
             Log.d(TAG, "getUser: " + getUser + " Password:" + getPassword + " address: " + getAddress);
             Toast.makeText(this, "You are logged in as: " + getUser, Toast.LENGTH_SHORT).show();
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.d(TAG, "Exception with getting user: " + e);
             Toast.makeText(this, "No one is currently logged in, please login", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void loginView()
-    {
+    public void loginView() {
         Intent intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
     }
 
-    public void setupSideNavBar()
-    {
-        Log.d(TAG,"Setting up the side navigation bar");
+    public void setupSideNavBar() {
+        Log.d(TAG, "Setting up the side navigation bar");
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -268,7 +279,7 @@ public class HomeView extends AppCompatActivity
     }
 
     private void setupDataBase() {
-        Log.d(TAG,"Setting up the database settings");
+        Log.d(TAG, "Setting up the database settings");
         db = FirebaseFirestore.getInstance();
         db.collection("products")
                 .get()
@@ -295,8 +306,8 @@ public class HomeView extends AppCompatActivity
                             }
                           /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeView.this,android.R.layout.simple_dropdown_item_1line,listItemName);
                             listView.setAdapter(adapter);*/
-                            Log.d(TAG, "onComplete: "+productsArrayList);
-                            adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList );
+                            Log.d(TAG, "onComplete: " + productsArrayList);
+                            adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
                             listView.setAdapter(adapterProduct);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -305,7 +316,7 @@ public class HomeView extends AppCompatActivity
                 });
     }
 
-    private void setupItems(){
+    private void setupItems() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         imageButton = findViewById(R.id.imageButton);
@@ -316,6 +327,7 @@ public class HomeView extends AppCompatActivity
         searchBar = findViewById(R.id.searchBox);
 
     }
+
     @Override
     public void onBackPressed() {
         drawer = findViewById(R.id.drawer_layout);
@@ -334,8 +346,7 @@ public class HomeView extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-        {
+        if (id == R.id.action_settings) {
             return true;
         }
 
@@ -348,8 +359,7 @@ public class HomeView extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        switch (id)
-        {
+        switch (id) {
             case R.id.nav_books:
                 break;
             case R.id.nav_clothes:
@@ -359,22 +369,16 @@ public class HomeView extends AppCompatActivity
             case R.id.nav_electrical_appliance:
                 break;
             case R.id.nav_account:
-                if ( currentUser == null )
-                {
+                if (currentUser == null) {
                     openCreateUser();
-                }
-                else
-                {
+                } else {
                     openAccountDetails();
                 }
                 break;
             case R.id.nav_log_out:
-                if ( currentUser == null )
-                {
+                if (currentUser == null) {
                     loginView();
-                }
-                else
-                {
+                } else {
                     currentUser = null;
                     FirebaseAuth.getInstance().signOut();
                     getMenuItem();
@@ -394,14 +398,12 @@ public class HomeView extends AppCompatActivity
         return true;
     }
 
-    private void openAccountDetails()
-    {
+    private void openAccountDetails() {
         Intent intent = new Intent(this, UserAccountDetails.class);
         startActivity(intent);
     }
 
-    private void getMenuItem()
-    {
+    private void getMenuItem() {
         menuItemLogin = navigationView.getMenu().findItem(R.id.nav_log_out);
         menuItemAccount = navigationView.getMenu().findItem(R.id.nav_account);
     }
@@ -414,15 +416,12 @@ public class HomeView extends AppCompatActivity
         currentUser = mAuth.getCurrentUser();
         getMenuItem();
 
-        if ( currentUser == null)
-        {
+        if (currentUser == null) {
             Log.d(TAG, "No one is logged in");
             Toast.makeText(this, "You are currently not logged in.", Toast.LENGTH_SHORT).show();
             menuItemLogin.setTitle("Login");
             menuItemAccount.setTitle("Create an account");
-        }
-        else
-        {
+        } else {
             getUserFirestore();
             Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
             Toast.makeText(this, currentUser.getEmail() + " is currently logged in.", Toast.LENGTH_SHORT).show();
@@ -431,11 +430,10 @@ public class HomeView extends AppCompatActivity
         }
     }
 
-    private void getUserFirestore()
-    {
+    private void getUserFirestore() {
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
-        Log.d(TAG,"user id; " + currentUser.getUid());
+        Log.d(TAG, "user id; " + currentUser.getUid());
         DocumentReference docRef = db.collection("users").document(currentUser.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -458,8 +456,7 @@ public class HomeView extends AppCompatActivity
         });
     }
 
-    private void askPremision()
-    {
+    private void askPremision() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
 
@@ -498,5 +495,6 @@ public class HomeView extends AppCompatActivity
 
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
             }
-        }}
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.nozamaandroid;
+
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -7,41 +9,54 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProductDetails extends AppCompatActivity
-{
+public class ProductDetails extends AppCompatActivity {
 
     TextView productName, productDetail;
     String TAG = "Product Details class";
     String prodKey = "nameKey";
     String prodKey2 = "detailKey";
     String idKey = "idKey";
+    String prodNameData;
+    Products p = new Products();
+    FirebaseFirestore db;
+    DocumentReference docRef;
+    Products currentProduct;
+    String prodDetailData;
     String document;
     String prodIdData;
     RatingBar prodRating;
     Button saveRatingBtn;
+    CartModel cartModel = HomeView.cartModel;
 
     // We need to create an instance of the product class so we can use
     // the getters where we saved the prodNameData from mainactivity
-    Products p = new Products();
+
 
     Map<String, Object> ratingMap = new HashMap<>();
     Map<String, Object> prodIdMap = new HashMap<>();
 
 
-
     @Override
-    protected void onCreate(Bundle saveInstance)
-    {
+    protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
         setContentView(R.layout.product_details);
-        
+        db = FirebaseFirestore.getInstance();
+
         // save the id of the buttons to the button class variable so we can use that later and interact with it
         setupItems();
 
@@ -49,44 +64,43 @@ public class ProductDetails extends AppCompatActivity
         // Here we grab the intent from main activity which saved it to the model BE product entity, so we should
         // be able to display it on the text field
 
-        String prodNameData = getIntent().getExtras().getString(prodKey,p.getProdName());
-        String prodDetailData = getIntent().getExtras().getString(prodKey2, p.getProdDetails());
+        prodNameData = getIntent().getExtras().getString(prodKey, p.getProdName());
+        prodDetailData = getIntent().getExtras().getString(prodKey2, p.getProdDetails());
         prodIdData = getIntent().getExtras().getString(idKey, p.getProdId());
-        
 
         // Logs help to debug and check if we get the prodNameData we want and if it is null or if it has some value
-        Log.i(TAG, "getProduct from Products returns: " + p.getProdName() + " " + prodNameData + " " + prodIdData);
+        Log.d(TAG, "getProduct from Products returns: " + p.getProdName() + " " + prodNameData + " " + prodIdData);
 
         // Since we used the intent to grab the information passed from main activity class, we can now use the string
         // that we saved the information to and set the text to that value
         productName.setText(prodNameData);
         productDetail.setText(prodDetailData);
-        Log.i(TAG, "Rating value: " + prodRating.getRating());
+        currentProduct = new Products(prodIdData, prodNameData, prodDetailData);
+        Log.d(TAG, "Rating value: " + prodRating.getRating());
     }
 
     private void setupItems() {
-        productName = findViewById(R.id.productName);
-        productDetail = findViewById(R.id.productDetail);
+        productName = findViewById(R.id.tvProductName);
+        productDetail = findViewById(R.id.tvProductDetail);
         prodRating = findViewById(R.id.ratingBar);
-        saveRatingBtn = findViewById(R.id.btnSave);
+        saveRatingBtn = findViewById(R.id.btnSaveRating);
         prodRating.setNumStars(5);
     }
 
-    public void saveRatingButton(View view)
-    {
+    public void saveRatingButton(View view) {
         // We need first to make sure we get the correct rating value, then we want to save that to the firestore
         Log.i(TAG, "Rating value: " + prodRating.getRating());
         Toast.makeText(this, "Rating Value is: " + prodRating.getRating() + " and rating " + prodIdData, Toast.LENGTH_SHORT).show();
         document = p.getProdId();
         // create the variable db so we can use that to save data to firestore
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
         //ratingMap.put("Product rating", Arrays.asList(prodRating.getRating()));
 
-        DocumentReference washingtonRef = db.collection("products").document(prodIdData);
+        //docRef = db.collection("products").document(prodIdData);
 
         // Atomically add a new region to the "regions" array field.
-        washingtonRef.update("Product rating", FieldValue.arrayUnion(prodRating.getRating()));
+        docRef.update("Product rating", FieldValue.arrayUnion(prodRating.getRating()));
 
         // We want to add data to the document called ratings, on success we could do an if statement and test the
         // method, or just put out in log that it is complete.  We can do some things if we want ones it is successful or
@@ -118,5 +132,14 @@ public class ProductDetails extends AppCompatActivity
                         }
                     }
                 });*/
+    }
+
+    public void addProductToCart(View view) {
+        if (cartModel.getProductInCart().contains(currentProduct)) {
+            Toast.makeText(this, "The product is already on the cart", Toast.LENGTH_SHORT).show();
+        } else {
+            cartModel.addProductToCart(currentProduct);
+            Toast.makeText(this, "The product has been added to the cart.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -1,14 +1,17 @@
 package com.example.nozamaandroid.Models;
 
+import android.databinding.ObservableArrayList;
+import android.databinding.ObservableList;
 import android.util.Log;
 
 import com.example.nozamaandroid.HomeView;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 public class CartModel {
-    ArrayList<Products>  cartList= new ArrayList<Products>();
-
+    public ObservableList<Products> cartList= new ObservableArrayList<>();
+    ArrayList<Products> arrayCartList = new ArrayList<>();
     private static volatile CartModel instance;
 
     //singleton
@@ -25,7 +28,10 @@ public class CartModel {
 
     public ArrayList<Products> getProductInCart()
     {
-       return cartList;
+        for (Products p : cartList)
+        arrayCartList.add(p);
+
+       return arrayCartList;
     }
 
 

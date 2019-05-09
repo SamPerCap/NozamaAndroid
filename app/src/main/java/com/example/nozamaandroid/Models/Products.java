@@ -2,14 +2,13 @@ package com.example.nozamaandroid.Models;
 
 import android.util.Log;
 
-public class Products
-{
+public class Products {
     String TAG = "Products class";
     private String prodId;
     private String prodName;
     private String prodDetails;
     private Float ratings;
-    int amount ;
+    int amount;
 
     public int getAmount() {
         return amount;
@@ -19,13 +18,9 @@ public class Products
         this.amount = amount;
     }
 
-    public Products()
-    {
+    public Products() {}
 
-    }
-
-    public Products( String prodId, String prodName, String prodDetails )
-    {
+    public Products(String prodId, String prodName, String prodDetails) {
         this.prodId = prodId;
         this.prodName = prodName;
         this.prodDetails = prodDetails;
@@ -39,25 +34,21 @@ public class Products
         this.prodId = prodId;
     }
 
-    public void setProdName(String prodName)
-    {
+    public void setProdName(String prodName) {
         Log.i(TAG, "what is prodName inside Products: " + prodName);
         this.prodName = prodName;
     }
 
-    public String getProdName()
-    {
+    public String getProdName() {
         Log.i(TAG, "what is prodName inside getProdName: " + prodName);
         return prodName;
     }
 
-    public void setProdDetails(String prodDetails)
-    {
+    public void setProdDetails(String prodDetails) {
         this.prodDetails = prodDetails;
     }
 
-    public String getProdDetails()
-    {
+    public String getProdDetails() {
         return prodDetails;
     }
 

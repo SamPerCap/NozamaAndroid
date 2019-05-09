@@ -31,6 +31,7 @@ public class UserAccountDetails extends AppCompatActivity
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseFirestore db;
+    DocumentReference docRef;
     String TAG = "userAccountDetails";
     String userId;
 
@@ -72,7 +73,7 @@ public class UserAccountDetails extends AppCompatActivity
         currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         Log.d(TAG,"user id; " + currentUser.getUid());
-        DocumentReference docRef = db.collection("users").document(currentUser.getUid());
+        docRef = db.collection("users").document(currentUser.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

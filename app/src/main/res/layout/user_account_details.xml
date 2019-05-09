@@ -7,7 +7,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:background="@color/lightgray">
 
         <android.support.constraint.ConstraintLayout
@@ -39,10 +39,10 @@
                 android:layout_height="150dp"
                 android:layout_marginTop="4dp"
                 android:scaleType="centerCrop"
+                android:src="@drawable/polygon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3"
-                android:src="@drawable/polygon"/>
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             <TextView
                 android:id="@+id/userEmail"
@@ -165,11 +165,11 @@
                     android:textStyle="bold" />
 
                 <EditText
+                    android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:hint="@string/your_nickname"
-                    android:id="@+id/userName"
                     android:inputType="textPersonName" />
 
                 <TextView
@@ -177,13 +177,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/address"
+                    android:textStyle="bold"
                     android:textSize="20dp" />
 
                 <EditText
+                    android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:id="@+id/address"
                     android:hint="@string/your_address"
                     android:inputType="text" />
 
@@ -192,12 +193,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/phone_number"
+                    android:textStyle="bold"
                     android:textSize="20dp" />
 
                 <EditText
+                    android:id="@+id/phoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/phoneNumber"
                     android:layout_margin="5dp"
                     android:hint="@string/your_phone_number"
                     android:inputType="number" />
@@ -207,6 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <Button
@@ -252,6 +255,7 @@
                 android:orientation="vertical">
 
                 <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -260,6 +264,7 @@
                     android:textStyle="bold" />
 
                 <EditText
+                    android:id="@+id/tvOldPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -271,9 +276,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/new_password"
+                    android:textStyle="bold"
                     android:textSize="20dp" />
 
                 <EditText
+                    android:id="@+id/tvNewPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -285,20 +292,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/confirm_new_password"
+                    android:textStyle="bold"
                     android:textSize="20dp" />
 
                 <EditText
+                    android:id="@+id/tvConfirmNewPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:hint="@string/confirm_new_password"
-                    android:inputType="number" />
+                    android:inputType="text" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <Button
@@ -307,7 +317,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="15dp"
-                        android:onClick="saveEdit"
+                        android:onClick="savePassword"
                         android:text="@string/save_edit" />
                 </LinearLayout>
             </LinearLayout>
