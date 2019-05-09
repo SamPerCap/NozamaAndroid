@@ -1,5 +1,6 @@
 package com.example.nozamaandroid;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -8,15 +9,22 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.nozamaandroid.Models.Products;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProductDetails extends AppCompatActivity
 {
-
+    UploadTask uploadTask;
     TextView productName, productDetail;
     String TAG = "Product Details class";
     String prodKey = "nameKey";
@@ -26,6 +34,7 @@ public class ProductDetails extends AppCompatActivity
     String prodIdData;
     RatingBar prodRating;
     Button saveRatingBtn;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     // We need to create an instance of the product class so we can use
     // the getters where we saved the prodNameData from mainactivity
@@ -62,6 +71,7 @@ public class ProductDetails extends AppCompatActivity
         productName.setText(prodNameData);
         productDetail.setText(prodDetailData);
         Log.i(TAG, "Rating value: " + prodRating.getRating());
+        getProduct();
     }
 
     private void setupItems() {
@@ -70,6 +80,33 @@ public class ProductDetails extends AppCompatActivity
         prodRating = findViewById(R.id.ratingBar);
         saveRatingBtn = findViewById(R.id.btnSave);
         prodRating.setNumStars(5);
+    }
+
+    private void getProduct()
+    {
+        db = FirebaseFirestore.getInstance();
+        Log.d(TAG,"user id; " + prodIdData);
+        DocumentReference docRef = db.collection("products").document(prodIdData);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // This way we can get the fields from firestore and save them to a string.
+                        String getFireStoreFieldUserName = document.getString("name");
+                        String getFireStoreFieldAddress = document.getString("pictureId");
+
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Get Username for Sam " + getFireStoreFieldUserName + " pictureID " + getFireStoreFieldAddress);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     public void saveRatingButton(View view)

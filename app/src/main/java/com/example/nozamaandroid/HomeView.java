@@ -275,7 +275,8 @@ public class HomeView extends AppCompatActivity
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
                                 String getFireStoreFieldName = document.getString("Product Name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");
                                 String getFireStoreId = document.getId();

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.Users;
@@ -54,6 +55,7 @@ public class AddUser extends AppCompatActivity
     String filePath;
     private ImageView _pictureView;
     String id;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -67,6 +69,8 @@ public class AddUser extends AppCompatActivity
         phoneNumber = findViewById(R.id.phonenumber3);
         userName = findViewById(R.id.userName4);
         _pictureView = findViewById(R.id.userPic);
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.setVisibility(View.GONE);
         dref = FirebaseDatabase.getInstance().getReference("users");
         getFilePath();
         // Initialize Firebase Auth
@@ -215,6 +219,7 @@ public class AddUser extends AppCompatActivity
                             // Get a URL to the uploaded content
                             Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
                             Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
+                            progressBar.setVisibility(View.VISIBLE);
                             uploadToFireStore();
                         }
                     })
