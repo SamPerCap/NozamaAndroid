@@ -199,6 +199,7 @@ public class AddUser extends AppCompatActivity
 
     public void imageBtn(View view)
     {
+        progressBar.setVisibility(View.VISIBLE);
         try{
             createUser();
         }catch (Exception e)
@@ -219,7 +220,7 @@ public class AddUser extends AppCompatActivity
                             // Get a URL to the uploaded content
                             Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
                             Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
-                            progressBar.setVisibility(View.VISIBLE);
+
                             uploadToFireStore();
                         }
                     })
