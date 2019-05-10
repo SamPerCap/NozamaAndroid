@@ -1,15 +1,14 @@
 package com.example.nozamaandroid.Adaptor;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.nozamaandroid.BLL.BLLProductImage;
 import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
@@ -22,6 +21,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
     private final Activity context;
     private String TAG = HomeView.TAG;
     ArrayList<Products> _arrayData;
+    BLLProductImage bllUserImage = new BLLProductImage();
     public AdaptorProduct(Activity context, ArrayList<Products> arrayData) {
 
 
@@ -41,6 +41,12 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
         txtTitle.setText(_arrayData.get(position).getProdName());
+
+        if(_arrayData.get(position).getPictureId()!= null &&
+                bllUserImage.getImageById(_arrayData.get(position).getPictureId()) )
+        {
+
+        }
 
 
         return rowView;
