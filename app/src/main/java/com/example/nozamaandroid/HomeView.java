@@ -29,9 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.Adaptor.AdaptorProduct;
+import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Cart.CartView;
-import com.example.nozamaandroid.DALProducts.AddProduct;
-import com.example.nozamaandroid.DALUsers.AddUser;
+import com.example.nozamaandroid.DAL.DALProduct;
+import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
@@ -51,51 +52,53 @@ import java.util.Map;
 
 public class HomeView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    static CartModel cartModel;
-    public static String TAG = "ProductApp";
+    Products products = new Products();
+    static CartModel cartModel = CartModel.getInstance();
+    AdaptorProduct adapterProduct;
+    Map<String, Object> productMap;
+    private static final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
-    Products products;
-    Toolbar toolbar;
-    ImageButton imageButton;
     ActionBarDrawerToggle toggle;
     DocumentReference docRef;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    ArrayList<Products> productsArrayList = new ArrayList<Products>();
-    ArrayList<String> listItemName = new ArrayList<>();
-    ArrayList<String> listItemDetail = new ArrayList<>();
-    ArrayList<String> listItemId = new ArrayList<>();
+    BLLProducts bllProducts = new BLLProducts();
+    /*----------------Arrays----------------*/
+    ArrayList<Products> productsArrayList;
     ArrayList<Products> filteredArrayList = new ArrayList<>();
+    /*----------------View items----------------*/
     EditText searchBar;
-    String[] options = new String[]{"Show detail", "Add to cart"};
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
     ListView listView;
-    String Keyword;
-    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey",
-            nameKey = "nameKey", detailKey = "detailKey", idKey = "idKey";
-    AdaptorProduct adapterProduct;
-    FirebaseFirestore db;
-    Map<String, Object> productMap;
-    TextView cartCount;
+    NavigationView navigationView;
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
-    private static final int PERMISSION_REQUEST_CODE = 1;
+    TextView cartCount;
+    DrawerLayout drawer;
+    Toolbar toolbar;
+    ImageButton imageButton;
+    /*----------------Firebase----------------*/
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /*----------------Strings----------------*/
+    String TAG = "HomeView";
+    String Keyword;
+    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey", productKey = "productKey";
+    String[] options = new String[]{"Show detail", "Add to cart"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        products = new Products();
-        productMap = new HashMap<>();
         setContentView(R.layout.activity_home_view2);
-        Log.d(TAG, "View has been setted. Lets setup the items");
-        cartModel = CartModel.getInstance();
+        askPremision();
+        Log.d(TAG, "View has been set. Lets setup the items");
         setupItems();
-        db = FirebaseFirestore.getInstance();
-        //Side nav bar code
         setupSideNavBar();
-        //Firebase code
         getProductsFromDatabase();
+        //Set the adapter to the main list view
+        adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
+        listView.setAdapter(adapterProduct);
+        productMap = new HashMap<>();
+
+
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -113,8 +116,6 @@ public class HomeView extends AppCompatActivity
                     adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
                     listView.setAdapter(adapterProduct);
                 }
-
-
             }
 
             @Override
@@ -123,10 +124,10 @@ public class HomeView extends AppCompatActivity
             }
         });
 
-        askPremision();
+
         getUser();
         clickOnList();
-        mAuth = FirebaseAuth.getInstance();
+
         //cartCount.setText(cartModel.getProductInCart().size() + "");
         cartModel.cartList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Products>>() {
             @Override
@@ -156,28 +157,26 @@ public class HomeView extends AppCompatActivity
     }
 
     public void openUserView(View view) {
-        intent = new Intent(this, AddProduct.class);
+        intent = new Intent(this, DALProduct.class);
         startActivity(intent);
-        //Bundle bundle = new Bundle();
     }
 
     public void openCreateUser() {
-        intent = new Intent(this, AddUser.class);
+        intent = new Intent(this, DALUser.class);
         startActivity(intent);
     }
 
     private void clickOnList() {
 
-
         Log.d(TAG, "clickOnList: ");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     /*
-                     * Give the user an option to either choose an image that already exists on the phone
-                     * or to take a picture
+                     * Give the user an option to either choose add to the cart
+                     * or open the products detail.
                      * */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -188,32 +187,35 @@ public class HomeView extends AppCompatActivity
                                 // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
 
                                 Toast.makeText(HomeView.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-                                final Products f = new Products();
-                                final Intent appInfo = new Intent(HomeView.this, ProductDetails.class);
-                                f.setProdName(listView.getItemAtPosition(position).toString());
-                                Log.d(TAG, "what is string details: " + listItemDetail.get(position));
-                                f.setProdDetails(listItemDetail.get(position));
-                                f.setProdId(listItemId.get(position));
-                                //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
-                                Log.d(TAG, "f.getProdName is: " + f.getProdName());
-                                appInfo.putExtra(nameKey, productsArrayList.get(position).getProdName());
-                                appInfo.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
-                                appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
-                                startActivity(appInfo);
-                                Log.d(TAG, "cart size: " + cartModel.getProductInCart().size());
 
+                                intent = new Intent(HomeView.this, ProductDetails.class);
+                                Products currentProducts = new Products();
+                                currentProducts.setProdId(productsArrayList.get(position).getProdId());
+                                currentProducts.setProdDetails(productsArrayList.get(position).getProdDetails());
+                                currentProducts.setProdName(productsArrayList.get(position).getProdName());
+                                intent.putExtra(productKey, currentProducts);
+                                Log.d(TAG, "Opening detail activity");
+                                startActivity(intent);
+                               /* products.setProdName(listView.getItemAtPosition(position).toString());
+                                Log.d(TAG, "Product's name is: " + products.getProdName());
+                                products.setProdDetails(listItemDetail.get(position));
+                                Log.d(TAG, "what is string details: " + listItemDetail.get(position));
+                                //products.setProdId(listItemId.get(position));
+                                intent.putExtra(nameKey, productsArrayList.get(position).getProdName());
+                                intent.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
+                                intent.putExtra(idKey, productsArrayList.get(position).getProdId());
+                                startActivity(intent);
+                                Log.d(TAG, "cart size: " + cartModel.getProductInCart().size());*/
                             } catch (Exception e) {
                                 Log.d(TAG, "Opening Product Details error" + e);
                             }
                         }
                         if (options[which].equals(options[1])) {
-
                             products = productsArrayList.get(position);
                             products.setAmount(1);
                             Log.d(TAG, "onClick: " + products.getProdName());
                             cartModel.addProductToCart(products);
                             cartCount.setVisibility(View.VISIBLE);
-
                         }
                     }
                 });
@@ -263,41 +265,8 @@ public class HomeView extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void getProductsFromDatabase() {
-        Log.d(TAG, "Setting up the database settings");
-        db.collection("products")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String getFireStoreFieldName = document.getString("Product Name");
-                                String getFireStoreFieldDetails = document.getString("Product Details");
-                                String getFireStoreId = document.getId();
-                                Products products = new Products();
-                                products.setProdName(getFireStoreFieldName);
-                                products.setProdDetails(getFireStoreFieldDetails);
-                                products.setProdId(getFireStoreId);
-                                productsArrayList.add(products);
-
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Log.i(TAG, "What is value: " + getFireStoreFieldName);
-                                listItemName.add(getFireStoreFieldName);
-                                listItemDetail.add(getFireStoreFieldDetails);
-                                listItemId.add(getFireStoreId);
-                            }
-                          /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeView.this,android.R.layout.simple_dropdown_item_1line,listItemName);
-                            listView.setAdapter(adapter);*/
-                            Log.d(TAG, "onComplete: " + productsArrayList);
-                            adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
-                            listView.setAdapter(adapterProduct);
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+    private ArrayList<Products> getProductsFromDatabase() {
+        return productsArrayList = bllProducts.readProductsFromDatabase();
     }
 
     private void setupItems() {
@@ -309,18 +278,8 @@ public class HomeView extends AppCompatActivity
         listView = findViewById(R.id.synchronizeProducts);
         cartCount = findViewById(R.id.countCartSize);
         searchBar = findViewById(R.id.searchBox);
-
     }
 
-    @Override
-    public void onBackPressed() {
-        drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -396,7 +355,7 @@ public class HomeView extends AppCompatActivity
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = mAuth.getCurrentUser();
+
         getMenuItem();
 
         if (currentUser == null) {
@@ -414,7 +373,6 @@ public class HomeView extends AppCompatActivity
     }
 
     private void getUserFirestore() {
-        currentUser = mAuth.getCurrentUser();
         Log.d(TAG, "user id; " + currentUser.getUid());
         docRef = db.collection("users").document(currentUser.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

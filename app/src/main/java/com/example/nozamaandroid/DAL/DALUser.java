@@ -1,4 +1,4 @@
-package com.example.nozamaandroid.DALUsers;
+package com.example.nozamaandroid.DAL;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,9 +37,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AddUser extends AppCompatActivity
+public class DALUser extends AppCompatActivity
 {
-    String className  ="AddUser";
+    String className  ="DALUser";
     String messageToCamara = "mKey";
     EditText email, password, address, phoneNumber, userName;
     DatabaseReference dref;
@@ -133,7 +133,7 @@ public class AddUser extends AppCompatActivity
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(AddUser.this, "Authentication failed.",
+                            Toast.makeText(DALUser.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -200,7 +200,7 @@ public class AddUser extends AppCompatActivity
                             Log.i(TAG, "What is products: " + users.getUserName().toString());
                             Log.d(TAG, "What is products: " + users.getPassword().toString());
 
-                            Intent intent = new Intent(AddUser.this,HomeView.class);
+                            Intent intent = new Intent(DALUser.this,HomeView.class);
                             intent.putExtra(userKey, users.getUserName());
                             intent.putExtra(passwordKey, users.getPassword());
                             intent.putExtra(nameKey, users.getEmail());
@@ -247,7 +247,7 @@ public class AddUser extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 if(options[which].equals(options[0]))
                 {
-                    ImageIntent = new Intent(AddUser.this, FileChooser.class);
+                    ImageIntent = new Intent(DALUser.this, FileChooser.class);
                     ImageIntent.putExtra(messageToCamara,className);
                     startActivity(ImageIntent);
                 }

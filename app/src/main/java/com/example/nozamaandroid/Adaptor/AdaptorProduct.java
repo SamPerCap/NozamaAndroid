@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class AdaptorProduct extends ArrayAdapter<Products> {
     CartModel cartModel ;
     private final Activity context;
-    private String TAG = HomeView.TAG;
+    private String TAG = "AdapterProduct";
     ArrayList<Products> _arrayData;
     public AdaptorProduct(Activity context, ArrayList<Products> arrayData) {
 

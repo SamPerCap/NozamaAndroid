@@ -2,7 +2,9 @@ package com.example.nozamaandroid.Models;
 
 import android.util.Log;
 
-public class Products {
+import java.io.Serializable;
+
+public class Products implements Serializable {
     String TAG = "Products class";
     private String prodId;
     private String prodName;

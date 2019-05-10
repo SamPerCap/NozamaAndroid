@@ -12,6 +12,7 @@ public class CartModel {
     public ObservableList<Products> cartList = new ObservableArrayList<>();
     ArrayList<Products> arrayCartList = new ArrayList<>();
     private static volatile CartModel instance;
+    String TAG = "CartModel";
 
     //singleton
     public static CartModel getInstance() {
@@ -38,7 +39,7 @@ public class CartModel {
         for (int i = 0; i < cartList.size(); i++) {
             if (cartList.get(i).getProdId() == products.getProdId()) {
                 products.setAmount(cartList.get(i).getAmount() + 1);
-                Log.d(HomeView.TAG, "addProductToCart same product: " + products.getProdName() + ":"
+                Log.d(TAG, "addProductToCart same product: " + products.getProdName() + ":"
                         + products.getAmount());
                 changed = true;
 

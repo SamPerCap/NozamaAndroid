@@ -5,23 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.nozamaandroid.Adaptor.AdapterCart;
-import com.example.nozamaandroid.Adaptor.AdaptorProduct;
 import com.example.nozamaandroid.BLL.BLLOrder;
-import com.example.nozamaandroid.DALProducts.AddProduct;
 import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Order;
 import com.example.nozamaandroid.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.List;
 
 public class CartView extends AppCompatActivity {
  CartModel cartModel ;
