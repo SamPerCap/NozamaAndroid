@@ -48,6 +48,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -437,7 +438,7 @@ public class HomeView extends AppCompatActivity
     private void getUserImageFromStorage() {
 
         Log.d(TAG, "current userID: " + currentUser.getUid());
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
        mStorageRef.child("user-images/" + currentUser.getUid()).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
