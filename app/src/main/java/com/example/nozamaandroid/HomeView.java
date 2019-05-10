@@ -57,7 +57,6 @@ import java.util.Map;
 public class HomeView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private StorageReference mStorageRef;
     Context context;
     Products products = new Products();
     static CartModel cartModel = CartModel.getInstance();
@@ -75,7 +74,6 @@ public class HomeView extends AppCompatActivity
     EditText searchBar;
     ListView listView;
     TextView cartCount;
-    String getUserImgId;
     NavigationView navigationView;
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
@@ -86,11 +84,14 @@ public class HomeView extends AppCompatActivity
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    StorageReference mStorageRef;
     /*----------------Strings----------------*/
     String TAG = "HomeView";
     String Keyword;
-    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey", productKey = "productKey";
+    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey",
+            productKey = "productKey", userImgId = "userImgId";
     String[] options = new String[]{"Show detail", "Add to cart"};
+    String getUserImgId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,17 +199,6 @@ public class HomeView extends AppCompatActivity
                                 currentProducts.setProdName(productsArrayList.get(position).getProdName());
                                 intent.putExtra(productKey, currentProducts);
                                 Log.d(TAG, "Opening detail activity");
-                                startActivity(intent);
-                               /* products.setProdName(listView.getItemAtPosition(position).toString());
-                                Log.d(TAG, "Product's name is: " + products.getProdName());
-                                products.setProdDetails(listItemDetail.get(position));
-                                Log.d(TAG, "what is string details: " + listItemDetail.get(position));
-                                //products.setProdId(listItemId.get(position));
-                                intent.putExtra(nameKey, productsArrayList.get(position).getProdName());
-                                intent.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
-                                intent.putExtra(idKey, productsArrayList.get(position).getProdId());
-                                startActivity(intent);
-                                Log.d(TAG, "cart size: " + cartModel.getProductInCart().size());*/
                             } catch (Exception e) {
                                 Log.d(TAG, "Opening Product Details error" + e);
                             }

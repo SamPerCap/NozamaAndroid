@@ -27,7 +27,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -38,7 +37,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class DALUser extends AppCompatActivity
 {
@@ -55,7 +53,7 @@ public class DALUser extends AppCompatActivity
     private StorageReference mStorageRef;
     Intent ImageIntent;
     String filePath;
-    private ImageView _pictureView;
+    private ImageView pictureView;
     ProgressBar progressBar;
     String metaName, metaUplTime, metaSize, metaType;
     FirebaseFirestore db;
@@ -66,13 +64,13 @@ public class DALUser extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_creation);
         //messageToCamara = getString(R.string.activityClass);
-        email = findViewById(R.id.usrEmail);
-        password = findViewById(R.id.usrPw);
-        address = findViewById(R.id.address);
-        phoneNumber = findViewById(R.id.phonenumber);
-        userName = findViewById(R.id.userName);
-        _pictureView = findViewById(R.id.userPic);
-        progressBar = findViewById(R.id.progressBar);
+        email = findViewById(R.id.usrEmail3);
+        password = findViewById(R.id.usrPw3);
+        address = findViewById(R.id.address4);
+        phoneNumber = findViewById(R.id.phonenumber3);
+        userName = findViewById(R.id.userName4);
+        pictureView = findViewById(R.id.userPic);
+        progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
         dref = FirebaseDatabase.getInstance().getReference("users");
         getFilePath();
@@ -92,7 +90,7 @@ public class DALUser extends AppCompatActivity
                 Bitmap bit = BitmapFactory.decodeFile(filePath);
                 Log.d(TAG, "is bit null: " + bit);
                 if (bit != null) {
-                    _pictureView.setImageBitmap(bit);
+                    pictureView.setImageBitmap(bit);
                     Log.d(TAG, "image is this now: " + filePath);
                 }
             }
