@@ -1,10 +1,13 @@
 package com.example.nozamaandroid.BLL;
 
-import com.example.nozamaandroid.DAL.DALProductImage;
+import android.widget.ImageView;
 
-public class BLLProductImage {
+import com.example.nozamaandroid.DAL.DALProductImage;
+import com.google.firebase.storage.StorageException;
+
+public class BLLProductImage  {
     DALProductImage dalProductImage = new DALProductImage();
-    public boolean getImageById(String pictureId) {
-        return dalProductImage.getImageById(pictureId);
+    public void getImageById(String pictureId, final ImageView imageView) {
+         dalProductImage.setImageviewById(pictureId,imageView);
     }
 }

@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AdaptorProduct extends ArrayAdapter<Products> {
@@ -47,15 +48,19 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
 
     public View getView(final int position, View view, final ViewGroup parent)
     {
-        Log.d(TAG, "Getting the view from Product Adapter ");
-        LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.product_list, null, true);
-        final ImageView imageView =  rowView.findViewById(R.id.productImage);
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
-        txtTitle.setText(_arrayData.get(position).getProdName());
 
-        Log.d(TAG, "getView: "+_arrayData.get(position).getPictureId());
-            mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
+            Log.d(TAG, "Getting the view from Product Adapter ");
+            LayoutInflater inflater = context.getLayoutInflater();
+            View rowView = inflater.inflate(R.layout.product_list, null, true);
+            final ImageView imageView = rowView.findViewById(R.id.productImage);
+            TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
+            txtTitle.setText(_arrayData.get(position).getProdName());
+
+            Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
+
+                bllProductImage.getImageById(_arrayData.get(position).getPictureId(), imageView);
+      
+        /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
@@ -70,11 +75,10 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
                     // Handle any errors
                     imageView.setImageResource(R.drawable.cake);
                 }
-            });
+            });*/
 
 
-
-        return rowView;
+                return rowView;
 
     }
 }
