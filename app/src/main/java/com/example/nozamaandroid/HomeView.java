@@ -58,11 +58,9 @@ import java.util.Map;
 public class HomeView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Context context;
     Products products = new Products();
     static CartModel cartModel = CartModel.getInstance();
     AdaptorProduct adapterProduct;
-    Map<String, Object> productMap;
     private static final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
     ActionBarDrawerToggle toggle;
@@ -106,7 +104,6 @@ public class HomeView extends AppCompatActivity
         //Set the adapter to the main list view
         adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
         listView.setAdapter(adapterProduct);
-        productMap = new HashMap<>();
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -200,6 +197,7 @@ public class HomeView extends AppCompatActivity
                                 currentProducts.setProdName(productsArrayList.get(position).getProdName());
                                 currentProducts.setPictureId(productsArrayList.get(position).getPictureId());
                                 intent.putExtra(productKey, currentProducts);
+                                startActivity(intent);
                                 Log.d(TAG, "Opening detail activity");
                             } catch (Exception e) {
                                 Log.d(TAG, "Opening Product Details error" + e);
