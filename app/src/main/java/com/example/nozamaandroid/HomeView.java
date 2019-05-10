@@ -309,6 +309,7 @@ public class HomeView extends AppCompatActivity
                                 products.setProdName(getFireStoreFieldName);
                                 products.setProdDetails(getFireStoreFieldDetails);
                                 products.setProdId(getFireStoreId);
+                                products.setPictureId(document.getString("pictureId"));
                                 productsArrayList.add(products);
 
                                 Log.d(TAG, document.getId() + " => " + document.getData());

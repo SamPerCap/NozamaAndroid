@@ -17,6 +17,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +30,6 @@ public class AddProduct extends AppCompatActivity {
     DatabaseReference dref;
     String nameKey = "nameKey";
     String detailKey = "detailKey";
-
 
     Map<String, Object> productMap = new HashMap<>();
 

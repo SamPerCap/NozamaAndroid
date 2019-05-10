@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
+<ImageView
+    android:id="@+id/productImage"
+    android:layout_width="50dp"
+    android:layout_height="50dp" />
         <TextView
             android:id="@+id/productNameList"
             android:layout_width="wrap_content"
