@@ -109,7 +109,6 @@ public class HomeView extends AppCompatActivity
     MenuItem menuItemAccount;
     private static final int PERMISSION_REQUEST_CODE = 1;
     String getUserImgId;
-    ImageView imgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -516,21 +515,23 @@ public class HomeView extends AppCompatActivity
 
     private void getUserImageFromStorage()
     {
-        imgView = findViewById(R.id.userHomeImageView);
+
+        Log.d(TAG, "current userID: " + currentUser.getUid());
         mStorageRef.child("user-images/"+ currentUser.getUid()).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 // Use the bytes to display the image
                 Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
+                 ImageView imgView = findViewById(R.id.userHomeImageView);
                 imgView.setImageBitmap(bm);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
-                //imgView.setImageResource(R.drawable.cake);
+                ImageView imgView = findViewById(R.id.userHomeImageView);
+                imgView.setImageResource(R.drawable.cake);
                 Log.d(TAG, "Error with getting the current user image: " + exception);
             }
         });

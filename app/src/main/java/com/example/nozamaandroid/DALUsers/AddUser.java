@@ -123,6 +123,7 @@ public class AddUser extends AppCompatActivity
                             FirebaseUser user = mAuth.getCurrentUser();
                             saveUser = user.getUid();
                             Log.d(TAG, "What is the D: " + saveUser);
+                            uploadToStorage();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -212,38 +213,33 @@ public class AddUser extends AppCompatActivity
         {
             Log.e(TAG, "Error creating user: " + e);
         }
+    }
 
-        try{
-            Log.d(TAG, "Starting uploadPictureToFB");
-            Uri file = Uri.fromFile(new File(filePath));
-            Log.d(TAG, "What is the current userId: " + saveUser);
-            StorageReference riversRef = mStorageRef.child("user-images/" + saveUser);
-            Log.d(TAG, "What is Uri file: " + file);
-            riversRef.putFile(file)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // Get a URL to the uploaded content
-                            Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
-                            Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
+    private void uploadToStorage()
+    {
+        Log.d(TAG, "Starting uploadPictureToFB");
+        Uri file = Uri.fromFile(new File(filePath));
+        Log.d(TAG, "What is the current userId: " + saveUser);
+        StorageReference riversRef = mStorageRef.child("user-images/" + saveUser);
+        Log.d(TAG, "What is Uri file: " + file);
+        riversRef.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
+                        Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
 
-                            uploadToFireStore();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            Log.d(TAG, "Failed to upload an image to storage: " + exception);
-                        }
-                    });
-
-
-        }catch (Exception e)
-        {
-            Log.d(TAG, "Throws an exception when creating a user or uploading to storage " + e);
-        }
-
+                        uploadToFireStore();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        Log.d(TAG, "Failed to upload an image to storage: " + exception);
+                    }
+                });
     }
 
     public void gotoCamera(View view)
