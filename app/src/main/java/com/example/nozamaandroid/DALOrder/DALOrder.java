@@ -23,8 +23,6 @@ public class DALOrder   {
     public void addOrder(Order order) {
         try
         {
-
-
             // FireStoreDatabase initialize
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
