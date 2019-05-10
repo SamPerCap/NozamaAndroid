@@ -7,10 +7,9 @@ import android.util.Log;
 import com.example.nozamaandroid.HomeView;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
 public class CartModel {
-    public ObservableList<Products> cartList= new ObservableArrayList<>();
+    public ObservableList<Products> cartList = new ObservableArrayList<>();
     ArrayList<Products> arrayCartList = new ArrayList<>();
     private static volatile CartModel instance;
 
@@ -26,30 +25,27 @@ public class CartModel {
         return instance;
     }
 
-    public ArrayList<Products> getProductInCart()
-    {
+    public ArrayList<Products> getProductInCart() {
         for (Products p : cartList)
-        arrayCartList.add(p);
+            arrayCartList.add(p);
 
-       return arrayCartList;
+        return arrayCartList;
     }
 
 
-    public void addProductToCart(Products products)
-    {
+    public void addProductToCart(Products products) {
         boolean changed = false;
-        for (int i = 0; i <cartList.size() ; i++) {
-            if(cartList.get(i).getProdId()== products.getProdId())
-            {
-                products.setAmount(cartList.get(i).getAmount()+1);
-                Log.d(HomeView.TAG, "addProductToCart same product: " +  products.getProdName()+ ":"
-                + products.getAmount());
-                changed =true;
+        for (int i = 0; i < cartList.size(); i++) {
+            if (cartList.get(i).getProdId() == products.getProdId()) {
+                products.setAmount(cartList.get(i).getAmount() + 1);
+                Log.d(HomeView.TAG, "addProductToCart same product: " + products.getProdName() + ":"
+                        + products.getAmount());
+                changed = true;
 
-                cartList.set(i,products);
+                cartList.set(i, products);
             }
         }
-        if(!changed) {
+        if (!changed) {
             cartList.add(products);
         }
     }
@@ -61,10 +57,8 @@ public class CartModel {
     public void removeItem(int postion) {
         cartList.remove(postion);
     }
-// return true if product deleted
+
     public void changeAmount(int postion, int i) {
-
-
-        cartList.get(postion).setAmount(cartList.get(postion).getAmount()+i);
+        cartList.get(postion).setAmount(cartList.get(postion).getAmount() + i);
     }
 }

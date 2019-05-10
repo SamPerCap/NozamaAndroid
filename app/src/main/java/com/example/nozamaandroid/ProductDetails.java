@@ -136,6 +136,7 @@ public class ProductDetails extends AppCompatActivity {
 
     public void addProductToCart(View view) {
         if (cartModel.getProductInCart().contains(currentProduct)) {
+
             Toast.makeText(this, "The product is already on the cart", Toast.LENGTH_SHORT).show();
         } else {
             cartModel.addProductToCart(currentProduct);
