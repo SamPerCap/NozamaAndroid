@@ -65,6 +65,7 @@ public class DALProduct extends AppCompatActivity {
                                 product.setProdName(getFireStoreFieldName);
                                 product.setProdDetails(getFireStoreFieldDetails);
                                 product.setProdId(getFireStoreId);
+                                product.setPictureId(document.getString("pictureId"));
                                 productsArrayList.add(product);
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.i(TAG, "What is value: " + getFireStoreFieldName);

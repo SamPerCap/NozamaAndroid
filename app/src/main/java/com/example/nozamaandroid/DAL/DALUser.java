@@ -172,7 +172,7 @@ public class DALUser extends AppCompatActivity
                             Log.d(TAG, "What is the id: " + saveUser);
 
                             getMetaData();
-                            Intent intent = new Intent(AddUser.this,HomeView.class);
+                            Intent intent = new Intent(DALUser.this,HomeView.class);
                             intent.putExtra(userKey, users.getUserName());
                             intent.putExtra(passwordKey, users.getPassword());
                             intent.putExtra(nameKey, users.getEmail());

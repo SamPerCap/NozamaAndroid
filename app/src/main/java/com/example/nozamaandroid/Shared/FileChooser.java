@@ -19,7 +19,7 @@ public class FileChooser extends AppCompatActivity {
     String messageToCamara = "mKey";
     String filePath;
     String TAG = "FileCHooser";
-    String addContactName = "adduser";
+    String addContactName = "daluser";
     String DetailActivity = "detailactivity";
     String BEFriendKey = "selectedFriend";
     String friendIdKey;
@@ -86,8 +86,10 @@ public class FileChooser extends AppCompatActivity {
                 // showImage(uri);
 
             }
+            Log.d(TAG, "onActivityResult: kris is suck");
             changeActivity();
         } else {
+            Log.d(TAG, "onActivityResult: kris is suck");
             finish();
         }
 

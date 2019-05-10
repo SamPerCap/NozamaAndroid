@@ -197,6 +197,7 @@ public class HomeView extends AppCompatActivity
                                 currentProducts.setProdId(productsArrayList.get(position).getProdId());
                                 currentProducts.setProdDetails(productsArrayList.get(position).getProdDetails());
                                 currentProducts.setProdName(productsArrayList.get(position).getProdName());
+                                currentProducts.setPictureId(productsArrayList.get(position).getPictureId());
                                 intent.putExtra(productKey, currentProducts);
                                 Log.d(TAG, "Opening detail activity");
                             } catch (Exception e) {
@@ -436,7 +437,8 @@ public class HomeView extends AppCompatActivity
     private void getUserImageFromStorage() {
 
         Log.d(TAG, "current userID: " + currentUser.getUid());
-        mStorageRef.child("user-images/" + currentUser.getUid()).
+
+       mStorageRef.child("user-images/" + currentUser.getUid()).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
