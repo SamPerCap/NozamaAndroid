@@ -55,7 +55,10 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
         txtTitle.setText(_arrayData.get(position).getProdName());
 
         Log.d(TAG, "getView: "+_arrayData.get(position).getPictureId());
-            mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
+
+            bllProductImage.getImageById(_arrayData.get(position).getPictureId(),imageView);
+      
+        /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
@@ -70,7 +73,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
                     // Handle any errors
                     imageView.setImageResource(R.drawable.cake);
                 }
-            });
+            });*/
 
 
 
