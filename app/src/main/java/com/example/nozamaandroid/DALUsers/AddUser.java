@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.Users;
@@ -27,8 +28,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -46,12 +49,17 @@ public class AddUser extends AppCompatActivity
     public static String TAG = "ProductApp";
     String userKey = "userKey", passwordKey = "passwordKey", nameKey = "nameKey", addressKey = "addressKey", phoneKey = "phoneKey";
     Map<String, Object> userMap = new HashMap<>();
+    Map<String, Object> fileMap = new HashMap<>();
     private FirebaseAuth mAuth;
     String saveUser;
     private StorageReference mStorageRef;
     Intent ImageIntent;
     String filePath;
     private ImageView _pictureView;
+    String id;
+    ProgressBar progressBar;
+    String metaName, metaUplTime, metaSize, metaType;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,32 +67,21 @@ public class AddUser extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_creation);
         //messageToCamara = getString(R.string.activityClass);
-        email = findViewById(R.id.usrEmail);
-        password = findViewById(R.id.usrPw);
-        address = findViewById(R.id.address);
-        phoneNumber = findViewById(R.id.phonenumber);
-        userName = findViewById(R.id.userName);
+        email = findViewById(R.id.usrEmail3);
+        password = findViewById(R.id.usrPw3);
+        address = findViewById(R.id.address4);
+        phoneNumber = findViewById(R.id.phonenumber3);
+        userName = findViewById(R.id.userName4);
         _pictureView = findViewById(R.id.userPic);
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.setVisibility(View.GONE);
         dref = FirebaseDatabase.getInstance().getReference("users");
         getFilePath();
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
-        }
+        db = FirebaseFirestore.getInstance();
+        id = UUID.randomUUID().toString();
     }
 
     private void getFilePath()
@@ -107,12 +104,12 @@ public class AddUser extends AppCompatActivity
         Log.d(TAG, "let's see what is image: " + filePath);
     }
 
-    @Override
+    /*@Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-    }
+    }*/
 
     private void createUser()
     {
@@ -128,7 +125,6 @@ public class AddUser extends AppCompatActivity
                             FirebaseUser user = mAuth.getCurrentUser();
                             saveUser = user.getUid();
                             Log.d(TAG, "What is the D: " + saveUser);
-                            saveUserToDataBase();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -142,45 +138,22 @@ public class AddUser extends AppCompatActivity
                 });
     }
 
-    private void uploadPictureToFB()
-    {
-        Log.d(TAG, "Starting uploadPictureToFB");
-        Uri file = Uri.fromFile(new File(filePath));
-            StorageReference riversRef = mStorageRef.child("images/" + UUID.randomUUID().toString());
-
-        riversRef.putFile(file)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
-                        Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
-                        Log.d(TAG, "What is downloadURL: " + downloadUrl);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        // ...
-                    }
-                });
-    }
-
-    private void saveUserToDataBase()
+    private void uploadToFireStore()
     {
         try
         {
             final Users users = new Users();
 
             // FireStoreDatabase initialize
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            CollectionReference usersCollectionRef = db.collection("users");
+
+
             Log.d(TAG,"What is the id: " + saveUser);
             userMap.put("Email", email.getText().toString());
             userMap.put("Password", password.getText().toString());
             userMap.put("Username", userName.getText().toString());
             userMap.put("Address", address.getText().toString());
             userMap.put("Phonenumber", phoneNumber.getText().toString());
+            userMap.put("PictureId", id);
 
             // Add a new document with a generated ID
             db.collection("users")
@@ -196,18 +169,16 @@ public class AddUser extends AppCompatActivity
                             users.setAddress(address.getText().toString());
                             users.setPhoneNumber(phoneNumber.getText().toString());
 
-
                             Log.i(TAG, "What is products: " + users.getUserName().toString());
                             Log.d(TAG, "What is products: " + users.getPassword().toString());
-
+                            getMetaData();
                             Intent intent = new Intent(AddUser.this,HomeView.class);
                             intent.putExtra(userKey, users.getUserName());
                             intent.putExtra(passwordKey, users.getPassword());
                             intent.putExtra(nameKey, users.getEmail());
                             intent.putExtra(addressKey, users.getAddress());
                             intent.putExtra(phoneKey, users.getPhoneNumber());
-
-                            finish();
+                            startActivity(intent);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -223,16 +194,53 @@ public class AddUser extends AppCompatActivity
         {
             Log.e(TAG, "Exception: " + e);
         }
-    }
 
-    public void saveCreation(View view)
-    {
-        createUser();
+        StorageReference spaceRef = mStorageRef.child("user-images/"+ id);
+
+        Log.d(TAG, "What is ID: " + spaceRef);
     }
 
     public void imageBtn(View view)
     {
-        uploadPictureToFB();
+        progressBar.setVisibility(View.VISIBLE);
+        try{
+            createUser();
+        }catch (Exception e)
+        {
+            Log.e(TAG, "Error creating user: " + e);
+        }
+
+        try{
+            Log.d(TAG, "Starting uploadPictureToFB");
+            Uri file = Uri.fromFile(new File(filePath));
+
+            StorageReference riversRef = mStorageRef.child("user-images/" + id);
+            Log.d(TAG, "What is Uri file: " + file);
+            riversRef.putFile(file)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // Get a URL to the uploaded content
+                            Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
+                            Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
+
+                            uploadToFireStore();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            Log.d(TAG, "Failed to upload an image to storage: " + exception);
+                        }
+                    });
+
+
+        }catch (Exception e)
+        {
+            Log.d(TAG, "Throws an exception when creating a user or uploading to storage " + e);
+        }
+
     }
 
     public void gotoCamera(View view)
@@ -262,5 +270,56 @@ public class AddUser extends AppCompatActivity
             }
         });
         builder.show();
+    }
+
+    private void getMetaData()
+    {
+        // Get reference to the file
+        StorageReference forestRef = mStorageRef.child("user-images/" + id);
+
+        forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                Log.d(TAG, "What is the metaData: " + storageMetadata.getContentType());
+                Log.d(TAG, "What is the name: " + storageMetadata.getName());
+                Log.d(TAG, "What is the size: " + storageMetadata.getSizeBytes());
+                Log.d(TAG, "What is the update Time in millis: " + storageMetadata.getUpdatedTimeMillis());
+
+                metaName = storageMetadata.getName();
+                metaType = storageMetadata.getContentType();
+                metaSize = storageMetadata.getSizeBytes() + "";
+                metaUplTime = storageMetadata.getUpdatedTimeMillis() + "";
+
+                uploadMetaDataToDataBase();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
+        });
+    }
+
+    private void uploadMetaDataToDataBase()
+    {
+        fileMap.put("lastModified", metaUplTime);
+        fileMap.put("name", metaName);
+        fileMap.put("size", metaSize);
+        fileMap.put("type", metaType);
+
+        db.collection("files")
+                .add(fileMap)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Uploading to firestore was successful!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Something went wrong with uploading metaData: " + e);
+                    }
+                });
     }
 }

@@ -106,9 +106,9 @@ public class HomeView extends AppCompatActivity
         Log.d(TAG, "View has been setted. Lets setup the items");
         cartModel = CartModel.getInstance();
         setupItems();
-        //Side nav bar code
+        // Side nav bar code
         setupSideNavBar();
-        //Firebase code
+        //Firebase code;
         setupDataBase();
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -137,9 +137,9 @@ public class HomeView extends AppCompatActivity
             }
         });
 
-        askPremision();
+        //askPremision();
 
-        getUser();
+        //getUser();
         clickOnList();
         mAuth = FirebaseAuth.getInstance();
         //cartCount.setText(cartModel.getProductInCart().size() + "");
@@ -181,9 +181,8 @@ public class HomeView extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void clickOnList() {
-
-
+    private void clickOnList()
+    {
         Log.d(TAG, "clickOnList: ");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -288,7 +287,8 @@ public class HomeView extends AppCompatActivity
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
                                 String getFireStoreFieldName = document.getString("Product Name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");
                                 String getFireStoreId = document.getId();

@@ -18,14 +18,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
-
-public class ProductDetails extends AppCompatActivity {
-
+public class ProductDetails extends AppCompatActivity
+{
     TextView productName, productDetail;
     String TAG = "Product Details class";
     String prodKey = "nameKey";
@@ -77,6 +75,7 @@ public class ProductDetails extends AppCompatActivity {
         productDetail.setText(prodDetailData);
         currentProduct = new Products(prodIdData, prodNameData, prodDetailData);
         Log.d(TAG, "Rating value: " + prodRating.getRating());
+        Log.i(TAG, "Rating value: " + prodRating.getRating());
     }
 
     private void setupItems() {
@@ -87,7 +86,35 @@ public class ProductDetails extends AppCompatActivity {
         prodRating.setNumStars(5);
     }
 
-    public void saveRatingButton(View view) {
+    private void getProduct()
+    {
+        db = FirebaseFirestore.getInstance();
+        Log.d(TAG,"user id; " + prodIdData);
+        DocumentReference docRef = db.collection("products").document(prodIdData);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // This way we can get the fields from firestore and save them to a string.
+                        String getFireStoreFieldUserName = document.getString("name");
+                        String getFireStoreFieldAddress = document.getString("pictureId");
+
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "Get Username for Sam " + getFireStoreFieldUserName + " pictureID " + getFireStoreFieldAddress);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void saveRatingButton(View view)
+    {
         // We need first to make sure we get the correct rating value, then we want to save that to the firestore
         Log.i(TAG, "Rating value: " + prodRating.getRating());
         Toast.makeText(this, "Rating Value is: " + prodRating.getRating() + " and rating " + prodIdData, Toast.LENGTH_SHORT).show();
