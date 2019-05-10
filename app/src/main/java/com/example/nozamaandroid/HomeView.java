@@ -523,7 +523,7 @@ public class HomeView extends AppCompatActivity
             public void onSuccess(byte[] bytes) {
                 // Use the bytes to display the image
                 Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                 ImageView imgView = findViewById(R.id.userHomeImageView);
+                ImageView imgView = findViewById(R.id.userHomeImageView);
                 imgView.setImageBitmap(bm);
             }
         }).addOnFailureListener(new OnFailureListener() {
