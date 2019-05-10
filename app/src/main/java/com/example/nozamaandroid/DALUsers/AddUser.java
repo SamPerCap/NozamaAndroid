@@ -28,8 +28,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -56,6 +58,8 @@ public class AddUser extends AppCompatActivity
     private ImageView _pictureView;
     String id;
     ProgressBar progressBar;
+    String metaName, metaUplTime, metaSize, metaType;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,8 +80,7 @@ public class AddUser extends AppCompatActivity
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
         id = UUID.randomUUID().toString();
     }
 
@@ -142,7 +145,7 @@ public class AddUser extends AppCompatActivity
             final Users users = new Users();
 
             // FireStoreDatabase initialize
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
             Log.d(TAG,"What is the id: " + saveUser);
             userMap.put("Email", email.getText().toString());
@@ -168,7 +171,7 @@ public class AddUser extends AppCompatActivity
 
                             Log.i(TAG, "What is products: " + users.getUserName().toString());
                             Log.d(TAG, "What is products: " + users.getPassword().toString());
-
+                            getMetaData();
                             Intent intent = new Intent(AddUser.this,HomeView.class);
                             intent.putExtra(userKey, users.getUserName());
                             intent.putExtra(passwordKey, users.getPassword());
@@ -267,5 +270,56 @@ public class AddUser extends AppCompatActivity
             }
         });
         builder.show();
+    }
+
+    private void getMetaData()
+    {
+        // Get reference to the file
+        StorageReference forestRef = mStorageRef.child("user-images/" + id);
+
+        forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                Log.d(TAG, "What is the metaData: " + storageMetadata.getContentType());
+                Log.d(TAG, "What is the name: " + storageMetadata.getName());
+                Log.d(TAG, "What is the size: " + storageMetadata.getSizeBytes());
+                Log.d(TAG, "What is the update Time in millis: " + storageMetadata.getUpdatedTimeMillis());
+
+                metaName = storageMetadata.getName();
+                metaType = storageMetadata.getContentType();
+                metaSize = storageMetadata.getSizeBytes() + "";
+                metaUplTime = storageMetadata.getUpdatedTimeMillis() + "";
+
+                uploadMetaDataToDataBase();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
+        });
+    }
+
+    private void uploadMetaDataToDataBase()
+    {
+        fileMap.put("lastModified", metaUplTime);
+        fileMap.put("name", metaName);
+        fileMap.put("size", metaSize);
+        fileMap.put("type", metaType);
+
+        db.collection("files")
+                .add(fileMap)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Uploading to firestore was successful!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Something went wrong with uploading metaData: " + e);
+                    }
+                });
     }
 }

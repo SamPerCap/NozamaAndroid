@@ -497,5 +497,11 @@ public class HomeView extends AppCompatActivity
 
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
             }
-        }}
+        }
+    }
+
+    private void changeUserImage()
+    {
+
+    }
 }
