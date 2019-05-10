@@ -13,6 +13,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -23,23 +24,27 @@ public class DALProductImage {
     private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
 
     public void setImageviewById(String pictureId, final ImageView imageView)  {
+        if(pictureId != null) {
+            mStorageRef.child("product-pictures/" + pictureId).
+                    getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    // Use the bytes to display the image
+                    Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    imageView.setImageBitmap(bm);
 
-        mStorageRef.child("product-pictures/"+ pictureId).
-                getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                // Use the bytes to display the image
-                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                imageView.setImageBitmap(bm);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.d("trythis", "onFailure: ");
-                imageView.setImageResource(R.drawable.cake);
-            }
-        });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    imageView.setImageResource(R.drawable.cake);
+                }
+            });
+        }
+        else
+        {
+            imageView.setImageResource(R.drawable.cake);
+        }
     }
 }
