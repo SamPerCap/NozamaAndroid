@@ -27,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -40,6 +41,8 @@ import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
@@ -52,16 +55,23 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HomeView extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener
+{
+
+    private StorageReference mStorageRef;
     static CartModel cartModel;
     public static String TAG = "ProductApp";
     Products products;
@@ -88,7 +98,7 @@ public class HomeView extends AppCompatActivity
     String idKey = "idKey";
     String productKey = "productKey";
     String Keyword;
-    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey";
+    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey", userImgId = "imgId";
     AdaptorProduct adapterProduct;
     FirebaseFirestore db;
     Map<String, Object> productMap;
@@ -96,14 +106,18 @@ public class HomeView extends AppCompatActivity
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    String getUserImgId;
+    ImageView imgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         products = new Products();
         productMap = new HashMap<>();
+        imgView = findViewById(R.id.userHomeImageView);
         setContentView(R.layout.activity_home_view2);
         Log.d(TAG, "View has been setted. Lets setup the items");
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         cartModel = CartModel.getInstance();
         setupItems();
         // Side nav bar code
@@ -121,14 +135,13 @@ public class HomeView extends AppCompatActivity
 
                 Keyword = s.toString().toLowerCase();
                 filteredArrayList.clear();
-                for (Products product : productsArrayList) {
+                for (Products product : productsArrayList)
+                {
                     if (product.getProdName().toLowerCase().contains(Keyword))
                         filteredArrayList.add(product);
                     adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
                     listView.setAdapter(adapterProduct);
                 }
-
-
             }
 
             @Override
@@ -136,10 +149,9 @@ public class HomeView extends AppCompatActivity
 
             }
         });
+        askPremision();
 
-        //askPremision();
-
-        //getUser();
+        getUser();
         clickOnList();
         mAuth = FirebaseAuth.getInstance();
         //cartCount.setText(cartModel.getProductInCart().size() + "");
@@ -245,6 +257,7 @@ public class HomeView extends AppCompatActivity
             String getUser = getIntent().getExtras().getString(userKey, user.getEmail());
             String getPassword = getIntent().getExtras().getString(passwordKey, user.getPassword());
             String getAddress = getIntent().getExtras().getString(addressKey, user.getAddress());
+            getUserImgId = getIntent().getExtras().getString(userImgId, user.getImgId());
             Log.d(TAG, "getUser: " + getUser + " Password:" + getPassword + " address: " + getAddress);
             Toast.makeText(this, "You are logged in as: " + getUser, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
@@ -423,6 +436,7 @@ public class HomeView extends AppCompatActivity
             menuItemAccount.setTitle("Create an account");
         } else {
             getUserFirestore();
+            getUserImageFromStorage();
             Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
             Toast.makeText(this, currentUser.getEmail() + " is currently logged in.", Toast.LENGTH_SHORT).show();
             menuItemLogin.setTitle("Logout");
@@ -497,4 +511,30 @@ public class HomeView extends AppCompatActivity
             }
         }
     }
+
+    private void getUserImageFromStorage()
+    {
+        Log.d(TAG, "getting user image from storage");
+        try {
+            File localFile = File.createTempFile("user-images", getUserImgId);
+            mStorageRef.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            int resImage = getResources().getIdentifier(getUserImgId , "drawable", getPackageName());
+                            imgView.setImageResource(resImage);
+                            Log.d(TAG, "imageID: " + getUserImgId);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d(TAG, "getUserImageFromStorage Exception: " + exception);
+                }
+            });
+        }catch(Exception e)
+        {
+            Log.d(TAG, "Getting user image from Storage failed: " + e);
+        }
+    }
+
 }

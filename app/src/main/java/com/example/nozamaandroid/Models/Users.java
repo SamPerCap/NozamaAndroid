@@ -8,13 +8,22 @@ public class Users
     private String userName;
     private String address;
     private String phoneNumber;
+    private String imgId;
 
     public Users()
     {
 
     }
 
-    public Users( String userId, String email, String password, String userName, String address, String phoneNumber  )
+    public String getImgId() {
+        return imgId;
+    }
+
+    public void setImgId(String imgId) {
+        this.imgId = imgId;
+    }
+
+    public Users(String userId, String email, String password, String userName, String address, String phoneNumber, String imgId  )
     {
         this.userId = userId;
         this.email = email;
@@ -22,6 +31,7 @@ public class Users
         this.userName = userName;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.imgId = imgId;
     }
 
     public String getUserId() {

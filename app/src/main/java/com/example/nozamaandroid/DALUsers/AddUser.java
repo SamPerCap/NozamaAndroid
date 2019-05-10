@@ -47,7 +47,7 @@ public class AddUser extends AppCompatActivity
     EditText email, password, address, phoneNumber, userName;
     DatabaseReference dref;
     public static String TAG = "ProductApp";
-    String userKey = "userKey", passwordKey = "passwordKey", nameKey = "nameKey", addressKey = "addressKey", phoneKey = "phoneKey";
+    String userKey = "userKey", passwordKey = "passwordKey", nameKey = "nameKey", addressKey = "addressKey", phoneKey = "phoneKey", userImgId = "imgId";
     Map<String, Object> userMap = new HashMap<>();
     Map<String, Object> fileMap = new HashMap<>();
     private FirebaseAuth mAuth;
@@ -168,9 +168,12 @@ public class AddUser extends AppCompatActivity
                             users.setUserName(userName.getText().toString());
                             users.setAddress(address.getText().toString());
                             users.setPhoneNumber(phoneNumber.getText().toString());
+                            users.setImgId(id);
 
-                            Log.i(TAG, "What is products: " + users.getUserName().toString());
-                            Log.d(TAG, "What is products: " + users.getPassword().toString());
+                            Log.i(TAG, "What is username: " + users.getUserName().toString());
+                            Log.d(TAG, "What is password: " + users.getPassword().toString());
+                            Log.d(TAG, "What is the id: " + id);
+
                             getMetaData();
                             Intent intent = new Intent(AddUser.this,HomeView.class);
                             intent.putExtra(userKey, users.getUserName());
@@ -178,6 +181,8 @@ public class AddUser extends AppCompatActivity
                             intent.putExtra(nameKey, users.getEmail());
                             intent.putExtra(addressKey, users.getAddress());
                             intent.putExtra(phoneKey, users.getPhoneNumber());
+                            intent.putExtra(userImgId, id);
+
                             startActivity(intent);
                         }
                     })
