@@ -21,24 +21,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.Adaptor.AdaptorProduct;
+import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Cart.CartView;
-import com.example.nozamaandroid.DALProducts.AddProduct;
-import com.example.nozamaandroid.DALUsers.AddUser;
+import com.example.nozamaandroid.DAL.DALProduct;
+import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
@@ -46,88 +43,72 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.collection.LLRBNode;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HomeView extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener
-{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private StorageReference mStorageRef;
-    static CartModel cartModel;
-    public static String TAG = "ProductApp";
-    Products products;
-    Toolbar toolbar;
     Context context;
-    ImageButton imageButton;
-    ActionBarDrawerToggle toggle;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    ArrayList<Products> productsArrayList = new ArrayList<Products>();
-    ;
-    ArrayList<String> listItemName = new ArrayList<>();
-    ArrayList<String> listItemDetail = new ArrayList<>();
-    ArrayList<String> listItemId = new ArrayList<>();
-    ArrayList<Products> filteredArrayList = new ArrayList<>();
-    EditText searchBar;
-    String[] options = new String[]{"Show detail",
-            "Add to cart"};
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
-    ListView listView;
-    String nameKey = "nameKey";
-    String detailKey = "detailKey";
-    String idKey = "idKey";
-    String productKey = "productKey";
-    String Keyword;
-    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey", userImgId = "imgId";
+    Products products = new Products();
+    static CartModel cartModel = CartModel.getInstance();
     AdaptorProduct adapterProduct;
-    FirebaseFirestore db;
     Map<String, Object> productMap;
+    private static final int PERMISSION_REQUEST_CODE = 1;
+    Intent intent;
+    ActionBarDrawerToggle toggle;
+    DocumentReference docRef;
+    BLLProducts bllProducts = new BLLProducts();
+    /*----------------Arrays----------------*/
+    ArrayList<Products> productsArrayList;
+    ArrayList<Products> filteredArrayList = new ArrayList<>();
+    /*----------------View items----------------*/
+    EditText searchBar;
+    ListView listView;
     TextView cartCount;
+    String getUserImgId;
+    NavigationView navigationView;
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
-    private static final int PERMISSION_REQUEST_CODE = 1;
-    String getUserImgId;
+    DrawerLayout drawer;
+    Toolbar toolbar;
+    ImageButton imageButton;
+    /*----------------Firebase----------------*/
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /*----------------Strings----------------*/
+    String TAG = "HomeView";
+    String Keyword;
+    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey", productKey = "productKey";
+    String[] options = new String[]{"Show detail", "Add to cart"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        products = new Products();
-        productMap = new HashMap<>();
         setContentView(R.layout.activity_home_view2);
-        Log.d(TAG, "View has been setted. Lets setup the items");
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        cartModel = CartModel.getInstance();
+        askPremision();
+        Log.d(TAG, "View has been set. Lets setup the items");
         setupItems();
-        // Side nav bar code
         setupSideNavBar();
-        //Firebase code;
-        setupDataBase();
+        getProductsFromDatabase();
+        //Set the adapter to the main list view
+        adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
+        listView.setAdapter(adapterProduct);
+        productMap = new HashMap<>();
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //Nothing
             }
 
             @Override
@@ -135,8 +116,7 @@ public class HomeView extends AppCompatActivity
 
                 Keyword = s.toString().toLowerCase();
                 filteredArrayList.clear();
-                for (Products product : productsArrayList)
-                {
+                for (Products product : productsArrayList) {
                     if (product.getProdName().toLowerCase().contains(Keyword))
                         filteredArrayList.add(product);
                     adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
@@ -146,22 +126,20 @@ public class HomeView extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //Nothing
             }
         });
-        askPremision();
-
         getUser();
         clickOnList();
-        mAuth = FirebaseAuth.getInstance();
+
         //cartCount.setText(cartModel.getProductInCart().size() + "");
         cartModel.cartList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Products>>() {
             @Override
-            public void onChanged(ObservableList<Products> sender) {
+            public void onChanged(ObservableList<Products> sender) { //Nothing
             }
 
             @Override
-            public void onItemRangeChanged(ObservableList<Products> sender, int positionStart, int itemCount) {
+            public void onItemRangeChanged(ObservableList<Products> sender, int positionStart, int itemCount) { //Nothing
 
             }
 
@@ -171,7 +149,7 @@ public class HomeView extends AppCompatActivity
             }
 
             @Override
-            public void onItemRangeMoved(ObservableList<Products> sender, int fromPosition, int toPosition, int itemCount) {
+            public void onItemRangeMoved(ObservableList<Products> sender, int fromPosition, int toPosition, int itemCount) { //Nothing
 
             }
 
@@ -183,27 +161,25 @@ public class HomeView extends AppCompatActivity
     }
 
     public void openUserView(View view) {
-        Intent intent = new Intent(this, AddProduct.class);
+        intent = new Intent(this, DALProduct.class);
         startActivity(intent);
-        //Bundle bundle = new Bundle();
     }
 
     public void openCreateUser() {
-        Intent intent = new Intent(this, AddUser.class);
+        intent = new Intent(this, DALUser.class);
         startActivity(intent);
     }
 
-    private void clickOnList()
-    {
+    private void clickOnList() {
         Log.d(TAG, "clickOnList: ");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     /*
-                     * Give the user an option to either choose an image that already exists on the phone
-                     * or to take a picture
+                     * Give the user an option to either choose add to the cart
+                     * or open the products detail.
                      * */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -214,32 +190,35 @@ public class HomeView extends AppCompatActivity
                                 // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
 
                                 Toast.makeText(HomeView.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-                                final Products f = new Products();
-                                final Intent appInfo = new Intent(HomeView.this, ProductDetails.class);
-                                f.setProdName(listView.getItemAtPosition(position).toString());
-                                Log.d(TAG, "what is string details: " + listItemDetail.get(position));
-                                f.setProdDetails(listItemDetail.get(position));
-                                f.setProdId(listItemId.get(position));
-                                //Log.i(TAG, "DREF: " + dref.child("products").child("prodDetails"));
-                                Log.d(TAG, "f.getProdName is: " + f.getProdName());
-                                appInfo.putExtra(nameKey, productsArrayList.get(position).getProdName());
-                                appInfo.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
-                                appInfo.putExtra(idKey, productsArrayList.get(position).getProdId());
-                                startActivity(appInfo);
-                                Log.d(TAG, "cart size: " + cartModel.getProductInCart().size());
 
+                                intent = new Intent(HomeView.this, ProductDetails.class);
+                                Products currentProducts = new Products();
+                                currentProducts.setProdId(productsArrayList.get(position).getProdId());
+                                currentProducts.setProdDetails(productsArrayList.get(position).getProdDetails());
+                                currentProducts.setProdName(productsArrayList.get(position).getProdName());
+                                intent.putExtra(productKey, currentProducts);
+                                Log.d(TAG, "Opening detail activity");
+                                startActivity(intent);
+                               /* products.setProdName(listView.getItemAtPosition(position).toString());
+                                Log.d(TAG, "Product's name is: " + products.getProdName());
+                                products.setProdDetails(listItemDetail.get(position));
+                                Log.d(TAG, "what is string details: " + listItemDetail.get(position));
+                                //products.setProdId(listItemId.get(position));
+                                intent.putExtra(nameKey, productsArrayList.get(position).getProdName());
+                                intent.putExtra(detailKey, productsArrayList.get(position).getProdDetails());
+                                intent.putExtra(idKey, productsArrayList.get(position).getProdId());
+                                startActivity(intent);
+                                Log.d(TAG, "cart size: " + cartModel.getProductInCart().size());*/
                             } catch (Exception e) {
                                 Log.d(TAG, "Opening Product Details error" + e);
                             }
                         }
                         if (options[which].equals(options[1])) {
-
                             products = productsArrayList.get(position);
                             products.setAmount(1);
                             Log.d(TAG, "onClick: " + products.getProdName());
                             cartModel.addProductToCart(products);
                             cartCount.setVisibility(View.VISIBLE);
-
                         }
                     }
                 });
@@ -267,7 +246,7 @@ public class HomeView extends AppCompatActivity
     }
 
     public void loginView() {
-        Intent intent = new Intent(HomeView.this, LoginActivity.class);
+        intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
     }
 
@@ -277,7 +256,7 @@ public class HomeView extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Open cart view
-                Intent intent = new Intent(HomeView.this, CartView.class);
+                intent = new Intent(HomeView.this, CartView.class);
                 startActivity(intent);
                 Snackbar.make(view, "Open cart view", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -290,44 +269,8 @@ public class HomeView extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void setupDataBase() {
-        Log.d(TAG, "Setting up the database settings");
-        db = FirebaseFirestore.getInstance();
-        db.collection("products")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                String getFireStoreFieldName = document.getString("Product Name");
-                                String getFireStoreFieldDetails = document.getString("Product Details");
-                                String getFireStoreId = document.getId();
-                                Products products = new Products();
-                                products.setProdName(getFireStoreFieldName);
-                                products.setProdDetails(getFireStoreFieldDetails);
-                                products.setProdId(getFireStoreId);
-                                products.setPictureId(document.getString("pictureId"));
-                                productsArrayList.add(products);
-
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Log.i(TAG, "What is value: " + getFireStoreFieldName);
-                                listItemName.add(getFireStoreFieldName);
-                                listItemDetail.add(getFireStoreFieldDetails);
-                                listItemId.add(getFireStoreId);
-                            }
-                          /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeView.this,android.R.layout.simple_dropdown_item_1line,listItemName);
-                            listView.setAdapter(adapter);*/
-                            Log.d(TAG, "onComplete: " + productsArrayList);
-                            adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
-                            listView.setAdapter(adapterProduct);
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+    private ArrayList<Products> getProductsFromDatabase() {
+        return productsArrayList = bllProducts.readProductsFromDatabase();
     }
 
     private void setupItems() {
@@ -339,18 +282,8 @@ public class HomeView extends AppCompatActivity
         listView = findViewById(R.id.synchronizeProducts);
         cartCount = findViewById(R.id.countCartSize);
         searchBar = findViewById(R.id.searchBox);
-
     }
 
-    @Override
-    public void onBackPressed() {
-        drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -413,7 +346,7 @@ public class HomeView extends AppCompatActivity
     }
 
     private void openAccountDetails() {
-        Intent intent = new Intent(this, UserAccountDetails.class);
+        intent = new Intent(this, UserAccountDetails.class);
         startActivity(intent);
     }
 
@@ -425,9 +358,8 @@ public class HomeView extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        db = FirebaseFirestore.getInstance();
         // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = mAuth.getCurrentUser();
+
         getMenuItem();
 
         if (currentUser == null) {
@@ -446,10 +378,8 @@ public class HomeView extends AppCompatActivity
     }
 
     private void getUserFirestore() {
-        db = FirebaseFirestore.getInstance();
-        currentUser = mAuth.getCurrentUser();
         Log.d(TAG, "user id; " + currentUser.getUid());
-        DocumentReference docRef = db.collection("users").document(currentUser.getUid());
+        docRef = db.collection("users").document(currentUser.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -513,11 +443,10 @@ public class HomeView extends AppCompatActivity
         }
     }
 
-    private void getUserImageFromStorage()
-    {
+    private void getUserImageFromStorage() {
 
         Log.d(TAG, "current userID: " + currentUser.getUid());
-        mStorageRef.child("user-images/"+ currentUser.getUid()).
+        mStorageRef.child("user-images/" + currentUser.getUid()).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {

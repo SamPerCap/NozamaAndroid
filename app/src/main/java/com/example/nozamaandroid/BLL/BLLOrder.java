@@ -1,6 +1,6 @@
 package com.example.nozamaandroid.BLL;
 
-import com.example.nozamaandroid.DALOrder.DALOrder;
+import com.example.nozamaandroid.DAL.DALOrder;
 import com.example.nozamaandroid.Models.Order;
 
 public class BLLOrder {

@@ -1,16 +1,11 @@
-package com.example.nozamaandroid.DALOrder;
+package com.example.nozamaandroid.DAL;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.nozamaandroid.DALProducts.AddProduct;
-import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.Order;
-import com.example.nozamaandroid.Models.Products;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 

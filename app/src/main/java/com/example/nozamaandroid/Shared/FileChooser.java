@@ -10,7 +10,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.nozamaandroid.DALUsers.AddUser;
+import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.R;
 import com.example.nozamaandroid.UserAccountDetails;
 
@@ -99,7 +99,7 @@ public class FileChooser extends AppCompatActivity {
         Log.d(TAG, "onActivityResult:1 " + activity.toLowerCase() + " " + addContactName);
         if ( activity.toLowerCase().equals(addContactName) ) {
             Log.d(TAG, " go to: " + addContactName);
-            Intent camaraintent = new Intent(this, AddUser.class);
+            Intent camaraintent = new Intent(this, DALUser.class);
             camaraintent.putExtra(messageToCamara, filePath);
             startActivity(camaraintent);
         } else if ( activity.toLowerCase().equals(DetailActivity) ) {

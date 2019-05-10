@@ -1,4 +1,4 @@
-package com.example.nozamaandroid.DALUsers;
+package com.example.nozamaandroid.DAL;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,9 +40,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AddUser extends AppCompatActivity
+public class DALUser extends AppCompatActivity
 {
-    String className  ="AddUser";
+    String className  ="DALUser";
     String messageToCamara = "mKey";
     EditText email, password, address, phoneNumber, userName;
     DatabaseReference dref;
@@ -66,13 +66,13 @@ public class AddUser extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_creation);
         //messageToCamara = getString(R.string.activityClass);
-        email = findViewById(R.id.usrEmail3);
-        password = findViewById(R.id.usrPw3);
-        address = findViewById(R.id.address4);
-        phoneNumber = findViewById(R.id.phonenumber3);
-        userName = findViewById(R.id.userName4);
+        email = findViewById(R.id.usrEmail);
+        password = findViewById(R.id.usrPw);
+        address = findViewById(R.id.address);
+        phoneNumber = findViewById(R.id.phonenumber);
+        userName = findViewById(R.id.userName);
         _pictureView = findViewById(R.id.userPic);
-        progressBar = findViewById(R.id.progressBar2);
+        progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         dref = FirebaseDatabase.getInstance().getReference("users");
         getFilePath();
@@ -128,7 +128,7 @@ public class AddUser extends AppCompatActivity
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(AddUser.this, "Authentication failed.",
+                            Toast.makeText(DALUser.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -254,7 +254,7 @@ public class AddUser extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 if(options[which].equals(options[0]))
                 {
-                    ImageIntent = new Intent(AddUser.this, FileChooser.class);
+                    ImageIntent = new Intent(DALUser.this, FileChooser.class);
                     ImageIntent.putExtra(messageToCamara,className);
                     startActivity(ImageIntent);
                 }
