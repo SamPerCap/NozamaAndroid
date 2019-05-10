@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.ObservableList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -114,7 +116,6 @@ public class HomeView extends AppCompatActivity
         super.onCreate(savedInstanceState);
         products = new Products();
         productMap = new HashMap<>();
-        imgView = findViewById(R.id.userHomeImageView);
         setContentView(R.layout.activity_home_view2);
         Log.d(TAG, "View has been setted. Lets setup the items");
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -515,27 +516,24 @@ public class HomeView extends AppCompatActivity
 
     private void getUserImageFromStorage()
     {
-        Log.d(TAG, "getting user image from storage");
-        try {
-            File localFile = File.createTempFile("user-images", getUserImgId);
-            mStorageRef.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            int resImage = getResources().getIdentifier(getUserImgId , "drawable", getPackageName());
-                            imgView.setImageResource(resImage);
-                            Log.d(TAG, "imageID: " + getUserImgId);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Log.d(TAG, "getUserImageFromStorage Exception: " + exception);
-                }
-            });
-        }catch(Exception e)
-        {
-            Log.d(TAG, "Getting user image from Storage failed: " + e);
-        }
+        imgView = findViewById(R.id.userHomeImageView);
+        mStorageRef.child("user-images/"+ currentUser.getUid()).
+                getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Use the bytes to display the image
+                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                imgView.setImageBitmap(bm);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                //imgView.setImageResource(R.drawable.cake);
+                Log.d(TAG, "Error with getting the current user image: " + exception);
+            }
+        });
     }
 
 }

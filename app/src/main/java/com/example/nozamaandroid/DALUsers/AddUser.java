@@ -56,7 +56,6 @@ public class AddUser extends AppCompatActivity
     Intent ImageIntent;
     String filePath;
     private ImageView _pictureView;
-    String id;
     ProgressBar progressBar;
     String metaName, metaUplTime, metaSize, metaType;
     FirebaseFirestore db;
@@ -81,7 +80,6 @@ public class AddUser extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
-        id = UUID.randomUUID().toString();
     }
 
     private void getFilePath()
@@ -153,7 +151,7 @@ public class AddUser extends AppCompatActivity
             userMap.put("Username", userName.getText().toString());
             userMap.put("Address", address.getText().toString());
             userMap.put("Phonenumber", phoneNumber.getText().toString());
-            userMap.put("PictureId", id);
+            userMap.put("PictureId", saveUser);
 
             // Add a new document with a generated ID
             db.collection("users")
@@ -168,11 +166,11 @@ public class AddUser extends AppCompatActivity
                             users.setUserName(userName.getText().toString());
                             users.setAddress(address.getText().toString());
                             users.setPhoneNumber(phoneNumber.getText().toString());
-                            users.setImgId(id);
+                            users.setImgId(saveUser);
 
                             Log.i(TAG, "What is username: " + users.getUserName().toString());
                             Log.d(TAG, "What is password: " + users.getPassword().toString());
-                            Log.d(TAG, "What is the id: " + id);
+                            Log.d(TAG, "What is the id: " + saveUser);
 
                             getMetaData();
                             Intent intent = new Intent(AddUser.this,HomeView.class);
@@ -181,7 +179,7 @@ public class AddUser extends AppCompatActivity
                             intent.putExtra(nameKey, users.getEmail());
                             intent.putExtra(addressKey, users.getAddress());
                             intent.putExtra(phoneKey, users.getPhoneNumber());
-                            intent.putExtra(userImgId, id);
+                            intent.putExtra(userImgId, saveUser);
 
                             startActivity(intent);
                         }
@@ -200,7 +198,7 @@ public class AddUser extends AppCompatActivity
             Log.e(TAG, "Exception: " + e);
         }
 
-        StorageReference spaceRef = mStorageRef.child("user-images/"+ id);
+        StorageReference spaceRef = mStorageRef.child("user-images/"+ saveUser);
 
         Log.d(TAG, "What is ID: " + spaceRef);
     }
@@ -218,8 +216,8 @@ public class AddUser extends AppCompatActivity
         try{
             Log.d(TAG, "Starting uploadPictureToFB");
             Uri file = Uri.fromFile(new File(filePath));
-
-            StorageReference riversRef = mStorageRef.child("user-images/" + id);
+            Log.d(TAG, "What is the current userId: " + saveUser);
+            StorageReference riversRef = mStorageRef.child("user-images/" + saveUser);
             Log.d(TAG, "What is Uri file: " + file);
             riversRef.putFile(file)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -280,7 +278,7 @@ public class AddUser extends AppCompatActivity
     private void getMetaData()
     {
         // Get reference to the file
-        StorageReference forestRef = mStorageRef.child("user-images/" + id);
+        StorageReference forestRef = mStorageRef.child("user-images/" + saveUser);
 
         forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
