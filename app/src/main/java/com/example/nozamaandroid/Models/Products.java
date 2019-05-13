@@ -10,7 +10,7 @@ public class Products implements Serializable {
     private String prodName;
     private String prodDetails;
     private Float ratings;
-    int amount;
+    private int amount;
     private String pictureId;
 
     public String getPictureId() {
@@ -29,7 +29,8 @@ public class Products implements Serializable {
         this.amount = amount;
     }
 
-    public Products() {}
+    public Products() {
+    }
 
     public Products(String prodId, String prodName, String prodDetails) {
         this.prodId = prodId;

@@ -11,4 +11,5 @@ public class BLLProducts {
     public ArrayList<Products> readProductsFromDatabase(){
        return dalProduct.readProductsFromDatabase();
     }
+
 }

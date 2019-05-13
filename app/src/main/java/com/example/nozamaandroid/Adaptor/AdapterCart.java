@@ -1,98 +1,91 @@
 package com.example.nozamaandroid.Adaptor;
 
 import android.app.Activity;
+import android.databinding.ObservableArrayList;
+import android.databinding.ObservableList;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.NumberPicker;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
 
 import java.util.ArrayList;
 
-public class AdapterCart  extends ArrayAdapter<Products> {
-    CartModel cartModel ;
+public class AdapterCart extends ArrayAdapter<Products> {
+    static CartModel cartModel = CartModel.getInstance();
     private final Activity context;
     private String TAG = "AdapterCart";
-    ArrayList<Products> _arrayData;
+    private ArrayList<Products> arrayCartList;
+    private TextView amount, txtTitle, removeItem;
+    private Button increaseAmount, decreaseAmount;
+    int one = 1;
+
     public AdapterCart(Activity context, ArrayList<Products> arrayData) {
-
-
-        super(context, R.layout.product_list,arrayData );
-        cartModel = CartModel.getInstance();
-        Log.d(TAG, "Product adaptor ");
+        super(context, R.layout.product_list, arrayData);
+        Log.d(TAG, "Product adaptor");
         this.context = context;
-        this._arrayData = arrayData;
+        this.arrayCartList = arrayData;
 
     }
 
-    public View getView(final int position, final View view, final ViewGroup parent)
-    {
+    public View getView(final int position, final View view, final ViewGroup parent) {
 
         Log.d(TAG, "Getting the view from Product Adapter ");
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.cart_list, null, true);
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
-        txtTitle.setText(_arrayData.get(position).getProdName());
+        txtTitle = rowView.findViewById(R.id.productNameList);
+        amount = rowView.findViewById(R.id.productAmount);
+        decreaseAmount = rowView.findViewById(R.id.lessAmount);
+        increaseAmount = rowView.findViewById(R.id.increaseAmount);
+        removeItem = rowView.findViewById(R.id.removeItem);
 
-       /* TextView price = (TextView) rowView.findViewById(R.id.productPrice);
-        price.setText(_arrayData.get(position).get());*/
+        txtTitle.setText(arrayCartList.get(position).getProdName());
+        amount.setText(arrayCartList.get(position).getAmount() + "");
 
-        EditText amount = (EditText) rowView.findViewById(R.id.amount);
-
-        amount.setText(_arrayData.get(position).getAmount()+"");
-        TextView lessthan = (TextView) rowView.findViewById(R.id.lessAmount);
-        lessthan.setOnClickListener(new View.OnClickListener() {
+        decreaseAmount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeNumber(position,-1);
+                if (arrayCartList.get(position).getAmount() != 1)
+                    changeNumber(false, arrayCartList.get(position));
+                amount.setText(arrayCartList.get(position).getAmount() + "");
             }
         });
-        TextView increaseAmount = (TextView) rowView.findViewById(R.id.increaseAmount);
         increaseAmount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeNumber(position,1);
+                changeNumber(true, arrayCartList.get(position));
+                amount.setText(arrayCartList.get(position).getAmount() + "");
             }
         });
-        final TextView removeItem = (TextView) rowView.findViewById(R.id.removeItem);
         removeItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteItem(position);
             }
         });
-
         return rowView;
 
     }
 
     private void deleteItem(int postion) {
         cartModel.removeItem(postion);
-        notifyDataSetInvalidated();
-
+        this.remove(arrayCartList.get(postion));
+        notifyDataSetChanged();
     }
 
-    private void changeNumber(int postion, int i) {
-        if(cartModel.getProductInCart().get(postion).getAmount()+i == 0)
-        {
-
+    private void changeNumber(boolean increase, Products product) {
+        int productAmount = product.getAmount();
+        if (increase) {
+            product.setAmount(productAmount + one);
+        } else {
+            product.setAmount(productAmount - one);
         }
-        else
-        {
-            cartModel.changeAmount(postion,i);
-            notifyDataSetInvalidated();
-        }
-
     }
-
-
 }

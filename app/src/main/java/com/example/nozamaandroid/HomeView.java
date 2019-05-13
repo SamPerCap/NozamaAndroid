@@ -1,7 +1,6 @@
 package com.example.nozamaandroid;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,7 +32,6 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.Adaptor.AdaptorProduct;
 import com.example.nozamaandroid.BLL.BLLProducts;
-import com.example.nozamaandroid.Cart.CartView;
 import com.example.nozamaandroid.DAL.DALProduct;
 import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.CartModel;
@@ -52,14 +50,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HomeView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Products products = new Products();
     static CartModel cartModel = CartModel.getInstance();
+    Products products = new Products();
     AdaptorProduct adapterProduct;
     private static final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
@@ -144,6 +140,7 @@ public class HomeView extends AppCompatActivity
 
             @Override
             public void onItemRangeInserted(ObservableList<Products> sender, int positionStart, int itemCount) {
+                cartCount.setVisibility(View.VISIBLE);
                 cartCount.setText(cartModel.getProductInCart().size() + "");
             }
 
@@ -154,7 +151,10 @@ public class HomeView extends AppCompatActivity
 
             @Override
             public void onItemRangeRemoved(ObservableList<Products> sender, int positionStart, int itemCount) {
-                cartCount.setText(cartModel.getProductInCart().size() + "");
+                if (cartModel.getProductInCart().size() == 0)
+                    cartCount.setText(cartModel.getProductInCart().size() + "");
+                else
+                    cartCount.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -191,12 +191,12 @@ public class HomeView extends AppCompatActivity
                                 Toast.makeText(HomeView.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
 
                                 intent = new Intent(HomeView.this, ProductDetails.class);
-                                Products currentProducts = new Products();
+                                /*Products currentProducts =
                                 currentProducts.setProdId(productsArrayList.get(position).getProdId());
                                 currentProducts.setProdDetails(productsArrayList.get(position).getProdDetails());
                                 currentProducts.setProdName(productsArrayList.get(position).getProdName());
-                                currentProducts.setPictureId(productsArrayList.get(position).getPictureId());
-                                intent.putExtra(productKey, currentProducts);
+                                currentProducts.setPictureId(productsArrayList.get(position).getPictureId());*/
+                                intent.putExtra(productKey, productsArrayList.get(position));
                                 startActivity(intent);
                                 Log.d(TAG, "Opening detail activity");
                             } catch (Exception e) {
@@ -205,16 +205,18 @@ public class HomeView extends AppCompatActivity
                         }
                         if (options[which].equals(options[1])) {
                             products = productsArrayList.get(position);
-                            products.setAmount(1);
                             Log.d(TAG, "onClick: " + products.getProdName());
-                            cartModel.addProductToCart(products);
-                            cartCount.setVisibility(View.VISIBLE);
+                            cartModel.checkIfProductId(products,HomeView.this);
+                           // cartModel.addProductToCart(products);
+
                         }
                     }
                 });
                 builder.show();
 
             }
+
+
         });
     }
 
@@ -437,7 +439,7 @@ public class HomeView extends AppCompatActivity
 
         Log.d(TAG, "current userID: " + currentUser.getUid());
         mStorageRef = FirebaseStorage.getInstance().getReference();
-       mStorageRef.child("user-images/" + currentUser.getUid()).
+        mStorageRef.child("user-images/" + currentUser.getUid()).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
