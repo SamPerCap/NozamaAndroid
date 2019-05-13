@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +40,6 @@ public class ProductDetails extends AppCompatActivity {
     Button saveRatingBtn;
     Bundle bundle;
     CartModel cartModel = HomeView.cartModel;
-
     // We need to create an instance of the product class so we can use
     // the getters where we saved the prodNameData from mainactivity
 

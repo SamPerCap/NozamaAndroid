@@ -55,9 +55,9 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             final ImageView imageView = rowView.findViewById(R.id.productImage);
             TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
             txtTitle.setText(_arrayData.get(position).getProdName());
-
+            TextView txtPrice = (TextView) rowView.findViewById(R.id.product_price_HomeView);
+            txtPrice.setText(_arrayData.get(position).getProdDetails()+" Dkk");
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
-
                 bllProductImage.getImageById(_arrayData.get(position).getPictureId(), imageView);
       
         /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
