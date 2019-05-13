@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -88,6 +89,8 @@ public class HomeView extends AppCompatActivity
     String[] options = new String[]{"Show detail", "Add to cart"};
     String getUserImgId;
 
+    GridView gridViewProduct;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +100,12 @@ public class HomeView extends AppCompatActivity
         setupItems();
         setupSideNavBar();
         getProductsFromDatabase();
+        gridViewProduct = findViewById(R.id.gridview_product);
+
         //Set the adapter to the main list view
         adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
-        listView.setAdapter(adapterProduct);
+        gridViewProduct.setAdapter(adapterProduct);
+       // listView.setAdapter(adapterProduct);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,7 +131,7 @@ public class HomeView extends AppCompatActivity
             }
         });
         getUser();
-        clickOnList();
+      clickOnList();
 
         //cartCount.setText(cartModel.getProductInCart().size() + "");
         cartModel.cartList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Products>>() {
@@ -171,7 +177,7 @@ public class HomeView extends AppCompatActivity
 
     private void clickOnList() {
         Log.d(TAG, "clickOnList: ");
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(HomeView.this);
@@ -188,7 +194,7 @@ public class HomeView extends AppCompatActivity
                                 // It also gets the position in the listview by using onitemclick adapter view click listener, which has a built in position
                                 // which we can find.  I have made several logs and some toasts to help me to see if I would get the correct values.
 
-                                Toast.makeText(HomeView.this, "Product: " + listView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeView.this, "Product: " + gridViewProduct.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
 
                                 intent = new Intent(HomeView.this, ProductDetails.class);
                                 /*Products currentProducts =
@@ -271,7 +277,7 @@ public class HomeView extends AppCompatActivity
         imageButton = findViewById(R.id.imageButton);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        listView = findViewById(R.id.synchronizeProducts);
+        //listView = findViewById(R.id.synchronizeProducts);
         cartCount = findViewById(R.id.countCartSize);
         searchBar = findViewById(R.id.searchBox);
     }

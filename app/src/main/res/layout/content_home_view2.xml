@@ -8,11 +8,11 @@
     tools:context=".HomeView"
     tools:showIn="@layout/app_bar_home_view2">
 
-    <ListView
-        android:id="@+id/synchronizeProducts"
+    <GridView
+        android:id="@+id/gridview_product"
         android:layout_width="344dp"
         android:layout_height="504dp"
-
+        android:numColumns="2"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
