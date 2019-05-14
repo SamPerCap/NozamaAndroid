@@ -58,7 +58,7 @@ public class DALProduct extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                getFireStoreFieldName = document.getString("Product Name");
+                                getFireStoreFieldName = document.getString("name");
                                 getFireStoreFieldDetails = document.getString("Product Details");
                                 getFireStoreId = document.getId();
                                 product = new Products();

@@ -22,8 +22,6 @@ public class AdapterCart extends ArrayAdapter<Products> {
     private final Activity context;
     private String TAG = "AdapterCart";
     private ArrayList<Products> arrayCartList;
-    private TextView amount, txtTitle, removeItem;
-    private Button increaseAmount, decreaseAmount;
     int one = 1;
 
     public AdapterCart(Activity context, ArrayList<Products> arrayData) {
@@ -40,11 +38,11 @@ public class AdapterCart extends ArrayAdapter<Products> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.cart_list, null, true);
 
-        txtTitle = rowView.findViewById(R.id.productNameList);
-        amount = rowView.findViewById(R.id.productAmount);
-        decreaseAmount = rowView.findViewById(R.id.lessAmount);
-        increaseAmount = rowView.findViewById(R.id.increaseAmount);
-        removeItem = rowView.findViewById(R.id.removeItem);
+        TextView txtTitle = rowView.findViewById(R.id.productNameList);
+        TextView amount = rowView.findViewById(R.id.productAmount);
+        Button decreaseAmount = rowView.findViewById(R.id.lessAmount);
+        Button increaseAmount = rowView.findViewById(R.id.increaseAmount);
+        TextView removeItem = rowView.findViewById(R.id.removeItem);
 
         txtTitle.setText(arrayCartList.get(position).getProdName());
         amount.setText(arrayCartList.get(position).getAmount() + "");
@@ -53,15 +51,13 @@ public class AdapterCart extends ArrayAdapter<Products> {
             @Override
             public void onClick(View v) {
                 if (arrayCartList.get(position).getAmount() != 1)
-                    changeNumber(false, arrayCartList.get(position));
-                amount.setText(arrayCartList.get(position).getAmount() + "");
+                    changeNumber(false, position);
             }
         });
         increaseAmount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeNumber(true, arrayCartList.get(position));
-                amount.setText(arrayCartList.get(position).getAmount() + "");
+                changeNumber(true, position);
             }
         });
         removeItem.setOnClickListener(new View.OnClickListener() {
@@ -80,12 +76,14 @@ public class AdapterCart extends ArrayAdapter<Products> {
         notifyDataSetChanged();
     }
 
-    private void changeNumber(boolean increase, Products product) {
+    private void changeNumber(boolean increase, int position) {
+        Products product = arrayCartList.get(position);
         int productAmount = product.getAmount();
         if (increase) {
             product.setAmount(productAmount + one);
         } else {
             product.setAmount(productAmount - one);
         }
+        notifyDataSetInvalidated();
     }
 }

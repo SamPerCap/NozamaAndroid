@@ -7,5 +7,5 @@
     <color name="lightgray">#E0E0E0</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
-    <color name="egg">#FFBE5E</color>
+    <color name="colorPrimaryClarito">#4883F0</color>
 </resources>
