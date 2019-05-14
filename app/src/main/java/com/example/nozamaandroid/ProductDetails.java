@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nozamaandroid.BLL.BLLProductImage;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.google.firebase.firestore.DocumentReference;
@@ -17,7 +19,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProductDetails extends AppCompatActivity {
-    TextView productName, productDetail;
+    TextView productName, productDetail, productPrice;
     String TAG = "Product Details class";
     String prodKey = "productKey";
     Products products;
@@ -26,7 +28,9 @@ public class ProductDetails extends AppCompatActivity {
     Products currentProduct;
     String document;
     String prodIdData;
+    ImageView productImage;
     RatingBar prodRating;
+    BLLProductImage bllProductImage = new BLLProductImage();
     Button saveRatingBtn;
     static CartModel cartModel = CartModel.getInstance();
     // We need to create an instance of the product class so we can use
@@ -45,15 +49,21 @@ public class ProductDetails extends AppCompatActivity {
 
         productName.setText(currentProduct.getProdName());
         productDetail.setText(currentProduct.getProdDetails());
+//        productPrice.setText(currentProduct.getPrice());
+        bllProductImage.getImageById(currentProduct.getPictureId(), productImage);
+
 
         Log.d(TAG, "Rating value: " + prodRating.getRating());
     }
 
     private void setupItems() {
+
         productName = findViewById(R.id.tvProductName);
         productDetail = findViewById(R.id.tvProductDetail);
         prodRating = findViewById(R.id.ratingBar);
         saveRatingBtn = findViewById(R.id.btnSaveRating);
+        productImage = findViewById(R.id.productImage);
+        productPrice = findViewById(R.id.tvProductPrice);
         prodRating.setNumStars(5);
     }
 

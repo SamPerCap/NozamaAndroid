@@ -10,8 +10,18 @@ public class Products implements Serializable {
     private String prodName;
     private String prodDetails;
     private Float ratings;
+    private int price;
     private int amount;
     private String pictureId;
+
+    public Products() {
+    }
+
+    public Products(String prodId, String prodName, String prodDetails) {
+        this.prodId = prodId;
+        this.prodName = prodName;
+        this.prodDetails = prodDetails;
+    }
 
     public String getPictureId() {
         return pictureId;
@@ -29,14 +39,22 @@ public class Products implements Serializable {
         this.amount = amount;
     }
 
-    public Products() {
+    public Float getRatings() {
+        return ratings;
     }
 
-    public Products(String prodId, String prodName, String prodDetails) {
-        this.prodId = prodId;
-        this.prodName = prodName;
-        this.prodDetails = prodDetails;
+    public void setRatings(Float ratings) {
+        this.ratings = ratings;
     }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
 
     public String getProdId() {
         return prodId;
@@ -62,13 +80,5 @@ public class Products implements Serializable {
 
     public String getProdDetails() {
         return prodDetails;
-    }
-
-    public Float getRating() {
-        return ratings;
-    }
-
-    public void setRating(Float ratings) {
-        this.ratings = ratings;
     }
 }

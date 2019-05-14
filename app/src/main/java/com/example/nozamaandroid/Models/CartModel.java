@@ -77,8 +77,8 @@ public class CartModel {
     }
 
     public void removeItem(int postion) {
-        arrayCartList.get(postion).setAmount(0);
         cartList.remove(postion);
+        getProductInCart();
         Log.d(TAG, "Item removed from list");
     }
 

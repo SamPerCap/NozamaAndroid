@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AdaptorProduct extends ArrayAdapter<Products> {
-    CartModel cartModel ;
     private final Activity context;
     private String TAG = "AdapterProduct";
     ArrayList<Products> _arrayData;
@@ -38,7 +37,6 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
 
 
         super(context, R.layout.product_list,arrayData );
-        cartModel = CartModel.getInstance();
         Log.d(TAG, "Product adaptor ");
         this.context = context;
         this._arrayData = arrayData;
@@ -58,7 +56,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             TextView txtPrice = (TextView) rowView.findViewById(R.id.product_price_HomeView);
             txtPrice.setText(_arrayData.get(position).getProdDetails()+" DKK");
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
-                bllProductImage.getImageById(_arrayData.get(position).getPictureId(), imageView);
+            bllProductImage.getImageById(_arrayData.get(position).getPictureId(), imageView);
       
         /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
