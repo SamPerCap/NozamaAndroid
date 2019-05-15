@@ -18,8 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DAL.DALProduct"></activity>
-        <activity android:name=".DAL.DALUser"></activity>
+        <activity android:name=".AddProduct"></activity>
+        <activity android:name=".UserCreation"></activity>
         <activity android:name=".ProductDetails"></activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".CartView"></activity>

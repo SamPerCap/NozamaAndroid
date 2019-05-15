@@ -1,10 +1,6 @@
 package com.example.nozamaandroid.Adaptor;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,25 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.nozamaandroid.BLL.BLLProductImage;
-import com.example.nozamaandroid.HomeView;
-import com.example.nozamaandroid.Models.CartModel;
+import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class AdaptorProduct extends ArrayAdapter<Products> {
     private final Activity context;
     private String TAG = "AdapterProduct";
     ArrayList<Products> _arrayData;
-    BLLProductImage bllProductImage = new BLLProductImage();
+    BLLProducts bllProduct = new BLLProducts();
 
     StorageReference mStorageRef ;
     public AdaptorProduct(Activity context, ArrayList<Products> arrayData) {
@@ -56,7 +46,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             TextView txtPrice = (TextView) rowView.findViewById(R.id.product_price_HomeView);
             txtPrice.setText(_arrayData.get(position).getProdDetails()+" DKK");
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
-            bllProductImage.getImageById(_arrayData.get(position).getPictureId(), imageView);
+            bllProduct.getImageById(_arrayData.get(position).getPictureId(), imageView);
       
         /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {

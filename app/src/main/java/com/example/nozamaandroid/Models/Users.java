@@ -1,5 +1,7 @@
 package com.example.nozamaandroid.Models;
 
+import java.util.ArrayList;
+
 public class Users {
     private String userId;
     private String email;
@@ -8,7 +10,7 @@ public class Users {
     private String address;
     private String phoneNumber;
     private String imgId;
-    private Order order;
+    private ArrayList<String> order;
 
     public Users() {
 
@@ -80,11 +82,12 @@ public class Users {
         this.password = password;
     }
 
-    public Order getOrder() {
+    public ArrayList<String> getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(ArrayList<String> order) {
         this.order = order;
     }
+
 }

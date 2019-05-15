@@ -5,10 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.ObservableList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -26,29 +23,17 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.Adaptor.AdaptorProduct;
 import com.example.nozamaandroid.BLL.BLLProducts;
-import com.example.nozamaandroid.DAL.DALProduct;
-import com.example.nozamaandroid.DAL.DALUser;
+import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
-import com.example.nozamaandroid.Models.Users;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -60,36 +45,33 @@ public class HomeView extends AppCompatActivity
     AdaptorProduct adapterProduct;
     private static final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
-    ActionBarDrawerToggle toggle;
-    DocumentReference docRef;
+    /*----------------BLL----------------*/
+    BLLUser bllUser = new BLLUser();
     BLLProducts bllProducts = new BLLProducts();
     /*----------------Arrays----------------*/
     ArrayList<Products> productsArrayList;
     ArrayList<Products> filteredArrayList = new ArrayList<>();
     /*----------------View items----------------*/
-    EditText searchBar;
+    ActionBarDrawerToggle toggle;
+    EditText etSearchBar;
     ListView listView;
-    TextView cartCount;
+    TextView tvCartCount, tvUsername;
     NavigationView navigationView;
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
     DrawerLayout drawer;
     Toolbar toolbar;
     ImageButton imageButton;
+    GridView gridViewProduct;
     /*----------------Firebase----------------*/
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    StorageReference mStorageRef;
     /*----------------Strings----------------*/
     String TAG = "HomeView";
     String Keyword;
-    String userKey = "userKey", passwordKey = "passwordKey", addressKey = "addressKey",
-            productKey = "productKey", userImgId = "userImgId";
+    String userKey = "userKey", productKey = "productKey";
     String[] options = new String[]{"Show detail", "Add to cart"};
-    String getUserImgId;
 
-    GridView gridViewProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +87,7 @@ public class HomeView extends AppCompatActivity
         //Set the adapter to the main list view
         adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
         gridViewProduct.setAdapter(adapterProduct);
-        // listView.setAdapter(adapterProduct);
-        searchBar.addTextChangedListener(new TextWatcher() {
+        etSearchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //Nothing
@@ -131,10 +112,8 @@ public class HomeView extends AppCompatActivity
                 //Nothing
             }
         });
-        getUser();
         clickOnList();
 
-        //cartCount.setText(cartModel.getProductInCart().size() + "");
         cartModel.cartList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Products>>() {
             @Override
             public void onChanged(ObservableList<Products> sender) { //Nothing
@@ -147,8 +126,8 @@ public class HomeView extends AppCompatActivity
 
             @Override
             public void onItemRangeInserted(ObservableList<Products> sender, int positionStart, int itemCount) {
-                cartCount.setVisibility(View.VISIBLE);
-                cartCount.setText(cartModel.getProductInCart().size() + "");
+                tvCartCount.setVisibility(View.VISIBLE);
+                tvCartCount.setText(cartModel.getProductInCart().size() + "");
             }
 
             @Override
@@ -159,20 +138,20 @@ public class HomeView extends AppCompatActivity
             @Override
             public void onItemRangeRemoved(ObservableList<Products> sender, int positionStart, int itemCount) {
                 if (cartModel.getProductInCart().size() == 0)
-                    cartCount.setText(cartModel.getProductInCart().size() + "");
+                    tvCartCount.setText(cartModel.getProductInCart().size() + "");
                 else
-                    cartCount.setVisibility(View.INVISIBLE);
+                    tvCartCount.setVisibility(View.INVISIBLE);
             }
         });
     }
 
     public void openUserView(View view) {
-        intent = new Intent(this, DALProduct.class);
+        intent = new Intent(this, AddProduct.class);
         startActivity(intent);
     }
 
     public void openCreateUser() {
-        intent = new Intent(this, DALUser.class);
+        intent = new Intent(this, UserCreation.class);
         startActivity(intent);
     }
 
@@ -227,26 +206,10 @@ public class HomeView extends AppCompatActivity
         });
     }
 
-
-    private void getUser() {
-        Users user = new Users();
-
-        try {
-            String getUser = getIntent().getExtras().getString(userKey, user.getEmail());
-            String getPassword = getIntent().getExtras().getString(passwordKey, user.getPassword());
-            String getAddress = getIntent().getExtras().getString(addressKey, user.getAddress());
-            getUserImgId = getIntent().getExtras().getString(userImgId, user.getImgId());
-            Log.d(TAG, "getUser: " + getUser + " Password:" + getPassword + " address: " + getAddress);
-            Toast.makeText(this, "You are logged in as: " + getUser, Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.d(TAG, "Exception with getting user: " + e);
-            Toast.makeText(this, "No one is currently logged in, please login", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void loginView() {
         intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void setupSideNavBar() {
@@ -278,9 +241,10 @@ public class HomeView extends AppCompatActivity
         imageButton = findViewById(R.id.imageButton);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        //listView = findViewById(R.id.synchronizeProducts);
-        cartCount = findViewById(R.id.countCartSize);
-        searchBar = findViewById(R.id.searchBox);
+        tvCartCount = findViewById(R.id.countCartSize);
+        etSearchBar = findViewById(R.id.searchBox);
+        tvUsername = findViewById(R.id.currentUserName);
+
     }
 
 
@@ -331,9 +295,7 @@ public class HomeView extends AppCompatActivity
                     menuItemLogin.setTitle("Login");
                     menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
-
-                    TextView textView = findViewById(R.id.currentUserName);
-                    textView.setText("Guest");
+                    tvUsername.setText(R.string.Guest);
                 }
 
                 break;
@@ -346,6 +308,7 @@ public class HomeView extends AppCompatActivity
 
     private void openAccountDetails() {
         intent = new Intent(this, UserAccountDetails.class);
+        intent.putExtra(userKey, getIntent().getExtras().getString(userKey));
         startActivity(intent);
     }
 
@@ -358,7 +321,6 @@ public class HomeView extends AppCompatActivity
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-
         getMenuItem();
 
         if (currentUser == null) {
@@ -367,38 +329,15 @@ public class HomeView extends AppCompatActivity
             menuItemLogin.setTitle("Login");
             menuItemAccount.setTitle("Create an account");
         } else {
-            getUserFirestore();
-            getUserImageFromStorage();
+            String currentUserId = mAuth.getCurrentUser().getUid();
+            bllUser.getUserInfo(currentUserId);
+            bllUser.getUserImage(currentUserId);
             Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
-            Toast.makeText(this, currentUser.getEmail() + " is currently logged in.", Toast.LENGTH_SHORT).show();
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");
         }
     }
 
-    private void getUserFirestore() {
-        Log.d(TAG, "user id; " + currentUser.getUid());
-        docRef = db.collection("users").document(currentUser.getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // This way we can get the fields from firestore and save them to a string.
-                        String getFireStoreFieldUserName = document.getString("Username");
-                        TextView textView = findViewById(R.id.currentUserName);
-                        textView.setText("User: " + getFireStoreFieldUserName);
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-    }
 
     private void askPremision() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -442,28 +381,5 @@ public class HomeView extends AppCompatActivity
         }
     }
 
-    private void getUserImageFromStorage() {
-
-        Log.d(TAG, "current userID: " + currentUser.getUid());
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        mStorageRef.child("user-images/" + currentUser.getUid()).
-                getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                // Use the bytes to display the image
-                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                ImageView imgView = findViewById(R.id.userHomeImageView);
-                imgView.setImageBitmap(bm);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                ImageView imgView = findViewById(R.id.userHomeImageView);
-                imgView.setImageResource(R.drawable.cake);
-                Log.d(TAG, "Error with getting the current user image: " + exception);
-            }
-        });
-    }
 
 }

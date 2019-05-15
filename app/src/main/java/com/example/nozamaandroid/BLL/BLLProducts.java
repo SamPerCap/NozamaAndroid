@@ -1,5 +1,7 @@
 package com.example.nozamaandroid.BLL;
 
+import android.widget.ImageView;
+
 import com.example.nozamaandroid.DAL.DALProduct;
 import com.example.nozamaandroid.Models.Products;
 
@@ -10,6 +12,10 @@ public class BLLProducts {
 
     public ArrayList<Products> readProductsFromDatabase(){
        return dalProduct.readProductsFromDatabase();
+    }
+
+    public void getImageById(String pictureId, final ImageView imageView) {
+        dalProduct.setImageviewById(pictureId,imageView);
     }
 
 }

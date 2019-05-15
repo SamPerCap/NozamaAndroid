@@ -5,13 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nozamaandroid.BLL.BLLProductImage;
+import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,7 +29,7 @@ public class ProductDetails extends AppCompatActivity {
     String prodIdData;
     ImageView productImage;
     RatingBar prodRating;
-    BLLProductImage bllProductImage = new BLLProductImage();
+    BLLProducts bllProducts = new BLLProducts();
     Button saveRatingBtn;
     static CartModel cartModel = CartModel.getInstance();
     // We need to create an instance of the product class so we can use
@@ -50,7 +49,7 @@ public class ProductDetails extends AppCompatActivity {
         productName.setText(currentProduct.getProdName());
         productDetail.setText(currentProduct.getProdDetails());
 //        productPrice.setText(currentProduct.getPrice());
-        bllProductImage.getImageById(currentProduct.getPictureId(), productImage);
+        bllProducts.getImageById(currentProduct.getPictureId(), productImage);
 
 
         Log.d(TAG, "Rating value: " + prodRating.getRating());
