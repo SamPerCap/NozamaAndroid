@@ -105,7 +105,7 @@ public class HomeView extends AppCompatActivity
         //Set the adapter to the main list view
         adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
         gridViewProduct.setAdapter(adapterProduct);
-       // listView.setAdapter(adapterProduct);
+        // listView.setAdapter(adapterProduct);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -122,6 +122,7 @@ public class HomeView extends AppCompatActivity
                         filteredArrayList.add(product);
                     adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
                     listView.setAdapter(adapterProduct);
+
                 }
             }
 
@@ -131,7 +132,7 @@ public class HomeView extends AppCompatActivity
             }
         });
         getUser();
-      clickOnList();
+        clickOnList();
 
         //cartCount.setText(cartModel.getProductInCart().size() + "");
         cartModel.cartList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Products>>() {
@@ -212,8 +213,8 @@ public class HomeView extends AppCompatActivity
                         if (options[which].equals(options[1])) {
                             products = productsArrayList.get(position);
                             Log.d(TAG, "onClick: " + products.getProdName());
-                            cartModel.checkIfProductId(products,HomeView.this);
-                           // cartModel.addProductToCart(products);
+                            cartModel.checkIfProductId(products, HomeView.this);
+                            // cartModel.addProductToCart(products);
 
                         }
                     }

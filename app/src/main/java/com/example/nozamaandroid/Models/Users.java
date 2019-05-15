@@ -1,7 +1,6 @@
 package com.example.nozamaandroid.Models;
 
-public class Users
-{
+public class Users {
     private String userId;
     private String email;
     private String password;
@@ -9,9 +8,9 @@ public class Users
     private String address;
     private String phoneNumber;
     private String imgId;
+    private Order order;
 
-    public Users()
-    {
+    public Users() {
 
     }
 
@@ -23,8 +22,7 @@ public class Users
         this.imgId = imgId;
     }
 
-    public Users(String userId, String email, String password, String userName, String address, String phoneNumber, String imgId  )
-    {
+    public Users(String userId, String email, String password, String userName, String address, String phoneNumber, String imgId) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -38,23 +36,19 @@ public class Users
         return userId;
     }
 
-    public void setUserId(String userId)
-    {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getUserName()
-    {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName)
-    {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
@@ -82,8 +76,15 @@ public class Users
         this.phoneNumber = phoneNumber;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

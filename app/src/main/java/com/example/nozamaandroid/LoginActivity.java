@@ -44,6 +44,8 @@ public class LoginActivity extends AppCompatActivity
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginActivity.this, "Authentication succeeded.",
+                                    Toast.LENGTH_SHORT).show();
                             goToMainView();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -65,7 +67,7 @@ public class LoginActivity extends AppCompatActivity
         // we want to save the username to the user class to pass it onwards and so we can grab it later
         // This particular information will be grabbed in everyclass for now with getIntent
 
-        /*String userNameStr = email.getText().toString();
+       /* String userNameStr = email.getText().toString();
         String passwordStr = password.getText().toString();
         userClass.setUserName(userNameStr);
         userClass.setPassword(passwordStr);

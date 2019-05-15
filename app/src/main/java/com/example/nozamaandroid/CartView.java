@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nozamaandroid.Adaptor.AdapterCart;
 import com.example.nozamaandroid.BLL.BLLOrder;
@@ -50,15 +51,17 @@ public class CartView extends AppCompatActivity {
     }
 
     private void Buy() {
-        Order order = new Order();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        order.setIdUser(currentUser.getUid());
-        order.setProducts(cartModel.getProductInCart());
-        bllOrder.addOrder(order);
-        cartModel.clearList();
-        Intent intent = new Intent(this, HomeView.class);
-        startActivity(intent);
-        finish();
-
+        if (currentUser == null) {
+            Toast.makeText(this, "You need to be logged in to be able to buy.", Toast.LENGTH_LONG).show();
+        } else {
+            Order order = new Order();
+            order.setIdUser(currentUser.getUid());
+            order.setProducts(cartModel.getProductInCart());
+            bllOrder.addOrder(order);
+            Toast.makeText(this, "Your order has been saved correctly.",Toast.LENGTH_LONG).show();
+            cartModel.clearList();
+            finish();
+        }
     }
 }
