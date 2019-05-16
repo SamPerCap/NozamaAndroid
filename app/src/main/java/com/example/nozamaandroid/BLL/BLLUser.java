@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.Users;
@@ -23,6 +24,7 @@ public class BLLUser {
     DALUser dalUser = new DALUser();
     String TAG = "BLLUser";
     String filePath;
+    Boolean[] success = new Boolean[1];
 
 
     public Users getUserInfo(Query docRef) {
@@ -33,17 +35,16 @@ public class BLLUser {
         dalUser.setUserImage(userID, imageView);
     }
 
-    public Boolean[] createUser(Activity userCreation, String email, String password) {
+    public Boolean createUser(Activity userCreation, String email, String password) {
         return dalUser.createUser(userCreation, email, password);
     }
 
-    public Boolean[] uploadToFirestore(String email, String password, String username, String address,
-                                       String phonenumber, String pictureId) {
+    public Boolean uploadToFirestore(String email, String password, String username, String address,
+                                     String phonenumber, String pictureId) {
         return dalUser.uploadToFireStore(email, password, username, address, phonenumber, pictureId);
     }
 
-    public Boolean[] uploadToStorage(Bitmap currentImage, String userId, final StorageReference mStorageRef) {
-        final Boolean[] uploadToStorageSuccess = new Boolean[1];
+    public Boolean uploadToStorage(Bitmap currentImage, String userId, final StorageReference mStorageRef) {
         Log.d(TAG, "Starting uploadPictureToFB");
         Log.d(TAG, "What is the current userId: " + userId);
         StorageReference riversRef = mStorageRef.child("user-images/" + userId);
@@ -59,7 +60,7 @@ public class BLLUser {
                         // Get a URL to the uploaded content
                         Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
                         Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
-                        uploadToStorageSuccess[0] = taskSnapshot.getTask().isSuccessful();
+                        success[0] = true;
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -67,10 +68,10 @@ public class BLLUser {
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
                         Log.d(TAG, "Failed to upload an image to storage: " + exception);
-                        uploadToStorageSuccess[0] = false;
+                        success[0] = false;
                     }
                 });
-        return uploadToStorageSuccess;
+        return success[0];
     }
 
     public String getFilePath(String _filePath, ImageView pictureView) {

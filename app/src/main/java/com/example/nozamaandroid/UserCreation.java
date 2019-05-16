@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.UserModel;
@@ -89,23 +90,23 @@ public class UserCreation extends AppCompatActivity {
          * The boolean is attach to the task result in the DAL meaning that if success,
          * the boolean we get is true and then we keep going.
          */
-        for (Boolean success :
-                bllUser.createUser(UserCreation.this, email.getText().toString(), password.getText().toString()))
-            if (success)
-                for (Boolean success2 :
-                        bllUser.uploadToStorage(userModel.currentImage, saveUser, mStorageRef))
-                    if (success2)
-                        for (Boolean success3 : bllUser.uploadToFirestore(
-                                email.getText().toString(),
-                                password.getText().toString(),
-                                userName.getText().toString(),
-                                sAddress.getSelectedItem().toString(),
-                                phoneNumber.getText().toString(),
-                                saveUser
-                        ))
-                            if (success3)
-                                getMetaData();
-
+        if (password.getText().length() <= 6) {
+            Toast.makeText(this, "ERROR. Password has 6 o less digits", Toast.LENGTH_LONG);
+        } else {
+            if (bllUser.createUser(UserCreation.this, email.getText().toString(), password.getText().toString())) {
+                if (bllUser.uploadToStorage(userModel.currentImage, saveUser, mStorageRef)) {
+                    if (bllUser.uploadToFirestore(
+                            email.getText().toString(),
+                            password.getText().toString(),
+                            userName.getText().toString(),
+                            sAddress.getSelectedItem().toString(),
+                            phoneNumber.getText().toString(),
+                            saveUser)) {
+                        getMetaData();
+                    }
+                }
+            }
+        }
     }
 
     public void imageBtn(View view) {
@@ -113,57 +114,57 @@ public class UserCreation extends AppCompatActivity {
         try {
             createUser();
         } catch (Exception e) {
+            progressBar.setVisibility(View.INVISIBLE);
             Log.e(TAG, "Error creating user: " + e);
         }
     }
 
-        public void gotoCamera (View view)
-        {
-            Log.d(TAG, "Going to camera");
-            final String[] options = {"Select image", "Take new image"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Pick an image");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (options[which].equals(options[0])) {
-                        ImageIntent = new Intent(UserCreation.this, FileChooser.class);
-                        ImageIntent.putExtra(messageToCamara, UserCreation.class.getName());
-                        startActivity(ImageIntent);
-                    }
-                    if (options[which].equals(options[1])) {
+    public void gotoCamera(View view) {
+        Log.d(TAG, "Going to camera");
+        final String[] options = {"Select image", "Take new image"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick an image");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (options[which].equals(options[0])) {
+                    ImageIntent = new Intent(UserCreation.this, FileChooser.class);
+                    ImageIntent.putExtra(messageToCamara, UserCreation.class.getName());
+                    startActivity(ImageIntent);
+                }
+                if (options[which].equals(options[1])) {
 
 
-                        ImageIntent = new Intent(UserCreation.this, CamaraIntent.class);
-                        ImageIntent.putExtra(messageToCamara, UserCreation.class.getName());
-                        startActivity(ImageIntent);
-                    }
+                    ImageIntent = new Intent(UserCreation.this, CamaraIntent.class);
+                    ImageIntent.putExtra(messageToCamara, UserCreation.class.getName());
+                    startActivity(ImageIntent);
                 }
-            });
-            builder.show();
-        }
-
-        private void getMetaData () {
-            // Get reference to the file
-            StorageReference forestRef = mStorageRef.child("user-images/" + saveUser);
-            forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                @Override
-                public void onSuccess(StorageMetadata storageMetadata) {
-                    Log.d(TAG, "What is the metaData: " + storageMetadata.getContentType());
-                    Log.d(TAG, "What is the name: " + storageMetadata.getName());
-                    Log.d(TAG, "What is the size: " + storageMetadata.getSizeBytes());
-                    Log.d(TAG, "What is the update Time in millis: " + storageMetadata.getUpdatedTimeMillis());
-                    metaName = storageMetadata.getName();
-                    metaType = storageMetadata.getContentType();
-                    metaSize = storageMetadata.getSizeBytes() + "";
-                    metaUplTime = storageMetadata.getUpdatedTimeMillis() + "";
-                    bllUser.uploadMetaDataToDatabase(metaName, metaType, metaSize, metaUplTime);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Uh-oh, an error occurred!
-                }
-            });
-        }
+            }
+        });
+        builder.show();
     }
+
+    private void getMetaData() {
+        // Get reference to the file
+        StorageReference forestRef = mStorageRef.child("user-images/" + saveUser);
+        forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                Log.d(TAG, "What is the metaData: " + storageMetadata.getContentType());
+                Log.d(TAG, "What is the name: " + storageMetadata.getName());
+                Log.d(TAG, "What is the size: " + storageMetadata.getSizeBytes());
+                Log.d(TAG, "What is the update Time in millis: " + storageMetadata.getUpdatedTimeMillis());
+                metaName = storageMetadata.getName();
+                metaType = storageMetadata.getContentType();
+                metaSize = storageMetadata.getSizeBytes() + "";
+                metaUplTime = storageMetadata.getUpdatedTimeMillis() + "";
+                bllUser.uploadMetaDataToDatabase(metaName, metaType, metaSize, metaUplTime);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
+        });
+    }
+}

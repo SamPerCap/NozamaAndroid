@@ -1,7 +1,6 @@
 package com.example.nozamaandroid.DAL;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -28,7 +27,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 public class DALUser {
 
@@ -36,10 +34,10 @@ public class DALUser {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
     public static String TAG = "DALUser";
-    String userToSave;
-    FirebaseUser fbUser = mAuth.getCurrentUser();
+    String userToSaveId;
     Map<String, Object> userMap;
     Map<String, Object> fileMap;
+    Boolean[] success = new Boolean[2];
 
     FirebaseFirestore db;
 
@@ -72,38 +70,6 @@ public class DALUser {
                     }
                 });
         return user;
-
-        /*Log.d(TAG,"Getting user from Database");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Log.d(TAG, task.getResult().toString());
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        user = new Users();
-                        String getFireStoreAddress = document.getString("Username");
-                        String getFireStoreEmail = document.getString("Email");
-                        String getFireStorePhonenumber = document.getString("Phonenumber");
-                        String getFireStorePictureId = document.getString("PictureId");
-                        String getFireStoreUsername = document.getString("Username");
-
-                        user.setAddress(getFireStoreAddress);
-                        user.setEmail(getFireStoreEmail);
-                        user.setPhoneNumber(getFireStorePhonenumber);
-                        user.setImgId(getFireStorePictureId);
-                        user.setUserName(getFireStoreUsername);
-
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-        return user;*/
     }
 
     public void setUserImage(String userID, final ImageView imageView) {
@@ -126,8 +92,7 @@ public class DALUser {
         });
     }
 
-    public Boolean[] createUser(final Activity userCreation, final String email, final String password) {
-        final Boolean[] successful = new Boolean[1];
+    public Boolean createUser(final Activity userCreation, final String email, final String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(userCreation, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -135,33 +100,31 @@ public class DALUser {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            userToSave = fbUser.getUid();
-                            Log.d(TAG, "What is the D: " + userToSave);
+                            FirebaseUser fbUser = mAuth.getCurrentUser();
+                            userToSaveId = fbUser.getUid();
+                            Log.d(TAG, "What is the D: " + userToSaveId);
+                            success[0] = true;
                             // uploadToStorage(email, password, username, phonenumber, address);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(userCreation.getBaseContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            success[0] = false;
                         }
-                        successful[0] = task.isSuccessful();
-
-                        // ...
                     }
 
                 });
-        return successful;
+        return success[0];
     }
 
-    public Boolean[] uploadToFireStore(final String email, final String password, final String username, final String phonenumber,
+    public Boolean uploadToFireStore(final String email, final String password, final String username, final String phonenumber,
                                        final String address, final String pictureId) {
-        final Boolean[] successUploadToFirestore = new Boolean[1];
-
         try {
             final Users users = new Users();
             userMap = new HashMap<>();
             // FireStoreDatabase initialize
-            Log.d(TAG, "What is the id: " + userToSave);
+            Log.d(TAG, "What is the id: " + userToSaveId);
             userMap.put("Email", email);
             userMap.put("Password", password);
             userMap.put("Username", username);
@@ -172,30 +135,30 @@ public class DALUser {
             // Add a new document with a generated ID
             db = FirebaseFirestore.getInstance();
             db.collection("users")
-                    .document(userToSave)
+                    .document(userToSaveId)
                     .set(userMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + userToSave);
+                            Log.d(TAG, "DocumentSnapshot added with ID: " + userToSaveId);
                             users.setUserName(email);
                             users.setPassword(password);
                             users.setUserName(username);
                             users.setAddress(address);
                             users.setPhoneNumber(phonenumber);
-                            users.setImgId(userToSave);
+                            users.setImgId(pictureId);
 
                             Log.d(TAG, "What is username: " + users.getUserName().toString());
                             Log.d(TAG, "What is password: " + users.getPassword().toString());
-                            Log.d(TAG, "What is the id: " + userToSave);
-                            successUploadToFirestore[0] = true;
+                            Log.d(TAG, "What is the id: " + userToSaveId);
+                            success[1] = true;
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d(TAG, "Error adding document", e);
-                            successUploadToFirestore[0] = false;
+                            success[1] = false;
                         }
                     });
 
@@ -203,9 +166,9 @@ public class DALUser {
         } catch (Error e) {
             Log.d(TAG, "Exception: " + e);
         }
-        StorageReference spaceRef = mStorageRef.child("user-images/" + userToSave);
+        StorageReference spaceRef = mStorageRef.child("user-images/" + userToSaveId);
         Log.d(TAG, "What is ID: " + spaceRef);
-        return successUploadToFirestore;
+        return success[1];
     }
 
     public void uploadMetaDataToDataBase(String metaUplTime, String metaName, String metaSize, String metaType) {
