@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
+import com.example.nozamaandroid.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -42,6 +44,7 @@ public class HomeView extends AppCompatActivity
 
     static CartModel cartModel = CartModel.getInstance();
     Products products = new Products();
+    Users user = new Users();
     AdaptorProduct adapterProduct;
     private static final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
@@ -63,6 +66,7 @@ public class HomeView extends AppCompatActivity
     Toolbar toolbar;
     ImageButton imageButton;
     GridView gridViewProduct;
+    ImageView ivUser;
     /*----------------Firebase----------------*/
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -244,6 +248,7 @@ public class HomeView extends AppCompatActivity
         tvCartCount = findViewById(R.id.countCartSize);
         etSearchBar = findViewById(R.id.searchBox);
         tvUsername = findViewById(R.id.currentUserName);
+        ivUser = findViewById(R.id.userHomeImageView);
 
     }
 
@@ -329,10 +334,10 @@ public class HomeView extends AppCompatActivity
             menuItemLogin.setTitle("Login");
             menuItemAccount.setTitle("Create an account");
         } else {
+            Log.d(TAG,"Getting user information");
             String currentUserId = mAuth.getCurrentUser().getUid();
-            bllUser.getUserInfo(currentUserId);
-            bllUser.getUserImage(currentUserId);
-            Log.d(TAG, "Who is the current user: " + currentUser.getEmail());
+            tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
+            bllUser.setUserImage(currentUserId, ivUser);
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");
         }

@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class UserAccountDetails extends AppCompatActivity {
     EditText etUsername, etAddress, etPhonenumber;
@@ -30,6 +31,7 @@ public class UserAccountDetails extends AppCompatActivity {
     FirebaseFirestore db;
     String TAG = "userAccountDetails";
     Users currentUser;
+    CircularImageView civUserImage;
     BLLUser bllUser = new BLLUser();
 
 
@@ -42,6 +44,7 @@ public class UserAccountDetails extends AppCompatActivity {
         etAddress = findViewById(R.id.address);
         etPhonenumber = findViewById(R.id.phoneNumber);
         tvEmail = findViewById(R.id.userEmail);
+        civUserImage = findViewById(R.id.userProfile);
 
         getUserDetails();
     }
@@ -62,6 +65,7 @@ public class UserAccountDetails extends AppCompatActivity {
             etPhonenumber.setText(currentUser.getPhoneNumber());
             etUsername.setText(currentUser.getUserName());
             tvEmail.setText(currentUser.getEmail());
+            bllUser.setUserImage(currentUserId,civUserImage);
         }
     }
 
