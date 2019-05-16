@@ -17,7 +17,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 
 public class BLLUser {
     DALUser dalUser = new DALUser();
@@ -28,24 +28,31 @@ public class BLLUser {
     public Users getUserInfo(Query docRef) {
         return dalUser.getUserFromDatabase(docRef);
     }
-    public void setUserImage(String userID, ImageView imageView){
-       dalUser.setUserImage(userID, imageView);
+
+    public void setUserImage(String userID, ImageView imageView) {
+        dalUser.setUserImage(userID, imageView);
     }
-    public Boolean[] createUser(Activity userCreation, String email, String password){
+
+    public Boolean[] createUser(Activity userCreation, String email, String password) {
         return dalUser.createUser(userCreation, email, password);
     }
+
     public Boolean[] uploadToFirestore(String email, String password, String username, String address,
-                                  String phonenumber, String pictureId){
+                                       String phonenumber, String pictureId) {
         return dalUser.uploadToFireStore(email, password, username, address, phonenumber, pictureId);
     }
-    public Boolean[] uploadToStorage(String userId, final StorageReference mStorageRef) {
+
+    public Boolean[] uploadToStorage(Bitmap currentImage, String userId, final StorageReference mStorageRef) {
         final Boolean[] uploadToStorageSuccess = new Boolean[1];
         Log.d(TAG, "Starting uploadPictureToFB");
-        Uri file = Uri.fromFile(new File(filePath));
         Log.d(TAG, "What is the current userId: " + userId);
         StorageReference riversRef = mStorageRef.child("user-images/" + userId);
-        Log.d(TAG, "What is Uri file: " + file);
-        riversRef.putFile(file)
+        Bitmap bitmap = currentImage;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        Log.d(TAG, "upload to storage byte: " + data.toString());
+        riversRef.putBytes(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -65,8 +72,8 @@ public class BLLUser {
                 });
         return uploadToStorageSuccess;
     }
-    public String getFilePath(String _filePath, ImageView pictureView)
-    {
+
+    public String getFilePath(String _filePath, ImageView pictureView) {
         try {
             if (_filePath != null) {
                 Log.d(TAG, "is this here?");
@@ -84,7 +91,8 @@ public class BLLUser {
         Log.d(TAG, "let's see what is image: " + _filePath);
         return filePath;
     }
-    public void uploadMetaDataToDatabase(String metaUplTime, String metaName, String metaSize, String metaType){
+
+    public void uploadMetaDataToDatabase(String metaUplTime, String metaName, String metaSize, String metaType) {
         dalUser.uploadMetaDataToDataBase(metaUplTime, metaName, metaSize, metaType);
     }
 
