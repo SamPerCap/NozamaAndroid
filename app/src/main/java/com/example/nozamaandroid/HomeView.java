@@ -302,7 +302,7 @@ public class HomeView extends AppCompatActivity
                     menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
 
-                    tvUsername.setText(R.string.guest);
+                    tvUsername.setText(R.string.Guest);
 
                 }
 
