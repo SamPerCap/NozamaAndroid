@@ -42,6 +42,7 @@ public class DALProduct {
                                 //String getFireStorePictureId = document.getString("pictureId");
                                 String getFireStoreId = document.getId();
                                 product = new Products();
+                                product.setPictureId(document.getString("pictureId"));
                                 product.setProdName(getFireStoreFieldName);
                                 product.setProdDetails(getFireStoreFieldDetails);
                                 product.setProdId(getFireStoreId);
@@ -62,6 +63,7 @@ public class DALProduct {
 
     public void setImageviewById(String pictureId,final ImageResponse response) {
         if (pictureId != null) {
+            Log.d(TAG, "setImageviewById: imageid" + pictureId);
             mStorageRef.child("product-pictures/" + pictureId).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
@@ -80,6 +82,7 @@ public class DALProduct {
                 }
             });
         } else {
+            Log.d(TAG, "setImageviewById: imageid null" );
             response.onResponseReceived(null);
         }
     }

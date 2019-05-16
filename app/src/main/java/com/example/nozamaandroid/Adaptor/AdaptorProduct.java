@@ -59,24 +59,6 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
                     }
                 }
             });
-      
-        /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
-                    getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    // Use the bytes to display the image
-                    Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                    imageView.setImageBitmap(bm);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    imageView.setImageResource(R.drawable.cake);
-                }
-            });*/
-
 
                 return rowView;
 
