@@ -180,7 +180,7 @@
                     android:textStyle="bold"
                     android:textSize="20dp" />
 
-                <EditText
+                <TextView
                     android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
