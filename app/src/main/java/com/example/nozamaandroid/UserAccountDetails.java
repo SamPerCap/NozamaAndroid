@@ -57,7 +57,7 @@ public class UserAccountDetails extends AppCompatActivity {
             currentUserId = getIntent().getExtras().getString(userKey);
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
 
-            currentUser = bllUser.getUserInfo(currentUserId);
+           // currentUser = bllUser.getUserInfo(currentUserId);
             etAddress.setText(currentUser.getAddress());
             etPhonenumber.setText(currentUser.getPhoneNumber());
             etUsername.setText(currentUser.getUserName());

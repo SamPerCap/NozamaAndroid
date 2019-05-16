@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddProduct"></activity>
-        <activity android:name=".UserCreation"></activity>
+        <activity android:name=".UserAccountDetails"></activity>
         <activity android:name=".ProductDetails"></activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".CartView"></activity>

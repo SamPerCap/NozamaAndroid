@@ -10,9 +10,8 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.nozamaandroid.UserCreation;
-import com.example.nozamaandroid.R;
 import com.example.nozamaandroid.UserAccountDetails;
+import com.example.nozamaandroid.R;
 
 public class FileChooser extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
@@ -101,7 +100,7 @@ public class FileChooser extends AppCompatActivity {
         Log.d(TAG, "onActivityResult:1 " + activity.toLowerCase() + " " + addContactName);
         if ( activity.toLowerCase().equals(addContactName) ) {
             Log.d(TAG, " go to: " + addContactName);
-            Intent camaraintent = new Intent(this, UserCreation.class);
+            Intent camaraintent = new Intent(this, UserAccountDetails.class);
             camaraintent.putExtra(messageToCamara, filePath);
             startActivity(camaraintent);
         } else if ( activity.toLowerCase().equals(DetailActivity) ) {

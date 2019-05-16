@@ -43,5 +43,6 @@
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="user_email_com">user@email.com</string>
-    <string name="Guest">Guest</string>
+    <string name="guest">Guest</string>
+    <string name="imageChange">imageChange</string>
 </resources>
