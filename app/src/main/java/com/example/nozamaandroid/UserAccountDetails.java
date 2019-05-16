@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class UserAccountDetails extends AppCompatActivity {
-    EditText etUsername, etAddress, etPhonenumber;
+    EditText etUsername, etPhonenumber;
     TextView tvEmail;
+    Spinner sAddress;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUserFirebase = mAuth.getCurrentUser();
     String userKey = "userKey";
@@ -41,7 +43,7 @@ public class UserAccountDetails extends AppCompatActivity {
         setContentView(R.layout.user_account_details);
 
         etUsername = findViewById(R.id.userName);
-        etAddress = findViewById(R.id.address);
+        sAddress = findViewById(R.id.address);
         etPhonenumber = findViewById(R.id.phoneNumber);
         tvEmail = findViewById(R.id.userEmail);
         civUserImage = findViewById(R.id.userProfile);
@@ -61,12 +63,21 @@ public class UserAccountDetails extends AppCompatActivity {
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
 
             currentUser = bllUser.getUserInfo(currentUserId);
-            etAddress.setText(currentUser.getAddress());
+            sAddress.setSelection(getIndex(sAddress, currentUser.getAddress()));
             etPhonenumber.setText(currentUser.getPhoneNumber());
             etUsername.setText(currentUser.getUserName());
             tvEmail.setText(currentUser.getEmail());
-            bllUser.setUserImage(currentUserId,civUserImage);
+            bllUser.setUserImage(currentUserId, civUserImage);
         }
+    }
+
+    private int getIndex(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void saveEdit(View view) {
@@ -75,7 +86,7 @@ public class UserAccountDetails extends AppCompatActivity {
         db.collection("users").document(currentUserFirebase.getUid())
                 .update(
                         "Username", etUsername.getText().toString(),
-                        "Address", etAddress.getText().toString(),
+                        "Address", sAddress.getSelectedItem().toString(),
                         "Phonenumber", etPhonenumber.getText().toString()
                 );
         finish();
