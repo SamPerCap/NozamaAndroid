@@ -64,6 +64,7 @@ public class UserAccountDetails extends AppCompatActivity {
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
             currentUserId = mAuth.getCurrentUser().getUid();
 
+
             docRef = db.collection("users").whereEqualTo(currentUserId, true);
             docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
