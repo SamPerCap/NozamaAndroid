@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
+import com.example.nozamaandroid.Shared.CamaraIntent;
 import com.example.nozamaandroid.Shared.FileChooser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,6 +36,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +53,7 @@ public class UserCreation extends AppCompatActivity
     Map<String, Object> fileMap = new HashMap<>();
     private FirebaseAuth mAuth;
     String saveUser;
+    String UserCreationName = "UserCreationName";
     private StorageReference mStorageRef;
     Intent ImageIntent;
     String filePath;
@@ -56,13 +61,13 @@ public class UserCreation extends AppCompatActivity
     ProgressBar progressBar;
     String metaName, metaUplTime, metaSize, metaType;
     FirebaseFirestore db;
-
+    UserModel userModel = UserModel.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_creation);
-        //messageToCamara = getString(R.string.activityClass);
+        messageToCamara = getString(R.string.activityClass);
         email = findViewById(R.id.usrEmail3);
         password = findViewById(R.id.usrPw3);
         address = findViewById(R.id.address4);
@@ -72,7 +77,12 @@ public class UserCreation extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
         dref = FirebaseDatabase.getInstance().getReference("users");
-        getFilePath();
+        //getFilePath();
+        Log.d(TAG, "onCreate: "+ userModel.currentImage);
+        if(userModel.currentImage != null)
+        {
+            pictureView.setImageBitmap(userModel.currentImage);
+        }
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -214,12 +224,15 @@ public class UserCreation extends AppCompatActivity
 
     private void uploadToStorage()
     {
-        Log.d(TAG, "Starting uploadPictureToFB");
-        Uri file = Uri.fromFile(new File(filePath));
+      Log.d(TAG, "Starting uploadPictureToFB");
         Log.d(TAG, "What is the current userId: " + saveUser);
-        StorageReference riversRef = mStorageRef.child("user-images/" + saveUser);
-        Log.d(TAG, "What is Uri file: " + file);
-        riversRef.putFile(file)
+          StorageReference riversRef = mStorageRef.child("user-images/" + saveUser);
+        Bitmap bitmap = userModel.currentImage;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        Log.d(TAG, "uploadToStorage byte: "+ data.toString());
+       riversRef.putBytes(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -252,16 +265,16 @@ public class UserCreation extends AppCompatActivity
                 if(options[which].equals(options[0]))
                 {
                     ImageIntent = new Intent(UserCreation.this, FileChooser.class);
-                    ImageIntent.putExtra(messageToCamara,className);
+                    ImageIntent.putExtra(messageToCamara,UserCreation.class.getName());
                     startActivity(ImageIntent);
                 }
                 if(options[which].equals(options[1]))
                 {
 
 
-                    /*ImageIntent = new Intent(this, CamaraIntent.class);
-                    ImageIntent.putExtra(messageToCamara,className);
-                    startActivity(ImageIntent);*/
+                    ImageIntent = new Intent(UserCreation.this, CamaraIntent.class);
+                    ImageIntent.putExtra(messageToCamara,UserCreation.class.getName());
+                    startActivity(ImageIntent);
                 }
             }
         });

@@ -23,8 +23,9 @@
         <activity android:name=".ProductDetails"></activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".CartView"></activity>
-        <activity android:name=".UserAccountDetails"></activity>
+        <activity android:name=".UserCreation"></activity>
         <activity android:name=".Shared.FileChooser"></activity>
+        <activity android:name=".Shared.CamaraIntent"></activity>
     </application>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

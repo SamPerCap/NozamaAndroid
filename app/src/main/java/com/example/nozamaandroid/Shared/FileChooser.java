@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.UserAccountDetails;
 import com.example.nozamaandroid.R;
+import com.example.nozamaandroid.UserCreation;
 
 public class FileChooser extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
@@ -22,12 +26,15 @@ public class FileChooser extends AppCompatActivity {
     String DetailActivity = "detailactivity";
     String BEFriendKey = "selectedFriend";
     String friendIdKey;
-
+    String imageChange;
+    UserModel userModel = UserModel.getInstance();
+    String CreateUserKey = UserCreation.class.getName();
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-        //messageToCamara = getString(R.string.activityClass);
+        messageToCamara = getString(R.string.activityClass);
         friendIdKey = getString(R.string.friendKey);
+        imageChange = getString(R.string.imageChange);
         performFileSearch();
     }
 
@@ -95,22 +102,18 @@ public class FileChooser extends AppCompatActivity {
     }
 
     public void changeActivity() {
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        userModel.changeImage(bitmap);
         Intent intent = getIntent();
         String activity = intent.getStringExtra(messageToCamara);
-        Log.d(TAG, "onActivityResult:1 " + activity.toLowerCase() + " " + addContactName);
-        if ( activity.toLowerCase().equals(addContactName) ) {
-            Log.d(TAG, " go to: " + addContactName);
-            Intent camaraintent = new Intent(this, UserAccountDetails.class);
-            camaraintent.putExtra(messageToCamara, filePath);
+        if(activity.equals(CreateUserKey)) {
+            Log.d(TAG, " go to: " + CreateUserKey);
+            Intent camaraintent = new Intent(this, UserCreation.class);
+            camaraintent.putExtra(messageToCamara,imageChange);
             startActivity(camaraintent);
-        } else if ( activity.toLowerCase().equals(DetailActivity) ) {
-            Log.d(TAG, " go to: " + DetailActivity);
-            Intent camaraintent = new Intent(this, UserAccountDetails.class);
 
-
-            camaraintent.putExtra(messageToCamara, filePath);
-
-            startActivity(camaraintent);
+            finish();
         }
+
     }
 }

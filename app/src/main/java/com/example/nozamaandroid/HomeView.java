@@ -33,6 +33,7 @@ import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
+import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -75,7 +76,7 @@ public class HomeView extends AppCompatActivity
     String Keyword;
     String userKey = "userKey", productKey = "productKey";
     String[] options = new String[]{"Show detail", "Add to cart"};
-
+    UserModel userModel = UserModel.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +156,7 @@ public class HomeView extends AppCompatActivity
     }
 
     public void openCreateUser() {
+        userModel.changeImage(null);
         intent = new Intent(this, UserCreation.class);
         startActivity(intent);
     }
@@ -300,7 +302,7 @@ public class HomeView extends AppCompatActivity
                     menuItemLogin.setTitle("Login");
                     menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
-                    tvUsername.setText(R.string.Guest);
+                    //tvUsername.setText(R.string.guest);
                 }
 
                 break;
@@ -336,8 +338,8 @@ public class HomeView extends AppCompatActivity
         } else {
             Log.d(TAG,"Getting user information");
             String currentUserId = mAuth.getCurrentUser().getUid();
-            tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
-            bllUser.setUserImage(currentUserId, ivUser);
+          //  tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
+            //bllUser.setUserImage(currentUserId, ivUser);
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");
         }
