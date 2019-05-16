@@ -50,9 +50,9 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
             bllProduct.getImageById(_arrayData.get(position).getPictureId(), new ImageResponse() {
                 @Override
-                public void onResponseReceived(Bitmap response) {
+                public void onResponseReceived(Object response) {
                     if(response != null) {
-                        imageView.setImageBitmap(response);
+                        imageView.setImageBitmap((Bitmap)response);
                     }
                     else{
                         imageView.setImageResource(R.drawable.cake);

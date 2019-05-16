@@ -54,9 +54,9 @@ public class ProductDetails extends AppCompatActivity {
 
         bllProducts.getImageById(currentProduct.getPictureId(), new ImageResponse() {
             @Override
-            public void onResponseReceived(Bitmap response) {
+            public void onResponseReceived(Object response) {
                 if(response != null) {
-                    productImage.setImageBitmap(response);
+                    productImage.setImageBitmap((Bitmap) response);
                 }
                 else{
                     productImage.setImageResource(R.drawable.cake);

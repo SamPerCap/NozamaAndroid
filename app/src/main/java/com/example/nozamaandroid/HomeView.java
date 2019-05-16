@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.ObservableList;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -35,6 +36,7 @@ import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -60,6 +62,7 @@ public class HomeView extends AppCompatActivity
     EditText etSearchBar;
     ListView listView;
     TextView tvCartCount, tvUsername;
+    ImageView ivHeaderUsername;
     NavigationView navigationView;
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
@@ -252,7 +255,9 @@ public class HomeView extends AppCompatActivity
         tvCartCount = findViewById(R.id.countCartSize);
         etSearchBar = findViewById(R.id.searchBox);
         tvUsername = findViewById(R.id.currentUserName);
-
+        NavigationView  mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        ivHeaderUsername = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.userHomeImageView);
+       tvUsername = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.currentUserName);
     }
 
 
@@ -304,8 +309,8 @@ public class HomeView extends AppCompatActivity
                     menuItemLogin.setTitle("Login");
                     menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
-
-                    tvUsername.setText(R.string.Guest);
+                    ivHeaderUsername.setImageResource(R.drawable.bag_icon);
+                    tvUsername.setText(R.string.guest);
 
                 }
 
@@ -344,9 +349,19 @@ public class HomeView extends AppCompatActivity
             String currentUserId = mAuth.getCurrentUser().getUid();
             NavigationView  mNavigationView = (NavigationView) findViewById(R.id.nav_view);
 
-             final ImageView image = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.userHomeImageView);
-          //  tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
-            bllUser.setUserImage(currentUserId, image);
+
+          //tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
+            bllUser.setUserImage(currentUserId, new ImageResponse() {
+                @Override
+                public void onResponseReceived(Object response) {
+                    if(response != null) {
+                        ivHeaderUsername.setImageBitmap((Bitmap)response);
+                    }
+                    else{
+                        ivHeaderUsername.setImageResource(R.drawable.cake);
+                    }
+                }
+            });
 
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");

@@ -63,7 +63,6 @@ public class DALProduct {
 
     public void setImageviewById(String pictureId,final ImageResponse response) {
         if (pictureId != null) {
-            Log.d(TAG, "setImageviewById: imageid" + pictureId);
             mStorageRef.child("product-pictures/" + pictureId).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
@@ -82,7 +81,6 @@ public class DALProduct {
                 }
             });
         } else {
-            Log.d(TAG, "setImageviewById: imageid null" );
             response.onResponseReceived(null);
         }
     }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.R;
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -72,7 +73,7 @@ public class DALUser {
         return user;
     }
 
-    public void setUserImage(String userID, final ImageView imageView) {
+    public void setUserImage(String userID, final ImageResponse response) {
         Log.d(TAG, "current userID: " + userID);
         mStorageRef.child("user-images/" + userID).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -81,14 +82,13 @@ public class DALUser {
 
                 // Use the bytes to display the image
                 Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                imageView.setImageBitmap(bm);
+                response.onResponseReceived(bm);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
-                imageView.setImageResource(R.drawable.bag_icon);
+                response.onResponseReceived(null);
                 Log.d(TAG, "Error with getting the current user image: " + exception);
             }
         });

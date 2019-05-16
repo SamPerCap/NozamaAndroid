@@ -1,6 +1,7 @@
 package com.example.nozamaandroid;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.Users;
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -73,7 +75,17 @@ public class UserAccountDetails extends AppCompatActivity {
                     etPhonenumber.setText(currentUser.getPhoneNumber());
                     etUsername.setText(currentUser.getUserName());
                     tvEmail.setText(currentUser.getEmail());
-                    bllUser.setUserImage(currentUserId, civUserImage);
+                    bllUser.setUserImage(currentUserId, new ImageResponse() {
+                        @Override
+                        public void onResponseReceived(Object response) {
+                            if(response != null) {
+                                civUserImage.setImageBitmap((Bitmap)response);
+                            }
+                            else{
+                                civUserImage.setImageResource(R.drawable.cake);
+                            }
+                        }
+                    });
                 }
             });
             //sAddress.setSelection(getIndex(sAddress, currentUser.getAddress()));

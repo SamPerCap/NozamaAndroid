@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.Users;
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -32,8 +33,8 @@ public class BLLUser {
     }
 
 
-    public void setUserImage(String userID, ImageView imageView) {
-        dalUser.setUserImage(userID, imageView);
+    public void setUserImage(String userID, ImageResponse imageResponse) {
+        dalUser.setUserImage(userID, imageResponse);
     }
 
     public Boolean createUser(Activity userCreation, String email, String password) {
