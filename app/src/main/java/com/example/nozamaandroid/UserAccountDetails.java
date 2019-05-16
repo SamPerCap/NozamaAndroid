@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,21 +19,26 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class UserAccountDetails extends AppCompatActivity {
-    EditText etUsername, etAddress, etPhonenumber;
+    EditText etUsername, etPhonenumber;
     TextView tvEmail;
+    Spinner sAddress;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUserFirebase = mAuth.getCurrentUser();
-    String userKey = "userKey";
     String currentUserId;
-    FirebaseFirestore db;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     String TAG = "userAccountDetails";
     Users currentUser;
     CircularImageView civUserImage;
     BLLUser bllUser = new BLLUser();
+    Query docRef;
 
 
     @Override
@@ -41,7 +47,7 @@ public class UserAccountDetails extends AppCompatActivity {
         setContentView(R.layout.user_account_details);
 
         etUsername = findViewById(R.id.userName);
-        etAddress = findViewById(R.id.address);
+        sAddress = findViewById(R.id.address);
         etPhonenumber = findViewById(R.id.phoneNumber);
         tvEmail = findViewById(R.id.userEmail);
         civUserImage = findViewById(R.id.userProfile);
@@ -52,21 +58,36 @@ public class UserAccountDetails extends AppCompatActivity {
     private void getUserDetails() {
         if (currentUserFirebase == null) {
             Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeView.class);
-            startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, currentUserFirebase.getEmail() + " is logged in.", Toast.LENGTH_SHORT).show();
-            currentUserId = getIntent().getExtras().getString(userKey);
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
+            currentUserId = mAuth.getCurrentUser().getUid();
 
-           // currentUser = bllUser.getUserInfo(currentUserId);
-            etAddress.setText(currentUser.getAddress());
-            etPhonenumber.setText(currentUser.getPhoneNumber());
-            etUsername.setText(currentUser.getUserName());
-            tvEmail.setText(currentUser.getEmail());
-            bllUser.setUserImage(currentUserId,civUserImage);
+
+            docRef = db.collection("users").whereEqualTo(currentUserId, true);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    currentUser = bllUser.getUserInfo(docRef);
+                    etPhonenumber.setText(currentUser.getPhoneNumber());
+                    etUsername.setText(currentUser.getUserName());
+                    tvEmail.setText(currentUser.getEmail());
+                    bllUser.setUserImage(currentUserId, civUserImage);
+                }
+            });
+            //sAddress.setSelection(getIndex(sAddress, currentUser.getAddress()));
+
         }
+    }
+
+    private int getIndex(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void saveEdit(View view) {
@@ -75,7 +96,7 @@ public class UserAccountDetails extends AppCompatActivity {
         db.collection("users").document(currentUserFirebase.getUid())
                 .update(
                         "Username", etUsername.getText().toString(),
-                        "Address", etAddress.getText().toString(),
+                        "Address", sAddress.getSelectedItem().toString(),
                         "Phonenumber", etPhonenumber.getText().toString()
                 );
         finish();
