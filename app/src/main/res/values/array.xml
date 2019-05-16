@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cities">
+        <item>Choose Address</item>
+        <item>Esbjerg</item>
+        <item>Aarhus</item>
+        <item>Kolding</item>
+        <item>Odense</item>
+        <item>Sonderborg</item>
+    </string-array>
+</resources>

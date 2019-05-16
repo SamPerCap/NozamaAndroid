@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.UserModel;
@@ -45,7 +46,8 @@ public class UserCreation extends AppCompatActivity
 {
     String className  ="UserCreation";
     String messageToCamara = "mKey";
-    EditText email, password, address, phoneNumber, userName;
+    EditText email, password, phoneNumber, userName;
+    Spinner sAddress;
     DatabaseReference dref;
     public static String TAG = "ProductApp";
     String userKey = "userKey", passwordKey = "passwordKey", nameKey = "nameKey", addressKey = "addressKey", phoneKey = "phoneKey", userImgId = "imgId";
@@ -70,7 +72,7 @@ public class UserCreation extends AppCompatActivity
         messageToCamara = getString(R.string.activityClass);
         email = findViewById(R.id.usrEmail3);
         password = findViewById(R.id.usrPw3);
-        address = findViewById(R.id.address4);
+        sAddress = findViewById(R.id.address4);
         phoneNumber = findViewById(R.id.phonenumber3);
         userName = findViewById(R.id.userName4);
         pictureView = findViewById(R.id.userPic);
@@ -157,7 +159,7 @@ public class UserCreation extends AppCompatActivity
             userMap.put("Email", email.getText().toString());
             userMap.put("Password", password.getText().toString());
             userMap.put("Username", userName.getText().toString());
-            userMap.put("Address", address.getText().toString());
+            userMap.put("Address", sAddress.getSelectedItem().toString());
             userMap.put("Phonenumber", phoneNumber.getText().toString());
             userMap.put("PictureId", saveUser);
 
@@ -172,7 +174,7 @@ public class UserCreation extends AppCompatActivity
                             users.setUserName(email.getText().toString());
                             users.setPassword(password.getText().toString());
                             users.setUserName(userName.getText().toString());
-                            users.setAddress(address.getText().toString());
+                            users.setAddress(sAddress.getSelectedItem().toString());
                             users.setPhoneNumber(phoneNumber.getText().toString());
                             users.setImgId(saveUser);
 

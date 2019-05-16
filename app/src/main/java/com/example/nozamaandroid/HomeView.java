@@ -215,7 +215,6 @@ public class HomeView extends AppCompatActivity
     public void loginView() {
         intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
-        finish();
     }
 
     public void setupSideNavBar() {
@@ -302,7 +301,9 @@ public class HomeView extends AppCompatActivity
                     menuItemLogin.setTitle("Login");
                     menuItemAccount.setTitle("Create an account");
                     Toast.makeText(this, "You have logged out, thank you and please come again. :-)", Toast.LENGTH_LONG).show();
-                    //tvUsername.setText(R.string.guest);
+
+                    tvUsername.setText(R.string.guest);
+
                 }
 
                 break;
@@ -315,7 +316,6 @@ public class HomeView extends AppCompatActivity
 
     private void openAccountDetails() {
         intent = new Intent(this, UserAccountDetails.class);
-        intent.putExtra(userKey, getIntent().getExtras().getString(userKey));
         startActivity(intent);
     }
 
@@ -338,7 +338,9 @@ public class HomeView extends AppCompatActivity
         } else {
             Log.d(TAG,"Getting user information");
             String currentUserId = mAuth.getCurrentUser().getUid();
-          //  tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
+
+           // String name = bllUser.getUserInfo(currentUserId).getUserName();
+            //tvUsername.setText(name);
             //bllUser.setUserImage(currentUserId, ivUser);
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");

@@ -13,8 +13,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -23,27 +25,54 @@ public class DALUser {
     Users user;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
-    DocumentReference docRef;
     public static String TAG = "DALUser";
 
 
-    public Users getUserFromDatabase(String userID) {
-        Log.d(TAG,"Getting user from Database");
-        docRef = db.collection("users").document(userID);
+    public Users getUserFromDatabase(Query docRef) {
+        docRef.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                user = new Users();
+
+                                String getFireStoreAddress = document.getString("Address");
+                                String getFireStoreEmail = document.getString("Email");
+                                String getFireStorePhonenumber = document.getString("Phonenumber");
+                               // String getFireStorePictureId = document.getString("PictureId");
+                                String getFireStoreUsername = document.getString("Username");
+
+                                //user.setImgId(getFireStorePictureId);
+                                user.setAddress(getFireStoreAddress);
+                                user.setPhoneNumber(getFireStorePhonenumber);
+                                user.setEmail(getFireStoreEmail);
+                                user.setUserName(getFireStoreUsername);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        return user;
+
+        /*Log.d(TAG,"Getting user from Database");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Log.d(TAG, task.getResult().toString());
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         user = new Users();
-                        String getFireStoreAddres = document.getString("Username");
+                        String getFireStoreAddress = document.getString("Username");
                         String getFireStoreEmail = document.getString("Email");
                         String getFireStorePhonenumber = document.getString("Phonenumber");
                         String getFireStorePictureId = document.getString("PictureId");
                         String getFireStoreUsername = document.getString("Username");
 
-                        user.setAddress(getFireStoreAddres);
+                        user.setAddress(getFireStoreAddress);
                         user.setEmail(getFireStoreEmail);
                         user.setPhoneNumber(getFireStorePhonenumber);
                         user.setImgId(getFireStorePictureId);
@@ -58,7 +87,7 @@ public class DALUser {
                 }
             }
         });
-        return user;
+        return user;*/
     }
 
     public void setUserImage(String userID, final ImageView imageView) {

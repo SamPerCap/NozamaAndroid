@@ -10,7 +10,6 @@ public class Users {
     private String address;
     private String phoneNumber;
     private String imgId;
-    private ArrayList<String> order;
 
     public Users() {
 
@@ -80,14 +79,6 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public ArrayList<String> getOrder() {
-        return order;
-    }
-
-    public void setOrder(ArrayList<String> order) {
-        this.order = order;
     }
 
 }
