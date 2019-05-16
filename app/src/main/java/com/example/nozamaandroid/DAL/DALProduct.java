@@ -40,12 +40,13 @@ public class DALProduct {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String getFireStoreFieldName = document.getString("name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");
+                                String getFireStorePictureId = document.getString("pictureId");
                                 String getFireStoreId = document.getId();
                                 product = new Products();
                                 product.setProdName(getFireStoreFieldName);
                                 product.setProdDetails(getFireStoreFieldDetails);
                                 product.setProdId(getFireStoreId);
-                                product.setPictureId(document.getString("pictureId"));
+                                product.setPictureId(getFireStorePictureId);
                                 productsArrayList.add(product);
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.i(TAG, "What is value: " + getFireStoreFieldName);
