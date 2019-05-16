@@ -21,7 +21,7 @@
             android:title="@string/menu_electrical_appliance" />
     </group>
 
-    <item android:title="Settings">
+    <item android:title="@string/settings">
         <menu>
             <item
                 android:id="@+id/nav_account"
