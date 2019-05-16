@@ -19,7 +19,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class UserAccountDetails extends AppCompatActivity {
@@ -28,13 +32,13 @@ public class UserAccountDetails extends AppCompatActivity {
     Spinner sAddress;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUserFirebase = mAuth.getCurrentUser();
-    String userKey = "userKey";
     String currentUserId;
-    FirebaseFirestore db;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     String TAG = "userAccountDetails";
     Users currentUser;
     CircularImageView civUserImage;
     BLLUser bllUser = new BLLUser();
+    Query docRef;
 
 
     @Override
@@ -54,20 +58,25 @@ public class UserAccountDetails extends AppCompatActivity {
     private void getUserDetails() {
         if (currentUserFirebase == null) {
             Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeView.class);
-            startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, currentUserFirebase.getEmail() + " is logged in.", Toast.LENGTH_SHORT).show();
-            currentUserId = getIntent().getExtras().getString(userKey);
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
+            currentUserId = mAuth.getCurrentUser().getUid();
 
-            currentUser = bllUser.getUserInfo(currentUserId);
-            sAddress.setSelection(getIndex(sAddress, currentUser.getAddress()));
-            etPhonenumber.setText(currentUser.getPhoneNumber());
-            etUsername.setText(currentUser.getUserName());
-            tvEmail.setText(currentUser.getEmail());
-            bllUser.setUserImage(currentUserId, civUserImage);
+            docRef = db.collection("users").whereEqualTo(currentUserId, true);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    currentUser = bllUser.getUserInfo(docRef);
+                    etPhonenumber.setText(currentUser.getPhoneNumber());
+                    etUsername.setText(currentUser.getUserName());
+                    tvEmail.setText(currentUser.getEmail());
+                    bllUser.setUserImage(currentUserId, civUserImage);
+                }
+            });
+            //sAddress.setSelection(getIndex(sAddress, currentUser.getAddress()));
+
         }
     }
 

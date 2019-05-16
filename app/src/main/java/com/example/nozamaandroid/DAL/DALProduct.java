@@ -40,20 +40,20 @@ public class DALProduct {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String getFireStoreFieldName = document.getString("name");
                                 String getFireStoreFieldDetails = document.getString("Product Details");
-                                String getFireStorePictureId = document.getString("pictureId");
+                                //String getFireStorePictureId = document.getString("pictureId");
                                 String getFireStoreId = document.getId();
                                 product = new Products();
                                 product.setProdName(getFireStoreFieldName);
                                 product.setProdDetails(getFireStoreFieldDetails);
                                 product.setProdId(getFireStoreId);
-                                product.setPictureId(getFireStorePictureId);
+                                //product.setPictureId(getFireStorePictureId);
                                 productsArrayList.add(product);
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.i(TAG, "What is value: " + getFireStoreFieldName);
                             }
                             Log.d(TAG, "onComplete: " + productsArrayList);
                         } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
+                            Log.d(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
