@@ -67,8 +67,10 @@ public class DALUser {
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
+
                 // Use the bytes to display the image
                 Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
                 imageView.setImageBitmap(bm);
             }
         }).addOnFailureListener(new OnFailureListener() {

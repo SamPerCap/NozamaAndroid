@@ -11,7 +11,7 @@ public class BLLUser {
     public Users getUserInfo(String userID) {
         return dalUser.getUserFromDatabase(userID);
     }
-    public void setUserImage(String userID, ImageView imageView){
+    public void setUserImage(String userID, final ImageView imageView){
        dalUser.setUserImage(userID, imageView);
     }
     public void createUser(String email, String password){

@@ -67,8 +67,7 @@ public class HomeView extends AppCompatActivity
     Toolbar toolbar;
     ImageButton imageButton;
     GridView gridViewProduct;
-    ImageView ivUser;
-    /*----------------Firebase----------------*/
+        /*----------------Firebase----------------*/
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
     /*----------------Strings----------------*/
@@ -148,7 +147,10 @@ public class HomeView extends AppCompatActivity
                     tvCartCount.setVisibility(View.INVISIBLE);
             }
         });
+
     }
+
+
 
     public void openUserView(View view) {
         intent = new Intent(this, AddProduct.class);
@@ -235,6 +237,7 @@ public class HomeView extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private ArrayList<Products> getProductsFromDatabase() {
@@ -250,7 +253,6 @@ public class HomeView extends AppCompatActivity
         tvCartCount = findViewById(R.id.countCartSize);
         etSearchBar = findViewById(R.id.searchBox);
         tvUsername = findViewById(R.id.currentUserName);
-        ivUser = findViewById(R.id.userHomeImageView);
 
     }
 
@@ -274,6 +276,7 @@ public class HomeView extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         switch (id) {
@@ -322,14 +325,15 @@ public class HomeView extends AppCompatActivity
     private void getMenuItem() {
         menuItemLogin = navigationView.getMenu().findItem(R.id.nav_log_out);
         menuItemAccount = navigationView.getMenu().findItem(R.id.nav_account);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
+        Log.d(TAG, "onStart: " + menuItemLogin);
         getMenuItem();
-
         if (currentUser == null) {
             Log.d(TAG, "No one is logged in");
             Toast.makeText(this, "You are currently not logged in.", Toast.LENGTH_SHORT).show();
@@ -338,8 +342,11 @@ public class HomeView extends AppCompatActivity
         } else {
             Log.d(TAG,"Getting user information");
             String currentUserId = mAuth.getCurrentUser().getUid();
+            NavigationView  mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+
+             final ImageView image = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.userHomeImageView);
           //  tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
-            //bllUser.setUserImage(currentUserId, ivUser);
+            bllUser.setUserImage(currentUserId, image);
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");
         }

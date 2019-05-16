@@ -4,10 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.ImageView;
 
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.example.nozamaandroid.Models.Products;
-import com.example.nozamaandroid.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -61,7 +60,7 @@ public class DALProduct {
     }
 
 
-    public void setImageviewById(String pictureId, final ImageView imageView) {
+    public void setImageviewById(String pictureId,final ImageResponse response) {
         if (pictureId != null) {
             mStorageRef.child("product-pictures/" + pictureId).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -69,18 +68,19 @@ public class DALProduct {
                 public void onSuccess(byte[] bytes) {
                     // Use the bytes to display the image
                     Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    imageView.setImageBitmap(bm);
+                    response.onResponseReceived(bm);
+                    //imageView.setImageBitmap(bm);
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
-                    imageView.setImageResource(R.drawable.cake);
+                    response.onResponseReceived(null);
                 }
             });
         } else {
-            imageView.setImageResource(R.drawable.cake);
+            response.onResponseReceived(null);
         }
     }
 }

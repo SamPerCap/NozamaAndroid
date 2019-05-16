@@ -1,5 +1,6 @@
 package com.example.nozamaandroid;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
@@ -49,7 +51,18 @@ public class ProductDetails extends AppCompatActivity {
         productName.setText(currentProduct.getProdName());
         productDetail.setText(currentProduct.getProdDetails());
 //        productPrice.setText(currentProduct.getPrice());
-        bllProducts.getImageById(currentProduct.getPictureId(), productImage);
+
+        bllProducts.getImageById(currentProduct.getPictureId(), new ImageResponse() {
+            @Override
+            public void onResponseReceived(Bitmap response) {
+                if(response != null) {
+                    productImage.setImageBitmap(response);
+                }
+                else{
+                    productImage.setImageResource(R.drawable.cake);
+                }
+            }
+        });
 
 
         Log.d(TAG, "Rating value: " + prodRating.getRating());

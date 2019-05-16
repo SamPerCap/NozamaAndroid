@@ -1,6 +1,7 @@
 package com.example.nozamaandroid.Adaptor;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
+import com.example.nozamaandroid.Shared.ImageResponse;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -46,7 +48,17 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             TextView txtPrice = (TextView) rowView.findViewById(R.id.product_price_HomeView);
             txtPrice.setText(_arrayData.get(position).getProdDetails()+" DKK");
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
-            bllProduct.getImageById(_arrayData.get(position).getPictureId(), imageView);
+            bllProduct.getImageById(_arrayData.get(position).getPictureId(), new ImageResponse() {
+                @Override
+                public void onResponseReceived(Bitmap response) {
+                    if(response != null) {
+                        imageView.setImageBitmap(response);
+                    }
+                    else{
+                        imageView.setImageResource(R.drawable.cake);
+                    }
+                }
+            });
       
         /*    mStorageRef.child("product-pictures/"+ _arrayData.get(position).getPictureId()).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
