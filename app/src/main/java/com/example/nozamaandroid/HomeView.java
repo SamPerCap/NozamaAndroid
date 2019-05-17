@@ -362,6 +362,16 @@ public class HomeView extends AppCompatActivity
                     }
                 }
             });
+            bllUser.getUserById(currentUserId, new OnResponse() {
+                @Override
+                public void onResponseReceived(Object response) {
+                    if(response != null)
+                    {
+                        Users user = (Users)response;
+                        tvUsername.setText(user.getUserName());
+                    }
+                }
+            });
 
             menuItemLogin.setTitle("Logout");
             menuItemAccount.setTitle("Account details");
