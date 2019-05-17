@@ -21,26 +21,15 @@ import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.CamaraIntent;
 import com.example.nozamaandroid.Shared.FileChooser;
 import com.example.nozamaandroid.Shared.OnResponse;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
 
 public class UserCreation extends AppCompatActivity {
     EditText email, password, phoneNumber, userName;
     Spinner sAddress;
-    DatabaseReference dref;
     public static String TAG = "Usercreation";
     Intent ImageIntent;
-    FirebaseAuth mAuth;
-    String filePath;
     private ImageView pictureView;
     ProgressBar progressBar;
     BLLUser bllUser = new BLLUser();
@@ -51,15 +40,7 @@ public class UserCreation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_creation);
         setUpItems();
-        dref = FirebaseDatabase.getInstance().getReference("users");
-        bllUser.getFilePath(filePath, pictureView);
-        dref = FirebaseDatabase.getInstance().getReference("users");
-      /*  Log.d(TAG, "onCreate: " + userModel.preImage);
-        if (userModel.currentImage != null) {
-            pictureView.setImageBitmap(userModel.currentImage);
-        }*/
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+
     }
 
     private void setUpItems() {
@@ -117,8 +98,6 @@ public class UserCreation extends AppCompatActivity {
                     Log.d(TAG, "onResponseReceived: " + response);
                 }
             });
-
-
         }
                 else {
             Toast.makeText(this, "ERROR. need more data", Toast.LENGTH_LONG);
