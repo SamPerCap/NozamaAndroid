@@ -98,47 +98,30 @@ public class UserAccountDetails extends AppCompatActivity {
 
 
     public void saveEdit(View view) {
+        currentUser.setUserName(etUsername.getText().toString());
+        currentUser.setAddress(sAddress.getSelectedItem().toString());
+        currentUser.setPhoneNumber(etPhonenumber.getText().toString());
+
         currentUserFirebase = mAuth.getCurrentUser();
-      //  userModel.updateUser()
-        db = FirebaseFirestore.getInstance();
-        db.collection("users").document(currentUserFirebase.getUid())
-                .update(
-                        "Username", etUsername.getText().toString(),
-                        "Address", sAddress.getSelectedItem().toString(),
-                        "Phonenumber", etPhonenumber.getText().toString()
-                );
-        finish();
+        bllUser.updateUser(currentUser,mAuth.getCurrentUser().getUid());
+      finish();
     }
 
     public void removeAccount(View view) {
         currentUserFirebase = mAuth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
-        db.collection("users").document(currentUserFirebase.getUid())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        bllUser.removeAccount(currentUser.getUserId(), new OnResponse() {
+            @Override
+            public void onResponseReceived(Object response) {
+                if(response != null)
+                {
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(UserAccountDetails.this, "User not delete", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-        user.delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User account deleted.");
-                            Toast.makeText(UserAccountDetails.this, "User account has been successfully deleted.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        finish();
     }
 }

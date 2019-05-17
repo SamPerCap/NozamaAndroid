@@ -5,10 +5,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.MetaData;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.OnResponse;
+import com.example.nozamaandroid.UserAccountDetails;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -263,6 +265,54 @@ public class DALUser {
                 }
             }
         });
+
+    }
+
+    public void updateUser(Users currentUser, String uid) {
+        db = FirebaseFirestore.getInstance();
+        db.collection("users").document(uid)
+                .update(
+                        "Username", currentUser.getUserName(),
+                        "Address", currentUser.getAddress(),
+                        "Phonenumber", currentUser.getPhoneNumber()
+                );
+    }
+
+    public void removeAccount(String userId, final OnResponse response) {
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                        user.delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "User account deleted.");
+                                            response.onResponseReceived("done");
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                response.onResponseReceived(null);
+                            }
+                        });
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        response.onResponseReceived(null);
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
 
     }
 }

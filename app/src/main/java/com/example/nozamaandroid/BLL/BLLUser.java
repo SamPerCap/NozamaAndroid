@@ -63,4 +63,12 @@ public class BLLUser {
     public void getImageById(String uid, OnResponse response) {
         dalUser.setUserImage(uid,response);
     }
+
+    public void updateUser(Users currentUser, String uid) {
+        dalUser.updateUser(currentUser,uid);
+    }
+
+    public void removeAccount(String userId,OnResponse response) {
+        dalUser.removeAccount(userId,response);
+    }
 }
