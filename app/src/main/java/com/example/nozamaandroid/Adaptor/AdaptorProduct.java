@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.R;
-import com.example.nozamaandroid.Shared.ImageResponse;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -48,7 +48,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             TextView txtPrice = (TextView) rowView.findViewById(R.id.product_price_HomeView);
             txtPrice.setText(_arrayData.get(position).getProdDetails()+" DKK");
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
-            bllProduct.getImageById(_arrayData.get(position).getPictureId(), new ImageResponse() {
+            bllProduct.getImageById(_arrayData.get(position).getPictureId(), new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
                     if(response != null) {

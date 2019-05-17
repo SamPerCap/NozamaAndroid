@@ -36,7 +36,7 @@ import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
-import com.example.nozamaandroid.Shared.ImageResponse;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -161,7 +161,7 @@ public class HomeView extends AppCompatActivity
     }
 
     public void openCreateUser() {
-        userModel.changeImage(null);
+        userModel.changePreImage(null);
         intent = new Intent(this, UserCreation.class);
         startActivity(intent);
     }
@@ -351,7 +351,7 @@ public class HomeView extends AppCompatActivity
 
 
           //tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
-            bllUser.setUserImage(currentUserId, new ImageResponse() {
+            bllUser.setUserImage(currentUserId, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
                     if(response != null) {

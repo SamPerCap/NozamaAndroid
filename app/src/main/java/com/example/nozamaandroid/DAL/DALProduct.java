@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.nozamaandroid.Shared.ImageResponse;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.example.nozamaandroid.Models.Products;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,7 +61,7 @@ public class DALProduct {
     }
 
 
-    public void setImageviewById(String pictureId,final ImageResponse response) {
+    public void setImageviewById(String pictureId,final OnResponse response) {
         if (pictureId != null) {
             mStorageRef.child("product-pictures/" + pictureId).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {

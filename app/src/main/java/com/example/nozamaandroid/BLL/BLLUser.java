@@ -3,21 +3,14 @@ package com.example.nozamaandroid.BLL;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.Users;
-import com.example.nozamaandroid.Shared.ImageResponse;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
@@ -25,7 +18,6 @@ public class BLLUser {
     DALUser dalUser = new DALUser();
     String TAG = "BLLUser";
     String filePath;
-    Boolean[] success = new Boolean[1];
 
 
     public Users getUserInfo(Query docRef) {
@@ -33,48 +25,16 @@ public class BLLUser {
     }
 
 
-    public void setUserImage(String userID, ImageResponse imageResponse) {
-        dalUser.setUserImage(userID, imageResponse);
+    public void setUserImage(String userID, OnResponse onResponse) {
+        dalUser.setUserImage(userID, onResponse);
     }
 
-    public Boolean createUser(Activity userCreation, String email, String password) {
+    /*public Boolean createUser(Activity userCreation, String email, String password) {
         return dalUser.createUser(userCreation, email, password);
-    }
+    }*/
 
-    public Boolean uploadToFirestore(String email, String password, String username, String address,
-                                     String phonenumber, String pictureId) {
-        return dalUser.uploadToFireStore(email, password, username, address, phonenumber, pictureId);
-    }
 
-    public Boolean uploadToStorage(Bitmap currentImage, String userId, final StorageReference mStorageRef) {
-        Log.d(TAG, "Starting uploadPictureToFB");
-        Log.d(TAG, "What is the current userId: " + userId);
-        StorageReference riversRef = mStorageRef.child("user-images/" + userId);
-        Bitmap bitmap = currentImage;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-        Log.d(TAG, "upload to storage byte: " + data.toString());
-        riversRef.putBytes(data)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
-                        Task<Uri> downloadUrl = mStorageRef.getDownloadUrl();
-                        Log.d(TAG, "What is downloadURL: " + downloadUrl + " and name: " + mStorageRef.getName());
-                        success[0] = true;
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        Log.d(TAG, "Failed to upload an image to storage: " + exception);
-                        success[0] = false;
-                    }
-                });
-        return success[0];
-    }
+
 
     public String getFilePath(String _filePath, ImageView pictureView) {
         try {
@@ -95,8 +55,15 @@ public class BLLUser {
         return filePath;
     }
 
-    public void uploadMetaDataToDatabase(String metaUplTime, String metaName, String metaSize, String metaType) {
-        dalUser.uploadMetaDataToDataBase(metaUplTime, metaName, metaSize, metaType);
-    }
 
+    public void createUser(Users user, Bitmap currentImage, OnResponse onResponse) {
+        Log.d(TAG, "Starting uploadPictureToFB");
+        Log.d(TAG, "What is the current userId: " + user.getUserId());
+        Bitmap bitmap = currentImage;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        Log.d(TAG, "upload to storage byte: " + data.toString());
+        dalUser.createUser(user, data,onResponse);
+    }
 }

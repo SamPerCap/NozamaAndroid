@@ -1,6 +1,5 @@
 package com.example.nozamaandroid;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,15 +13,13 @@ import android.widget.Toast;
 
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.Users;
-import com.example.nozamaandroid.Shared.ImageResponse;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -75,7 +72,7 @@ public class UserAccountDetails extends AppCompatActivity {
                     etPhonenumber.setText(currentUser.getPhoneNumber());
                     etUsername.setText(currentUser.getUserName());
                     tvEmail.setText(currentUser.getEmail());
-                    bllUser.setUserImage(currentUserId, new ImageResponse() {
+                    bllUser.setUserImage(currentUserId, new OnResponse() {
                         @Override
                         public void onResponseReceived(Object response) {
                             if(response != null) {

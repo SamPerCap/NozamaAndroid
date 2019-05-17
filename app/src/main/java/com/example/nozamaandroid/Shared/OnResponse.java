@@ -4,6 +4,6 @@ import android.graphics.Bitmap;
 
 import org.json.JSONObject;
 
-public interface ImageResponse<T> {
+public interface OnResponse<T> {
     void onResponseReceived(T response);
 }

@@ -1,6 +1,6 @@
 package com.example.nozamaandroid.BLL;
 
-import com.example.nozamaandroid.Shared.ImageResponse;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.example.nozamaandroid.DAL.DALProduct;
 import com.example.nozamaandroid.Models.Products;
 
@@ -13,8 +13,8 @@ public class BLLProducts {
        return dalProduct.readProductsFromDatabase();
     }
 
-    public void getImageById(String pictureId, ImageResponse imageResponse) {
-        dalProduct.setImageviewById(pictureId, imageResponse);
+    public void getImageById(String pictureId, OnResponse onResponse) {
+        dalProduct.setImageviewById(pictureId, onResponse);
     }
 
 }

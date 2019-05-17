@@ -19,22 +19,12 @@ import com.example.nozamaandroid.UserCreation;
 
 public class FileChooser extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
-    String messageToCamara = "mKey";
     String filePath;
     String TAG = "FileCHooser";
-    String addContactName = "daluser";
-    String DetailActivity = "detailactivity";
-    String BEFriendKey = "selectedFriend";
-    String friendIdKey;
-    String imageChange;
     UserModel userModel = UserModel.getInstance();
-    String CreateUserKey = UserCreation.class.getName();
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-        messageToCamara = getString(R.string.activityClass);
-        friendIdKey = getString(R.string.friendKey);
-        imageChange = getString(R.string.imageChange);
         performFileSearch();
     }
 
@@ -103,17 +93,9 @@ public class FileChooser extends AppCompatActivity {
 
     public void changeActivity() {
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-        userModel.changeImage(bitmap);
-        Intent intent = getIntent();
-        String activity = intent.getStringExtra(messageToCamara);
-        if(activity.equals(CreateUserKey)) {
-            Log.d(TAG, " go to: " + CreateUserKey);
-            Intent camaraintent = new Intent(this, UserCreation.class);
-            camaraintent.putExtra(messageToCamara,imageChange);
-            startActivity(camaraintent);
+        userModel.changePreImage(bitmap);
+        finish();
 
-            finish();
-        }
 
     }
 }

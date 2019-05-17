@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nozamaandroid.Shared.ImageResponse;
+import com.example.nozamaandroid.Shared.OnResponse;
 import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
@@ -52,7 +52,7 @@ public class ProductDetails extends AppCompatActivity {
         productDetail.setText(currentProduct.getProdDetails());
 //        productPrice.setText(currentProduct.getPrice());
 
-        bllProducts.getImageById(currentProduct.getPictureId(), new ImageResponse() {
+        bllProducts.getImageById(currentProduct.getPictureId(), new OnResponse() {
             @Override
             public void onResponseReceived(Object response) {
                 if(response != null) {

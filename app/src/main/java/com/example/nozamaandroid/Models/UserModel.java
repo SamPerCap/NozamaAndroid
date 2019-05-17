@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 public class UserModel {
     private static UserModel instance;
-    public Bitmap currentImage;
+    public Bitmap preImage;
     public static UserModel getInstance() {
         if (instance == null) {
             synchronized (UserModel.class) {
@@ -15,9 +15,9 @@ public class UserModel {
         }
         return instance;
     }
-    public void changeImage(Bitmap bitmap)
+    public void changePreImage(Bitmap bitmap)
     {
-        currentImage = bitmap;
+        preImage = bitmap;
     }
 
 }

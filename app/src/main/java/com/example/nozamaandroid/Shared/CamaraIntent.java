@@ -73,7 +73,7 @@ public class CamaraIntent extends AppCompatActivity {
 
             Bundle b = data.getExtras();
             image = (Bitmap) b.get("data");
-           userModel.changeImage(image);
+           userModel.changePreImage(image);
            changeActivity();
         }
         else
@@ -82,17 +82,14 @@ public class CamaraIntent extends AppCompatActivity {
 
         }
     }
+
+
+
     private void changeActivity()
     {
-        Intent intent = getIntent();
-        String activity = intent.getStringExtra(messageToCamara);
-        if(activity.equals(CreateUserKey)) {
-            Log.d(TAG, " go to: " + CreateUserKey);
-            Intent camaraintent = new Intent(this, UserCreation.class);
-            camaraintent.putExtra(messageToCamara,imageChange);
-            startActivity(camaraintent);
+            Log.d(TAG, " finish: camara " );
             finish();
-        }
+
 
     }
 
