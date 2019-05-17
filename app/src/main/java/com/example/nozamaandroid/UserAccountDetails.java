@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.BLL.BLLUser;
+import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,23 +22,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.lang.reflect.Array;
 
 public class UserAccountDetails extends AppCompatActivity {
     EditText etUsername, etPhonenumber;
     TextView tvEmail;
     Spinner sAddress;
+    UserModel userModel= UserModel.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUserFirebase = mAuth.getCurrentUser();
-    String currentUserId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String TAG = "userAccountDetails";
     Users currentUser;
     CircularImageView civUserImage;
     BLLUser bllUser = new BLLUser();
-    Query docRef;
 
 
     @Override
@@ -61,46 +61,45 @@ public class UserAccountDetails extends AppCompatActivity {
         } else {
             Toast.makeText(this, currentUserFirebase.getEmail() + " is logged in.", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
-            currentUserId = mAuth.getCurrentUser().getUid();
 
+           userModel.getUserById(mAuth.getCurrentUser().getUid(), new OnResponse() {
+               @Override
+               public void onResponseReceived(Object response) {
+                   Log.d(TAG, "onResponseReceived user: " + response);
+                   if (response != null) {
+                       currentUser = (Users) response;
 
-            docRef = db.collection("users").whereEqualTo(currentUserId, true);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    currentUser = bllUser.getUserInfo(docRef);
-                    etPhonenumber.setText(currentUser.getPhoneNumber());
-                    etUsername.setText(currentUser.getUserName());
-                    tvEmail.setText(currentUser.getEmail());
-                    bllUser.setUserImage(currentUserId, new OnResponse() {
-                        @Override
-                        public void onResponseReceived(Object response) {
-                            if(response != null) {
-                                civUserImage.setImageBitmap((Bitmap)response);
-                            }
-                            else{
-                                civUserImage.setImageResource(R.drawable.cake);
-                            }
-                        }
-                    });
-                }
-            });
-            //sAddress.setSelection(getIndex(sAddress, currentUser.getAddress()));
-
+                       etUsername.setText(currentUser.getUserName());
+                       String[] city = getResources().getStringArray(R.array.cities);
+                       for (int i = 0; i < city.length; i++) {
+                           if (city[i] == currentUser.getAddress()) {
+                               sAddress.setSelection(i);
+                               break;
+                           }
+                       }
+                       etPhonenumber.setText(currentUser.getPhoneNumber());
+                       tvEmail.setText(currentUser.getEmail());
+                   }
+               }
+           });
+           bllUser.getImageById(mAuth.getCurrentUser().getUid(), new OnResponse() {
+               @Override
+               public void onResponseReceived(Object response) {
+                   if(response != null) {
+                       civUserImage.setImageBitmap((Bitmap)response);
+                   }
+                   else{
+                       civUserImage.setImageResource(R.drawable.cake);
+                   }
+               }
+           });
         }
     }
 
-    private int getIndex(Spinner spinner, String myString) {
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
-                return i;
-            }
-        }
-        return 0;
-    }
 
     public void saveEdit(View view) {
         currentUserFirebase = mAuth.getCurrentUser();
+      //  userModel.updateUser()
         db = FirebaseFirestore.getInstance();
         db.collection("users").document(currentUserFirebase.getUid())
                 .update(

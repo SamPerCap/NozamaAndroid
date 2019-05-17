@@ -351,7 +351,7 @@ public class HomeView extends AppCompatActivity
 
 
           //tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
-            bllUser.setUserImage(currentUserId, new OnResponse() {
+            bllUser.getImageById(currentUserId, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
                     if(response != null) {

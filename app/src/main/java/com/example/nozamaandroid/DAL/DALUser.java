@@ -1,12 +1,10 @@
 package com.example.nozamaandroid.DAL;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.nozamaandroid.Models.MetaData;
 import com.example.nozamaandroid.Models.Users;
@@ -19,6 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,14 +36,12 @@ public class DALUser {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
     public static String TAG = "DALUser";
-    String userToSaveId;
     Map<String, Object> userMap;
     Map<String, Object> fileMap;
-    Boolean[] success = new Boolean[2];
-    FirebaseFirestore db;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Query docRef;
 
-
-    public Users getUserFromDatabase(Query docRef) {
+    public void getUserFromDatabase(Query docRef, final OnResponse response) {
         docRef.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -57,25 +54,26 @@ public class DALUser {
                                 String getFireStoreAddress = document.getString("Address");
                                 String getFireStoreEmail = document.getString("Email");
                                 String getFireStorePhonenumber = document.getString("Phonenumber");
-                                // String getFireStorePictureId = document.getString("PictureId");
+                                String getFireStorePictureId = document.getString("PictureId");
                                 String getFireStoreUsername = document.getString("Username");
 
-                                //user.setImgId(getFireStorePictureId);
+                                user.setImgId(getFireStorePictureId);
                                 user.setAddress(getFireStoreAddress);
                                 user.setPhoneNumber(getFireStorePhonenumber);
                                 user.setEmail(getFireStoreEmail);
                                 user.setUserName(getFireStoreUsername);
+                                response.onResponseReceived(user);
                             }
                         } else {
+                            response.onResponseReceived(null);
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        return user;
     }
 
     public void setUserImage(String userID, final OnResponse response) {
-        Log.d(TAG, "current userID: " + userID);
+        Log.d(TAG, "IMAGE current userID: " + userID);
         mStorageRef.child("user-images/" + userID).
                 getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -83,6 +81,7 @@ public class DALUser {
 
                 // Use the bytes to display the image
                 Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Log.d(TAG, "onSuccess: image return");
                 response.onResponseReceived(bm);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -95,31 +94,6 @@ public class DALUser {
         });
     }
 
-    /*public Boolean createUser(final Activity userCreation, final String email, final String password) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(userCreation, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser fbUser = mAuth.getCurrentUser();
-                            userToSaveId = fbUser.getUid();
-                            Log.d(TAG, "What is the D: " + userToSaveId);
-                            success[0] = true;
-                            // uploadToStorage(email, password, username, phonenumber, address);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(userCreation.getBaseContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            success[0] = false;
-                        }
-                    }
-
-                });
-        return success[0];
-    }*/
 
     public void uploadToFireStore(final Users user, final OnResponse response) {
         try {
@@ -253,5 +227,42 @@ public class DALUser {
                 // Uh-oh, an error occurred!
             }
         });
+    }
+
+    public void getUserById(String uid,final OnResponse onResponse) {
+        Log.d(TAG, "getUserById: "+ uid);
+        DocumentReference docRef = db.collection("users").document(uid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        user = new Users();
+
+                        String getFireStoreAddress = document.getString("Address");
+                        String getFireStoreEmail = document.getString("Email");
+                        String getFireStorePhonenumber = document.getString("Phonenumber");
+                        String getFireStorePictureId = document.getString("PictureId");
+                        String getFireStoreUsername = document.getString("Username");
+
+                        user.setImgId(getFireStorePictureId);
+                        user.setAddress(getFireStoreAddress);
+                        user.setPhoneNumber(getFireStorePhonenumber);
+                        user.setEmail(getFireStoreEmail);
+                        user.setUserName(getFireStoreUsername);
+                        onResponse.onResponseReceived(user);
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        onResponse.onResponseReceived(null);
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    onResponse.onResponseReceived(null);
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
     }
 }

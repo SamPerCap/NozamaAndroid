@@ -1,6 +1,5 @@
 package com.example.nozamaandroid.BLL;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -9,8 +8,6 @@ import android.widget.ImageView;
 import com.example.nozamaandroid.DAL.DALUser;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.OnResponse;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 
@@ -20,18 +17,10 @@ public class BLLUser {
     String filePath;
 
 
-    public Users getUserInfo(Query docRef) {
-        return dalUser.getUserFromDatabase(docRef);
-    }
 
 
-    public void setUserImage(String userID, OnResponse onResponse) {
-        dalUser.setUserImage(userID, onResponse);
-    }
 
-    /*public Boolean createUser(Activity userCreation, String email, String password) {
-        return dalUser.createUser(userCreation, email, password);
-    }*/
+
 
 
 
@@ -65,5 +54,13 @@ public class BLLUser {
         byte[] data = baos.toByteArray();
         Log.d(TAG, "upload to storage byte: " + data.toString());
         dalUser.createUser(user, data,onResponse);
+    }
+
+    public void getUserById(String uid, OnResponse response) {
+        dalUser.getUserById(uid, response);
+    }
+
+    public void getImageById(String uid, OnResponse response) {
+        dalUser.setUserImage(uid,response);
     }
 }

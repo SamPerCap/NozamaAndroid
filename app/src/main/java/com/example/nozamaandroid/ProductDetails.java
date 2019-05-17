@@ -62,6 +62,7 @@ public class ProductDetails extends AppCompatActivity {
                     productImage.setImageResource(R.drawable.cake);
                 }
             }
+
         });
 
 

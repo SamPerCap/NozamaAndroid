@@ -58,6 +58,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
                         imageView.setImageResource(R.drawable.cake);
                     }
                 }
+
             });
 
                 return rowView;
