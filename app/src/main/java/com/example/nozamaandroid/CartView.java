@@ -14,8 +14,11 @@ import com.example.nozamaandroid.Adaptor.AdapterCart;
 import com.example.nozamaandroid.BLL.BLLOrder;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Order;
+import com.example.nozamaandroid.Models.Products;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
 
 public class CartView extends AppCompatActivity {
     CartModel cartModel;
@@ -24,6 +27,7 @@ public class CartView extends AppCompatActivity {
     BLLOrder bllOrder = new BLLOrder();
     TextView productAmount;
     AdapterCart adapterCart;
+    ArrayList<String> productsId;
 
 
     @Override
@@ -57,9 +61,14 @@ public class CartView extends AppCompatActivity {
         } else {
             Order order = new Order();
             order.setIdUser(currentUser.getUid());
-            order.setProducts(cartModel.getProductInCart());
+            productsId = new ArrayList<>();
+            for (Products product : cartModel.getProductInCart()) {
+                productsId.add(product.getProdId());
+            }
+            order.setProductsId(productsId);
+            order.setStatusOfDelivery(false);
             bllOrder.addOrder(order);
-            Toast.makeText(this, "Your order has been saved correctly.",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Your order has been saved correctly.", Toast.LENGTH_LONG).show();
             cartModel.clearList();
             finish();
         }

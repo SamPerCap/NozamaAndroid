@@ -43,37 +43,6 @@ public class DALUser {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Query docRef;
 
-    public void getUserFromDatabase(Query docRef, final OnResponse response) {
-        docRef.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                user = new Users();
-
-                                String getFireStoreAddress = document.getString("Address");
-                                String getFireStoreEmail = document.getString("Email");
-                                String getFireStorePhonenumber = document.getString("Phonenumber");
-                                String getFireStorePictureId = document.getString("PictureId");
-                                String getFireStoreUsername = document.getString("Username");
-
-                                user.setImgId(getFireStorePictureId);
-                                user.setAddress(getFireStoreAddress);
-                                user.setPhoneNumber(getFireStorePhonenumber);
-                                user.setEmail(getFireStoreEmail);
-                                user.setUserName(getFireStoreUsername);
-                                response.onResponseReceived(user);
-                            }
-                        } else {
-                            response.onResponseReceived(null);
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-    }
-
     public void setUserImage(String userID, final OnResponse response) {
         Log.d(TAG, "IMAGE current userID: " + userID);
         mStorageRef.child("user-images/" + userID).
@@ -193,7 +162,8 @@ public class DALUser {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser fbUser = mAuth.getCurrentUser();
-                            user.setUserId( fbUser.getUid());
+                            user.setUserId(fbUser.getUid());
+
                             upLoadImage(user,currentImage,response);
                             // uploadToStorage(email, password, username, phonenumber, address);
                         } else {

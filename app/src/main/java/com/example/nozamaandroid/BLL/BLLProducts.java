@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class BLLProducts {
     DALProduct dalProduct = new DALProduct();
 
-    public ArrayList<Products> readProductsFromDatabase(){
-       return dalProduct.readProductsFromDatabase();
+    public ArrayList<Products> readProductsFromDatabase() {
+        return dalProduct.readProductsFromDatabase();
     }
 
     public void getImageById(String pictureId, OnResponse onResponse) {

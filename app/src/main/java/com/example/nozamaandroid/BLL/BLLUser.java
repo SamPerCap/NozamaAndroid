@@ -16,15 +16,6 @@ public class BLLUser {
     String TAG = "BLLUser";
     String filePath;
 
-
-
-
-
-
-
-
-
-
     public String getFilePath(String _filePath, ImageView pictureView) {
         try {
             if (_filePath != null) {

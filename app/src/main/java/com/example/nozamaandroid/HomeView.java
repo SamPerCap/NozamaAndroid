@@ -70,7 +70,7 @@ public class HomeView extends AppCompatActivity
     Toolbar toolbar;
     ImageButton imageButton;
     GridView gridViewProduct;
-        /*----------------Firebase----------------*/
+    /*----------------Firebase----------------*/
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
     /*----------------Strings----------------*/
@@ -105,12 +105,13 @@ public class HomeView extends AppCompatActivity
 
                 Keyword = s.toString().toLowerCase();
                 filteredArrayList.clear();
-                for (Products product : productsArrayList) {
-                    if (product.getProdName().toLowerCase().contains(Keyword))
-                        filteredArrayList.add(product);
-                    adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
-                    listView.setAdapter(adapterProduct);
-
+                if (!productsArrayList.isEmpty()) {
+                    for (Products product : productsArrayList) {
+                        if (product.getProdName().toLowerCase().contains(Keyword))
+                            filteredArrayList.add(product);
+                        adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
+                        listView.setAdapter(adapterProduct);
+                    }
                 }
             }
 
@@ -152,7 +153,6 @@ public class HomeView extends AppCompatActivity
         });
 
     }
-
 
 
     public void openUserView(View view) {
@@ -255,9 +255,9 @@ public class HomeView extends AppCompatActivity
         tvCartCount = findViewById(R.id.countCartSize);
         etSearchBar = findViewById(R.id.searchBox);
         tvUsername = findViewById(R.id.currentUserName);
-        NavigationView  mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         ivHeaderUsername = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.userHomeImageView);
-       tvUsername = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.currentUserName);
+        tvUsername = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.currentUserName);
     }
 
 
@@ -345,19 +345,18 @@ public class HomeView extends AppCompatActivity
             menuItemLogin.setTitle("Login");
             menuItemAccount.setTitle("Create an account");
         } else {
-            Log.d(TAG,"Getting user information");
+            Log.d(TAG, "Getting user information");
             String currentUserId = mAuth.getCurrentUser().getUid();
-            NavigationView  mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+            NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
 
 
-          //tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
+            //tvUsername.setText(bllUser.getUserInfo(currentUserId).getUserName());
             bllUser.getImageById(currentUserId, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
-                    if(response != null) {
-                        ivHeaderUsername.setImageBitmap((Bitmap)response);
-                    }
-                    else{
+                    if (response != null) {
+                        ivHeaderUsername.setImageBitmap((Bitmap) response);
+                    } else {
                         ivHeaderUsername.setImageResource(R.drawable.cake);
                     }
                 }
@@ -365,9 +364,8 @@ public class HomeView extends AppCompatActivity
             bllUser.getUserById(currentUserId, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
-                    if(response != null)
-                    {
-                        Users user = (Users)response;
+                    if (response != null) {
+                        Users user = (Users) response;
                         tvUsername.setText(user.getUserName());
                     }
                 }

@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -61,7 +62,7 @@ public class DALProduct {
     }
 
 
-    public void setImageviewById(String pictureId,final OnResponse response) {
+    public void setImageviewById(String pictureId, final OnResponse response) {
         if (pictureId != null) {
             mStorageRef.child("product-pictures/" + pictureId).
                     getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {

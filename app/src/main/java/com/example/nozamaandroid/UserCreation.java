@@ -3,9 +3,7 @@ package com.example.nozamaandroid;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,9 +19,6 @@ import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.CamaraIntent;
 import com.example.nozamaandroid.Shared.FileChooser;
 import com.example.nozamaandroid.Shared.OnResponse;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class UserCreation extends AppCompatActivity {
     EditText email, password, phoneNumber, userName;
@@ -57,68 +52,58 @@ public class UserCreation extends AppCompatActivity {
     }
 
     private void createUser() {
-        /*
-         * Instead call several classes in the DAL, we are gonna split them
-         * between DAL and BLL.
-         * This class returns an array of Boolean with size 1, it cannot return
-         * a single boolean.
-         * The boolean is attach to the task result in the DAL meaning that if success,
-         * the boolean we get is true and then we keep going.
-         */
-        Log.d(TAG, "createUser: "+ sAddress.getSelectedItem()+ " "+email.getText()+" "
-        +password.getText()+ " "+
+        Log.d(TAG, "createUser: " + sAddress.getSelectedItem() + " " + email.getText() + " "
+                + password.getText() + " " +
                 userName.getText());
 
-        if (password.getText().length() <= 6) {
-            Toast.makeText(this, "ERROR. Password has 6 o less digits", Toast.LENGTH_LONG);
-        } else if (sAddress.getSelectedItem()!= null
-        && email.getText() != null
-        && password.getText() != null
-        && userName.getText() != null )
-        {
-            final Users user  = new Users();
+        if (password.getText().length() < 6) {
+            Toast.makeText(this, "ERROR. Password has less than 6 digits", Toast.LENGTH_LONG).show();
+        } else if (!sAddress.getSelectedItem().toString().equals("Choose Address")
+                || email.getText() != null
+                || password.getText() != null
+                || userName.getText() != null) {
+            final Users user = new Users();
             user.setAddress(sAddress.getSelectedItem().toString());
             user.setEmail(email.getText().toString());
             user.setPassword(password.getText().toString());
-            // user.setPhoneNumber(phoneNumber.getText().toString());
+            user.setPhoneNumber(phoneNumber.getText().toString());
             user.setUserName(userName.getText().toString());
-            bllUser.createUser(user,userModel.preImage, new OnResponse() {
+            bllUser.createUser(user, userModel.preImage, new OnResponse() {
+
                 @Override
                 public void onResponseReceived(Object response) {
 
-                    if( response != null)
-                    {
+                    if (response != null) {
                         finish();
                         userModel.changePreImage(null);
-                    }
-                    else
-                    {
-                        Toast.makeText(UserCreation.this, "ERROR. User not created", Toast.LENGTH_LONG);
+                    } else {
+                        Toast.makeText(UserCreation.this, "ERROR. User not created because the image", Toast.LENGTH_LONG).show();
                     }
                     Log.d(TAG, "onResponseReceived: " + response);
                 }
-            });
-        }
-                else {
-            Toast.makeText(this, "ERROR. need more data", Toast.LENGTH_LONG);
 
+            });
+        } else {
+            Toast.makeText(this, "ERROR. need more data", Toast.LENGTH_LONG).show();
         }
+
     }
+
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (userModel.preImage != null)
-        {
+        if (userModel.preImage != null) {
             pictureView.setImageBitmap(userModel.preImage);
         }
     }
+
     public void imageBtn(View view) {
         progressBar.setVisibility(View.VISIBLE);
         try {
             createUser();
         } catch (Exception e) {
             progressBar.setVisibility(View.INVISIBLE);
-            Log.e(TAG, "Error creating user: " + e);
+            Log.d(TAG, "Error creating user: " + e);
         }
     }
 
@@ -132,7 +117,7 @@ public class UserCreation extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if (options[which].equals(options[0])) {
                     ImageIntent = new Intent(UserCreation.this, FileChooser.class);
-                   startActivity(ImageIntent);
+                    startActivity(ImageIntent);
                 }
                 if (options[which].equals(options[1])) {
                     ImageIntent = new Intent(UserCreation.this, CamaraIntent.class);
