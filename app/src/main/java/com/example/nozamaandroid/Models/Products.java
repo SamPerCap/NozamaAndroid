@@ -11,7 +11,7 @@ public class Products implements Serializable {
     private String prodDetails;
     private String category;
     private Float ratings;
-    private int price;
+    private String price;
     private int amount;
     private String pictureId;
 
@@ -50,11 +50,11 @@ public class Products implements Serializable {
         this.ratings = ratings;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

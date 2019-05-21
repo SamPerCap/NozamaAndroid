@@ -14,27 +14,6 @@ import java.io.ByteArrayOutputStream;
 public class BLLUser {
     DALUser dalUser = new DALUser();
     String TAG = "BLLUser";
-    String filePath;
-
-    public String getFilePath(String _filePath, ImageView pictureView) {
-        try {
-            if (_filePath != null) {
-                Log.d(TAG, "is this here?");
-                Bitmap bit = BitmapFactory.decodeFile(_filePath);
-                Log.d(TAG, "is bit null: " + bit);
-                if (bit != null) {
-                    pictureView.setImageBitmap(bit);
-                    Log.d(TAG, "image is this now: " + _filePath);
-                    filePath = _filePath;
-                }
-            }
-        } catch (Exception ex) {
-            Log.d(TAG, "locateItems: images " + ex);
-        }
-        Log.d(TAG, "let's see what is image: " + _filePath);
-        return filePath;
-    }
-
 
     public void createUser(Users user, Bitmap currentImage, OnResponse onResponse) {
         Log.d(TAG, "Starting uploadPictureToFB");

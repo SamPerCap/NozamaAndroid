@@ -12,16 +12,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.nozamaandroid.Models.UserModel;
-import com.example.nozamaandroid.UserAccountDetails;
-import com.example.nozamaandroid.R;
-import com.example.nozamaandroid.UserCreation;
-
 public class FileChooser extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     String filePath;
     String TAG = "FileCHooser";
-    UserModel userModel = UserModel.getInstance();
+    CameraIntent cameraIntent = CameraIntent.getInstance();
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
@@ -93,7 +88,7 @@ public class FileChooser extends AppCompatActivity {
 
     public void changeActivity() {
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-        userModel.changePreImage(bitmap);
+        cameraIntent.changePreImage(bitmap);
         finish();
 
 

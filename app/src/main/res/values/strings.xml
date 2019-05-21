@@ -21,7 +21,6 @@
     <string name="buyNow">Buy now</string>
     <string name="activityClass">activityClass</string>
     <string name="friendKey">friend</string>
-    <string name="product_name">Product Name</string>
     <string name="product_detail">Product Detail</string>
     <string name="save_rating">Save Rating</string>
     <string name="price">Price</string>
@@ -46,8 +45,12 @@
     <string name="settings">Settings</string>
     <string name="imageChange">imageChange</string>
     <string name="create_account">Create Account</string>
-    <string name="image">Image</string>
+    <string name="image">Manage Image</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
+    <string name="save">Save</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Product Price</string>
+    <string name="describe_the_product">Describe the product</string>
 </resources>

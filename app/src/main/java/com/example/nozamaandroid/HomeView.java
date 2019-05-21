@@ -7,7 +7,7 @@ import android.content.pm.PackageManager;
 import android.databinding.ObservableList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +33,8 @@ import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
-import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
+import com.example.nozamaandroid.Shared.CameraIntent;
 import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -69,15 +68,16 @@ public class HomeView extends AppCompatActivity
     Toolbar toolbar;
     ImageButton imageButton;
     GridView gridViewProduct;
+    FloatingActionButton addButton;
     /*----------------Firebase----------------*/
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
     /*----------------Strings----------------*/
     String TAG = "HomeView";
     String Keyword;
-    String userKey = "userKey", productKey = "productKey";
+    String productKey = "productKey";
     String[] options = new String[]{"Show detail", "Add to cart"};
-    UserModel userModel = UserModel.getInstance();
+    CameraIntent userModel = CameraIntent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,8 +153,16 @@ public class HomeView extends AppCompatActivity
     }
 
 
-    public void openUserView(View view) {
-        intent = new Intent(this, AddProduct.class);
+    public void openAddProductView(View view) {
+        if (currentUser != null) {
+            intent = new Intent(this, AddProduct.class);
+            startActivity(intent);
+        } else
+            Toast.makeText(this, "Please, log in first to access this functionality.", Toast.LENGTH_LONG).show();
+    }
+
+    public void loginView() {
+        intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
     }
 
@@ -209,10 +217,6 @@ public class HomeView extends AppCompatActivity
         });
     }
 
-    public void loginView() {
-        intent = new Intent(HomeView.this, LoginActivity.class);
-        startActivity(intent);
-    }
 
     public void setupSideNavBar() {
         Log.d(TAG, "Setting up the side navigation bar");
@@ -246,6 +250,7 @@ public class HomeView extends AppCompatActivity
         tvCartCount = findViewById(R.id.countCartSize);
         etSearchBar = findViewById(R.id.searchBox);
         tvUsername = findViewById(R.id.currentUserName);
+        addButton = findViewById(R.id.addProductButton);
         gridViewProduct = findViewById(R.id.gridview_product);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         ivHeaderUsername = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.userHomeImageView);

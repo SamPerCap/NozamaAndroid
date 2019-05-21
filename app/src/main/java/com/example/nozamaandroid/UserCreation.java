@@ -14,9 +14,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.nozamaandroid.BLL.BLLUser;
-import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
-import com.example.nozamaandroid.Shared.CamaraIntent;
+import com.example.nozamaandroid.Shared.CameraIntent;
 import com.example.nozamaandroid.Shared.FileChooser;
 import com.example.nozamaandroid.Shared.OnResponse;
 
@@ -28,7 +27,7 @@ public class UserCreation extends AppCompatActivity {
     private ImageView pictureView;
     ProgressBar progressBar;
     BLLUser bllUser = new BLLUser();
-    UserModel userModel = UserModel.getInstance();
+    CameraIntent cameraIntent = CameraIntent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +46,12 @@ public class UserCreation extends AppCompatActivity {
         pictureView = findViewById(R.id.userPic);
         progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
-
-
     }
 
     private void createUser() {
         Log.d(TAG, "createUser: " + sAddress.getSelectedItem() + " " + email.getText() + " "
                 + password.getText() + " " +
                 userName.getText());
-
         if (password.getText().length() < 6) {
             Toast.makeText(this, "ERROR. Password has less than 6 digits", Toast.LENGTH_LONG).show();
         } else if (!sAddress.getSelectedItem().toString().equals("Choose Address")
@@ -68,14 +64,12 @@ public class UserCreation extends AppCompatActivity {
             user.setPassword(password.getText().toString());
             user.setPhoneNumber(phoneNumber.getText().toString());
             user.setUserName(userName.getText().toString());
-            bllUser.createUser(user, userModel.preImage, new OnResponse() {
-
+            bllUser.createUser(user, cameraIntent.preImage, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
-
                     if (response != null) {
                         finish();
-                        userModel.changePreImage(null);
+                        cameraIntent.changePreImage(null);
                     } else {
                         Toast.makeText(UserCreation.this, "ERROR. User not created because the image", Toast.LENGTH_LONG).show();
                     }
@@ -92,12 +86,12 @@ public class UserCreation extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (userModel.preImage != null) {
-            pictureView.setImageBitmap(userModel.preImage);
+        if (cameraIntent.preImage != null) {
+            pictureView.setImageBitmap(cameraIntent.preImage);
         }
     }
 
-    public void imageBtn(View view) {
+    public void createAccount(View view) {
         progressBar.setVisibility(View.VISIBLE);
         try {
             createUser();
@@ -120,13 +114,11 @@ public class UserCreation extends AppCompatActivity {
                     startActivity(ImageIntent);
                 }
                 if (options[which].equals(options[1])) {
-                    ImageIntent = new Intent(UserCreation.this, CamaraIntent.class);
+                    ImageIntent = new Intent(UserCreation.this, CameraIntent.class);
                     startActivity(ImageIntent);
                 }
             }
         });
         builder.show();
     }
-
-
 }

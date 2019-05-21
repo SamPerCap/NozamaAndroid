@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.example.nozamaandroid.BLL.BLLOrder;
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.Order;
-import com.example.nozamaandroid.Models.UserModel;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.IMyCallBack;
 import com.example.nozamaandroid.Shared.OnResponse;
@@ -27,7 +26,6 @@ public class UserAccountDetails extends AppCompatActivity {
     EditText etUsername, etPhonenumber;
     TextView tvEmail, tvListOfOrders, tvOrderOnWay;
     Spinner sAddress;
-    UserModel userModel = UserModel.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUserFirebase = mAuth.getCurrentUser();
     String TAG = "userAccountDetails";
@@ -64,7 +62,7 @@ public class UserAccountDetails extends AppCompatActivity {
             Toast.makeText(this, currentUserFirebase.getEmail() + " is logged in.", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "UserID: " + mAuth.getCurrentUser().getUid());
 
-            userModel.getUserById(mAuth.getCurrentUser().getUid(), new OnResponse() {
+            bllUser.getUserById(mAuth.getCurrentUser().getUid(), new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
                     Log.d(TAG, "onResponseReceived user: " + response);

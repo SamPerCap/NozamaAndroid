@@ -13,6 +13,9 @@ public class BLLProducts {
         return dalProduct.readProductsFromDatabase();
     }
 
+    public void addProduct(Products products){
+        dalProduct.addProduct(products);
+    }
     public void getImageById(String pictureId, OnResponse onResponse) {
         dalProduct.setImageviewById(pictureId, onResponse);
     }

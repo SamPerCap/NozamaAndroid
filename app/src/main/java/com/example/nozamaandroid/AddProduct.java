@@ -1,87 +1,82 @@
 package com.example.nozamaandroid;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Camera;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.Products;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.example.nozamaandroid.Shared.CameraIntent;
+import com.example.nozamaandroid.Shared.FileChooser;
 
 public class AddProduct extends AppCompatActivity {
 
     public static String TAG = "AddProduct";
-    EditText dbName, dbValue;
-    String nameKey = "nameKey", detailKey = "detailKey";
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Map<String, Object> productMap = new HashMap<>();
-
+    EditText etName, etPrice, etProdDetail;
+    CameraIntent cameraIntent = CameraIntent.getInstance();
+    Button btnSave;
+    ImageView productImage;
+    BLLProducts bllProducts;
+    Intent intent;
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-        setContentView(R.layout.addproduct_detail);
-        dbName = findViewById(R.id.dbName);
-        dbValue = findViewById(R.id.dbValue);
+        setContentView(R.layout.add_product);
+        setupItems();
+    }
+
+    private void setupItems() {
+        etName = findViewById(R.id.etName);
+        etPrice = findViewById(R.id.etPrice);
+        etProdDetail = findViewById(R.id.etProdDetail);
+        btnSave = findViewById(R.id.btnSaveProduct);
+        productImage = findViewById(R.id.productPic);
     }
 
 
-
     public void saveData(View view) {
-        try {
-            final Products products = new Products();
+        bllProducts = new BLLProducts();
+        Products productToSave = new Products();
+        productToSave.setProdName(etName.getText().toString());
+        productToSave.setProdDetails(etProdDetail.getText().toString());
+        productToSave.setPrice(etPrice.getText().toString());
+        bllProducts.addProduct(productToSave);
+    }
 
-            // FireStoreDatabase initialize
-            CollectionReference usersCollectionRef = db.collection("users");
+    public void gotoCamera(View view) {
+        Log.d(TAG, "Going to camera");
+        final String[] options = {"Select image", "Take new image"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick an image");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (options[which].equals(options[0])) {
+                    intent = new Intent(AddProduct.this, FileChooser.class);
+                    startActivity(intent);
+                }
+                if (options[which].equals(options[1])) {
+                    intent = new Intent(AddProduct.this, CameraIntent.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        builder.show();
+    }
 
-            productMap.put("name", dbName.getText().toString());
-            productMap.put("Product Details", dbValue.getText().toString());
-
-            // Add a new document with a generated ID
-            db.collection("products")
-                    .add(productMap)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                            products.setProdName(dbName.getText().toString());
-                            products.setProdDetails(dbValue.getText().toString());
-
-                            Log.i(TAG, "What is products: " + products.getProdName());
-                            Log.d(TAG, "What is products: " + products.getProdName());
-
-                            Intent intent = new Intent(AddProduct.this, HomeView.class);
-                            intent.putExtra(nameKey, products.getProdName());
-                            intent.putExtra(detailKey, products.getProdDetails());
-                            startActivity(intent);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                        }
-                    });
-
-            Log.e(TAG, "What is get text: " + dbName.getText());
-
-
-        } catch (Error e) {
-            Log.e(TAG, "Exception: " + e);
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (cameraIntent.preImage != null) {
+            productImage.setImageBitmap(cameraIntent.preImage);
         }
     }
 }

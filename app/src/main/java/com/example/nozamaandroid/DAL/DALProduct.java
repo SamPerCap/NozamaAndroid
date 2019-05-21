@@ -1,16 +1,20 @@
 package com.example.nozamaandroid.DAL;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.nozamaandroid.AddProduct;
+import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Shared.OnResponse;
 import com.example.nozamaandroid.Models.Products;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -19,12 +23,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DALProduct {
 
-    Products product;
-    ArrayList<Products> productsArrayList;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Products product;
+    private ArrayList<Products> productsArrayList;
+    private Map<String, Object> productMap = new HashMap<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
     public static String TAG = "DALProduct";
 
@@ -83,6 +90,36 @@ public class DALProduct {
             });
         } else {
             response.onResponseReceived(null);
+        }
+    }
+
+    public void addProduct(Products productToAdd) {
+        try {
+
+            // FireStoreDatabase initialize
+            productMap.put("name", productToAdd.getProdName());
+
+            // Add a new document with a generated ID
+            db.collection("products")
+                    .add(productMap)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                        }
+                    });
+
+            Log.e(TAG, "What is get text: " + productToAdd.getProdName());
+
+
+        } catch (Error e) {
+            Log.e(TAG, "Exception: " + e);
         }
     }
 }

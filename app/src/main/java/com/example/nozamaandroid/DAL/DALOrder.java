@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DALOrder {
-    private Map<String, Object> productMap = new HashMap<>();
+    private Map<String, Object> orderMap = new HashMap<>();
     public static String TAG = "DALOrder";
     private ArrayList<Order> listOfOrders;
     private ArrayList<Order> listOfOrdersOnWay;
@@ -30,7 +30,7 @@ public class DALOrder {
     public void addOrder(final Order order) {
         try {
             // FireStoreDatabase initialize
-            productMap.put("user id", order.getIdUser());
+            orderMap.put("user id", order.getIdUser());
             db.collection("orders").add(order).
                     addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
