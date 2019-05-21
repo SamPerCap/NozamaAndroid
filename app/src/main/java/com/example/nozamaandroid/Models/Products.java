@@ -9,18 +9,21 @@ public class Products implements Serializable {
     private String prodId;
     private String prodName;
     private String prodDetails;
+    private String category;
     private Float ratings;
     private int price;
     private int amount;
     private String pictureId;
 
-    public Products() {
+    public String getTAG() {
+        return TAG;
     }
 
-    public Products(String prodId, String prodName, String prodDetails) {
-        this.prodId = prodId;
-        this.prodName = prodName;
-        this.prodDetails = prodDetails;
+    public void setTAG(String TAG) {
+        this.TAG = TAG;
+    }
+
+    public Products() {
     }
 
     public String getPictureId() {

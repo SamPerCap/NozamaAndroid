@@ -73,7 +73,7 @@ public class UserAccountDetails extends AppCompatActivity {
                         //Customize callback
                         getOrders(mAuth.getCurrentUser().getUid(), new IMyCallBack() {
                             @Override
-                            public void onCallBack(ArrayList<Order> orderOnWay, ArrayList<Order> ordersInTotal) {
+                            public void onCallBack(ArrayList<Order> ordersInTotal, ArrayList<Order> orderOnWay) {
                                 tvOrderOnWay.setText(""+orderOnWay.size());
                                 tvListOfOrders.setText(""+ordersInTotal.size());
                             }

@@ -1,8 +1,6 @@
 package com.example.nozamaandroid.Adaptor;
 
 import android.app.Activity;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,7 @@ public class AdapterCart extends ArrayAdapter<Products> {
     int one = 1;
 
     public AdapterCart(Activity context, ArrayList<Products> arrayData) {
-        super(context, R.layout.product_list, arrayData);
+        super(context, R.layout.product_detail, arrayData);
         Log.d(TAG, "Product adaptor");
         this.context = context;
         this.arrayCartList = arrayData;

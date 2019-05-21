@@ -12,7 +12,6 @@ import com.example.nozamaandroid.HomeView;
 import java.util.ArrayList;
 
 public class CartModel {
-    AdapterCart adapterCart;
     public ObservableList<Products> cartList = new ObservableArrayList<>();
     ArrayList<Products> arrayCartList = new ArrayList<>();
     private static CartModel instance;
@@ -71,7 +70,7 @@ public class CartModel {
         }
     }
 
-    public void clearList() {
+    public void clearList(AdapterCart adapterCart) {
         cartList.clear();
         adapterCart.clear();
     }

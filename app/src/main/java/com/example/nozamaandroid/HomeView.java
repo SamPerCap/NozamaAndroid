@@ -47,7 +47,6 @@ public class HomeView extends AppCompatActivity
 
     static CartModel cartModel = CartModel.getInstance();
     Products products = new Products();
-    Users user = new Users();
     AdaptorProduct adapterProduct;
     private static final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
@@ -60,12 +59,12 @@ public class HomeView extends AppCompatActivity
     /*----------------View items----------------*/
     ActionBarDrawerToggle toggle;
     EditText etSearchBar;
-    ListView listView;
     TextView tvCartCount, tvUsername;
     ImageView ivHeaderUsername;
     NavigationView navigationView;
     MenuItem menuItemLogin;
     MenuItem menuItemAccount;
+    NavigationView mNavigationView;
     DrawerLayout drawer;
     Toolbar toolbar;
     ImageButton imageButton;
@@ -89,7 +88,6 @@ public class HomeView extends AppCompatActivity
         setupItems();
         setupSideNavBar();
         getProductsFromDatabase();
-        gridViewProduct = findViewById(R.id.gridview_product);
 
         //Set the adapter to the main list view
         adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
@@ -110,7 +108,7 @@ public class HomeView extends AppCompatActivity
                         if (product.getProdName().toLowerCase().contains(Keyword))
                             filteredArrayList.add(product);
                         adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
-                        listView.setAdapter(adapterProduct);
+                        gridViewProduct.setAdapter(adapterProduct);
                     }
                 }
             }
@@ -188,11 +186,6 @@ public class HomeView extends AppCompatActivity
                                 Toast.makeText(HomeView.this, "Product: " + gridViewProduct.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
 
                                 intent = new Intent(HomeView.this, ProductDetails.class);
-                                /*Products currentProducts =
-                                currentProducts.setProdId(productsArrayList.get(position).getProdId());
-                                currentProducts.setProdDetails(productsArrayList.get(position).getProdDetails());
-                                currentProducts.setProdName(productsArrayList.get(position).getProdName());
-                                currentProducts.setPictureId(productsArrayList.get(position).getPictureId());*/
                                 intent.putExtra(productKey, productsArrayList.get(position));
                                 startActivity(intent);
                                 Log.d(TAG, "Opening detail activity");
@@ -204,7 +197,6 @@ public class HomeView extends AppCompatActivity
                             products = productsArrayList.get(position);
                             Log.d(TAG, "onClick: " + products.getProdName());
                             cartModel.checkIfProductId(products, HomeView.this);
-                            // cartModel.addProductToCart(products);
 
                         }
                     }
@@ -230,8 +222,7 @@ public class HomeView extends AppCompatActivity
                 //Open cart view
                 intent = new Intent(HomeView.this, CartView.class);
                 startActivity(intent);
-                Snackbar.make(view, "Open cart view", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Toast.makeText(HomeView.this, "Opening cart view", Toast.LENGTH_SHORT);
             }
         });
         toggle = new ActionBarDrawerToggle(
@@ -255,7 +246,8 @@ public class HomeView extends AppCompatActivity
         tvCartCount = findViewById(R.id.countCartSize);
         etSearchBar = findViewById(R.id.searchBox);
         tvUsername = findViewById(R.id.currentUserName);
-        NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        gridViewProduct = findViewById(R.id.gridview_product);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         ivHeaderUsername = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.userHomeImageView);
         tvUsername = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.currentUserName);
     }

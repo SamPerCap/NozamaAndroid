@@ -80,7 +80,7 @@
                 android:id="@+id/tvProductDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCakeCake"
+                android:text="@string/product_detail"
                 android:textColor="#616161"
                 android:textSize="24sp" />
 

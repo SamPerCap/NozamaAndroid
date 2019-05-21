@@ -3,11 +3,11 @@ package com.example.nozamaandroid.Models;
 import java.util.ArrayList;
 
 public class Order {
-    String idUser;
-    String orderId;
-    String userAddress;
-    ArrayList<String> productsId = new ArrayList<>();
-    Boolean statusOfDelivery;
+    private String idUser;
+    private String orderId;
+    private String userAddress;
+    private ArrayList<String> productsId = new ArrayList<>();
+    private Boolean statusOfDelivery;
 
     public Boolean getStatusOfDelivery() {
         return statusOfDelivery;

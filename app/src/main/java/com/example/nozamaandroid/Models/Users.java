@@ -11,9 +11,7 @@ public class Users {
     private String phoneNumber;
     private String imgId;
 
-    public Users() {
-
-    }
+public Users() {}
 
     public String getImgId() {
         return imgId;

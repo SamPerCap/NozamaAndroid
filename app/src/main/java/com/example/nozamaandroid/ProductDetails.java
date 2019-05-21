@@ -40,7 +40,7 @@ public class ProductDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-        setContentView(R.layout.product_details);
+        setContentView(R.layout.product_details_view);
 
         db = FirebaseFirestore.getInstance();
 

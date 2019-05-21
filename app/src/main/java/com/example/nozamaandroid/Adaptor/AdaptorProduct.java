@@ -28,7 +28,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
     public AdaptorProduct(Activity context, ArrayList<Products> arrayData) {
 
 
-        super(context, R.layout.product_list,arrayData );
+        super(context, R.layout.product_detail,arrayData );
         Log.d(TAG, "Product adaptor ");
         this.context = context;
         this._arrayData = arrayData;
@@ -41,7 +41,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
 
             Log.d(TAG, "Getting the view from Product Adapter ");
             LayoutInflater inflater = context.getLayoutInflater();
-            View rowView = inflater.inflate(R.layout.product_list, null, true);
+            View rowView = inflater.inflate(R.layout.product_detail, null, true);
             final ImageView imageView = rowView.findViewById(R.id.productImage);
             TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
             txtTitle.setText(_arrayData.get(position).getProdName());

@@ -20,30 +20,29 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DALOrder {
-    Map<String, Object> productMap = new HashMap<>();
-    public static String TAG = "ProductApp";
-    ArrayList<Order> listOfOrders;
-    ArrayList<Order> listOfOrdersOnWay;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Map<String, Object> productMap = new HashMap<>();
+    public static String TAG = "DALOrder";
+    private ArrayList<Order> listOfOrders;
+    private ArrayList<Order> listOfOrdersOnWay;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-    public void addOrder(Order order) {
+    public void addOrder(final Order order) {
         try {
             // FireStoreDatabase initialize
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
             productMap.put("user id", order.getIdUser());
             db.collection("orders").add(order).
                     addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReferesnce) {
+
                             Log.d(TAG, "DocumentSnapshot added with ID: " + documentReferesnce.getId());
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
+                            Log.e(TAG, "Error adding document", e);
                         }
                     });
 
@@ -78,8 +77,8 @@ public class DALOrder {
                             order.setStatusOfDelivery(getFireStoreStatus);
 
                             listOfOrders.add(order);
-                            if(!getFireStoreStatus)
-                            listOfOrdersOnWay.add(order);
+                            if (!getFireStoreStatus)
+                                listOfOrdersOnWay.add(order);
                         }
                     }
                     Log.d(TAG, "onComplete: " + listOfOrders);
