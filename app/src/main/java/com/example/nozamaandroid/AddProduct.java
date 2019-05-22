@@ -11,21 +11,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.nozamaandroid.BLL.BLLProducts;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Shared.CameraIntent;
+import com.example.nozamaandroid.Shared.CameraModel;
 import com.example.nozamaandroid.Shared.FileChooser;
+import com.example.nozamaandroid.Shared.OnResponse;
 
 public class AddProduct extends AppCompatActivity {
 
     public static String TAG = "AddProduct";
     EditText etName, etPrice, etProdDetail;
-    CameraIntent cameraIntent = CameraIntent.getInstance();
+    CameraModel cameraModel = CameraModel.getInstance();
     Button btnSave;
     ImageView productImage;
+    Spinner categorySpinner;
     BLLProducts bllProducts;
     Intent intent;
+
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
@@ -39,16 +45,36 @@ public class AddProduct extends AppCompatActivity {
         etProdDetail = findViewById(R.id.etProdDetail);
         btnSave = findViewById(R.id.btnSaveProduct);
         productImage = findViewById(R.id.productPic);
+        categorySpinner = findViewById(R.id.categorySpinner);
     }
 
 
     public void saveData(View view) {
-        bllProducts = new BLLProducts();
-        Products productToSave = new Products();
-        productToSave.setProdName(etName.getText().toString());
-        productToSave.setProdDetails(etProdDetail.getText().toString());
-        productToSave.setPrice(etPrice.getText().toString());
-        bllProducts.addProduct(productToSave);
+        Log.d(TAG, "Adding a product");
+        if (etName.getText() != null
+                || etProdDetail.getText() != null
+                || etPrice.getText() != null
+                || !categorySpinner.getSelectedItem().toString().equals("Choose Category")) {
+            bllProducts = new BLLProducts();
+            Products productToSave = new Products();
+            productToSave.setProdName(etName.getText().toString());
+            productToSave.setProdDetails(etProdDetail.getText().toString());
+            productToSave.setPrice(etPrice.getText().toString());
+            productToSave.setCategory(categorySpinner.getSelectedItem().toString());
+            bllProducts.addProduct(productToSave, cameraModel.preImage, new OnResponse() {
+                @Override
+                public void onResponseReceived(Object response) {
+                    if(response != null){
+                        finish();
+                        cameraModel.changePreImage(null);
+                    }else{
+                        Toast.makeText(AddProduct.this, "Error. Product not created because the image", Toast.LENGTH_LONG).show();
+                    }
+                    Log.d(TAG,"onResponseReceived: " + response);
+                }
+            });
+        } else
+            Toast.makeText(this, "More information is needed", Toast.LENGTH_SHORT).show();
     }
 
     public void gotoCamera(View view) {
@@ -75,8 +101,8 @@ public class AddProduct extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (cameraIntent.preImage != null) {
-            productImage.setImageBitmap(cameraIntent.preImage);
+        if (cameraModel.preImage != null) {
+            productImage.setImageBitmap(cameraModel.preImage);
         }
     }
 }

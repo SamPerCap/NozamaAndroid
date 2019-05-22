@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.CameraIntent;
+import com.example.nozamaandroid.Shared.CameraModel;
 import com.example.nozamaandroid.Shared.FileChooser;
 import com.example.nozamaandroid.Shared.OnResponse;
 
@@ -27,7 +28,7 @@ public class UserCreation extends AppCompatActivity {
     private ImageView pictureView;
     ProgressBar progressBar;
     BLLUser bllUser = new BLLUser();
-    CameraIntent cameraIntent = CameraIntent.getInstance();
+    CameraModel cameraModel = CameraModel.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +65,12 @@ public class UserCreation extends AppCompatActivity {
             user.setPassword(password.getText().toString());
             user.setPhoneNumber(phoneNumber.getText().toString());
             user.setUserName(userName.getText().toString());
-            bllUser.createUser(user, cameraIntent.preImage, new OnResponse() {
+            bllUser.createUser(user, cameraModel.preImage, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
                     if (response != null) {
                         finish();
-                        cameraIntent.changePreImage(null);
+                        cameraModel.changePreImage(null);
                     } else {
                         Toast.makeText(UserCreation.this, "ERROR. User not created because the image", Toast.LENGTH_LONG).show();
                     }
@@ -86,8 +87,8 @@ public class UserCreation extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (cameraIntent.preImage != null) {
-            pictureView.setImageBitmap(cameraIntent.preImage);
+        if (cameraModel.preImage != null) {
+            pictureView.setImageBitmap(cameraModel.preImage);
         }
     }
 

@@ -15,12 +15,12 @@ public class Products implements Serializable {
     private int amount;
     private String pictureId;
 
-    public String getTAG() {
-        return TAG;
+    public String getCategory() {
+        return category;
     }
 
-    public void setTAG(String TAG) {
-        this.TAG = TAG;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Products() {

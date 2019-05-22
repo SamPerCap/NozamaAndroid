@@ -13,10 +13,10 @@ import com.example.nozamaandroid.R;
 
 public class CameraIntent extends AppCompatActivity {
     String TAG = "CameraIntent";
-    private static CameraIntent instance;
     String messageToCamara, imageChange;
     private static final int PERMISSION_REQUEST_CODE = 1;
     public Bitmap preImage;
+    CameraModel cameraModel = CameraModel.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,18 +24,6 @@ public class CameraIntent extends AppCompatActivity {
         messageToCamara = getString(R.string.activityClass);
         imageChange = getString(R.string.imageChange);
         image();
-    }
-
-
-    public static CameraIntent getInstance() {
-        if (instance == null) {
-            synchronized (CameraIntent.class) {
-                if (instance == null) {
-                    instance = new CameraIntent();
-                }
-            }
-        }
-        return instance;
     }
 
     public void image() {
@@ -58,7 +46,7 @@ public class CameraIntent extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CODE && resultCode == RESULT_OK) {
             Bundle b = data.getExtras();
             preImage = (Bitmap) b.get("data");
-            changePreImage(preImage);
+            cameraModel.changePreImage(preImage);
             Log.d(TAG, "finish camera");
             finish();
         } else {
@@ -66,8 +54,5 @@ public class CameraIntent extends AppCompatActivity {
         }
     }
 
-    public void changePreImage(Bitmap bitmap) {
-        preImage = bitmap;
-    }
 
 }

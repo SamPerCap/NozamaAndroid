@@ -46,7 +46,7 @@ public class AdaptorProduct extends ArrayAdapter<Products> {
             TextView txtTitle = (TextView) rowView.findViewById(R.id.productNameList);
             txtTitle.setText(_arrayData.get(position).getProdName());
             TextView txtPrice = (TextView) rowView.findViewById(R.id.product_price_HomeView);
-            txtPrice.setText(_arrayData.get(position).getProdDetails()+" DKK");
+            txtPrice.setText(_arrayData.get(position).getPrice()+" DKK");
             Log.d(TAG, "getView: " + _arrayData.get(position).getPictureId());
             bllProduct.getImageById(_arrayData.get(position).getPictureId(), new OnResponse() {
                 @Override

@@ -16,7 +16,7 @@ public class FileChooser extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     String filePath;
     String TAG = "FileCHooser";
-    CameraIntent cameraIntent = CameraIntent.getInstance();
+    CameraModel cameraModel = CameraModel.getInstance();
     @Override
     protected void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
@@ -77,10 +77,8 @@ public class FileChooser extends AppCompatActivity {
                 // showImage(uri);
 
             }
-            Log.d(TAG, "onActivityResult: kris is suck");
             changeActivity();
         } else {
-            Log.d(TAG, "onActivityResult: kris is suck");
             finish();
         }
 
@@ -88,7 +86,7 @@ public class FileChooser extends AppCompatActivity {
 
     public void changeActivity() {
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-        cameraIntent.changePreImage(bitmap);
+        cameraModel.changePreImage(bitmap);
         finish();
 
 

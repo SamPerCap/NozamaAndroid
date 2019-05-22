@@ -3,11 +3,10 @@ package com.example.nozamaandroid.DAL;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.nozamaandroid.AddProduct;
-import com.example.nozamaandroid.HomeView;
 import com.example.nozamaandroid.Shared.OnResponse;
 import com.example.nozamaandroid.Models.Products;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,8 +18,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,10 +28,10 @@ import java.util.Map;
 public class DALProduct {
 
     private Products product;
+    DALImage dalImage = new DALImage();
     private ArrayList<Products> productsArrayList;
     private Map<String, Object> productMap = new HashMap<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
     public static String TAG = "DALProduct";
 
     public ArrayList<Products> readProductsFromDatabase() {
@@ -46,7 +45,9 @@ public class DALProduct {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String getFireStoreFieldName = document.getString("name");
-                                String getFireStoreFieldDetails = document.getString("Product Details");
+                                String getFireStoreFieldDetails = document.getString("details");
+                                String getFireStoreFieldCategory = document.getString("category");
+                                String getFireStorePrice = document.getString("price");
                                 //String getFireStorePictureId = document.getString("pictureId");
                                 String getFireStoreId = document.getId();
                                 product = new Products();
@@ -54,6 +55,8 @@ public class DALProduct {
                                 product.setProdName(getFireStoreFieldName);
                                 product.setProdDetails(getFireStoreFieldDetails);
                                 product.setProdId(getFireStoreId);
+                                product.setCategory(getFireStoreFieldCategory);
+                                product.setPrice(getFireStorePrice);
                                 //product.setPictureId(getFireStorePictureId);
                                 productsArrayList.add(product);
                                 Log.d(TAG, document.getId() + " => " + document.getData());
@@ -69,36 +72,14 @@ public class DALProduct {
     }
 
 
-    public void setImageviewById(String pictureId, final OnResponse response) {
-        if (pictureId != null) {
-            mStorageRef.child("product-pictures/" + pictureId).
-                    getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    // Use the bytes to display the image
-                    Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    response.onResponseReceived(bm);
-                    //imageView.setImageBitmap(bm);
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    response.onResponseReceived(null);
-                }
-            });
-        } else {
-            response.onResponseReceived(null);
-        }
-    }
-
-    public void addProduct(Products productToAdd) {
+    public void addProduct(final Products productToAdd, final byte[] preImage, final OnResponse onResponse) {
         try {
 
             // FireStoreDatabase initialize
             productMap.put("name", productToAdd.getProdName());
-
+            productMap.put("price", productToAdd.getPrice());
+            productMap.put("details", productToAdd.getProdDetails());
+            productMap.put("category", productToAdd.getCategory());
             // Add a new document with a generated ID
             db.collection("products")
                     .add(productMap)
@@ -106,6 +87,9 @@ public class DALProduct {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            productToAdd.setProdId(documentReference.getId());
+                            dalImage.uploadImage(null, preImage, onResponse, productToAdd);
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -121,5 +105,6 @@ public class DALProduct {
         } catch (Error e) {
             Log.e(TAG, "Exception: " + e);
         }
+
     }
 }

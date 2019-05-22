@@ -50,7 +50,7 @@ public class ProductDetails extends AppCompatActivity {
 
         productName.setText(currentProduct.getProdName());
         productDetail.setText(currentProduct.getProdDetails());
-//        productPrice.setText(currentProduct.getPrice());
+        productPrice.setText(currentProduct.getPrice() + " DKK");
 
         bllProducts.getImageById(currentProduct.getPictureId(), new OnResponse() {
             @Override

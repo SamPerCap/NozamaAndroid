@@ -35,6 +35,7 @@ import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
 import com.example.nozamaandroid.Shared.CameraIntent;
+import com.example.nozamaandroid.Shared.CameraModel;
 import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -77,7 +78,7 @@ public class HomeView extends AppCompatActivity
     String Keyword;
     String productKey = "productKey";
     String[] options = new String[]{"Show detail", "Add to cart"};
-    CameraIntent userModel = CameraIntent.getInstance();
+    CameraModel cameraModel = CameraModel.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +168,7 @@ public class HomeView extends AppCompatActivity
     }
 
     public void openCreateUser() {
-        userModel.changePreImage(null);
+        cameraModel.changePreImage(null);
         intent = new Intent(this, UserCreation.class);
         startActivity(intent);
     }
