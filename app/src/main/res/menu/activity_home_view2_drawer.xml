@@ -4,6 +4,10 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@android:drawable/ic_notification_clear_all"
+            android:title="@string/home" />
+        <item
             android:id="@+id/nav_books"
             android:icon="@drawable/ic_books"
             android:title="@string/menu_books" />

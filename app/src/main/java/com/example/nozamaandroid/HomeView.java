@@ -34,7 +34,6 @@ import com.example.nozamaandroid.BLL.BLLUser;
 import com.example.nozamaandroid.Models.CartModel;
 import com.example.nozamaandroid.Models.Products;
 import com.example.nozamaandroid.Models.Users;
-import com.example.nozamaandroid.Shared.CameraIntent;
 import com.example.nozamaandroid.Shared.CameraModel;
 import com.example.nozamaandroid.Shared.OnResponse;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,7 +54,8 @@ public class HomeView extends AppCompatActivity
     BLLProducts bllProducts = new BLLProducts();
     /*----------------Arrays----------------*/
     ArrayList<Products> productsArrayList;
-    ArrayList<Products> filteredArrayList = new ArrayList<>();
+    ArrayList<Products> filteredSearchBoxArrayList = new ArrayList<>();
+    ArrayList<Products> filteredListForUsing;
     /*----------------View items----------------*/
     ActionBarDrawerToggle toggle;
     EditText etSearchBar;
@@ -103,12 +103,12 @@ public class HomeView extends AppCompatActivity
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 Keyword = s.toString().toLowerCase();
-                filteredArrayList.clear();
-                if (!productsArrayList.isEmpty()) {
-                    for (Products product : productsArrayList) {
+                filteredSearchBoxArrayList.clear();
+                if (!filteredListForUsing.isEmpty()) {
+                    for (Products product : filteredListForUsing) {
                         if (product.getProdName().toLowerCase().contains(Keyword))
-                            filteredArrayList.add(product);
-                        adapterProduct = new AdaptorProduct(HomeView.this, filteredArrayList);
+                            filteredSearchBoxArrayList.add(product);
+                        adapterProduct = new AdaptorProduct(HomeView.this, filteredSearchBoxArrayList);
                         gridViewProduct.setAdapter(adapterProduct);
                     }
                 }
@@ -239,7 +239,8 @@ public class HomeView extends AppCompatActivity
     }
 
     private ArrayList<Products> getProductsFromDatabase() {
-        return productsArrayList = bllProducts.readProductsFromDatabase();
+        productsArrayList = bllProducts.readProductsFromDatabase();
+        return filteredListForUsing = productsArrayList;
     }
 
     private void setupItems() {
@@ -282,13 +283,45 @@ public class HomeView extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.nav_home:
+                adapterProduct = new AdaptorProduct(HomeView.this, productsArrayList);
+                gridViewProduct.setAdapter(adapterProduct);
+                break;
             case R.id.nav_books:
+                filteredListForUsing = new ArrayList<>();
+                for (Products products : productsArrayList) {
+                    if (products.getCategory().equals("Books"))
+                        filteredListForUsing.add(products);
+                }
+                adapterProduct = new AdaptorProduct(HomeView.this, filteredListForUsing);
+                gridViewProduct.setAdapter(adapterProduct);
                 break;
             case R.id.nav_clothes:
+                filteredListForUsing = new ArrayList<>();
+                for (Products products : productsArrayList) {
+                    if (products.getCategory().equals("Clothes"))
+                        filteredListForUsing.add(products);
+                }
+                adapterProduct = new AdaptorProduct(HomeView.this, filteredListForUsing);
+                gridViewProduct.setAdapter(adapterProduct);
                 break;
             case R.id.nav_decoration:
+                filteredListForUsing = new ArrayList<>();
+                for (Products products : productsArrayList) {
+                    if (products.getCategory().equals("Decoration"))
+                        filteredListForUsing.add(products);
+                }
+                adapterProduct = new AdaptorProduct(HomeView.this, filteredListForUsing);
+                gridViewProduct.setAdapter(adapterProduct);
                 break;
             case R.id.nav_electrical_appliance:
+                filteredListForUsing = new ArrayList<>();
+                for (Products products : productsArrayList) {
+                    if (products.getCategory().equals("Electrical Appliance"))
+                        filteredListForUsing.add(products);
+                }
+                adapterProduct = new AdaptorProduct(HomeView.this, filteredListForUsing);
+                gridViewProduct.setAdapter(adapterProduct);
                 break;
             case R.id.nav_account:
                 if (currentUser == null) {
