@@ -59,7 +59,7 @@ public class AddProduct extends AppCompatActivity {
             Products productToSave = new Products();
             productToSave.setProdName(etName.getText().toString());
             productToSave.setProdDetails(etProdDetail.getText().toString());
-            productToSave.setPrice(etPrice.getText().toString());
+            productToSave.setPrice(Double.parseDouble(etPrice.getText().toString()));
             productToSave.setCategory(categorySpinner.getSelectedItem().toString());
             bllProducts.addProduct(productToSave, cameraModel.preImage, new OnResponse() {
                 @Override

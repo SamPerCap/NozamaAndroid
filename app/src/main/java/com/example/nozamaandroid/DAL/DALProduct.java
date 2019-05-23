@@ -47,7 +47,7 @@ public class DALProduct {
                                 String getFireStoreFieldName = document.getString("name");
                                 String getFireStoreFieldDetails = document.getString("details");
                                 String getFireStoreFieldCategory = document.getString("category");
-                                String getFireStorePrice = document.getString("price");
+                                Double getFireStorePrice = document.getDouble("price");
                                 //String getFireStorePictureId = document.getString("pictureId");
                                 String getFireStoreId = document.getId();
                                 product = new Products();
