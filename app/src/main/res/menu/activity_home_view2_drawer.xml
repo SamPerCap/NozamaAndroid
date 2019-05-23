@@ -38,4 +38,13 @@
         </menu>
     </item>
 
+    <item android:title="@string/contact">
+        <menu>
+            <item
+                android:id="@+id/nav_contact"
+                android:icon="@android:drawable/ic_menu_call"
+                android:title="@string/contact" />
+        </menu>
+    </item>
+
 </menu>

@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.ObservableList;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -78,6 +80,9 @@ public class HomeView extends AppCompatActivity
     String Keyword;
     String productKey = "productKey";
     String[] options = new String[]{"Show detail", "Add to cart"};
+    String[] contactOptions = new String[]{"Make a call", "Send an Email"};
+    private String serviceEmail = "service@gmail.com";
+    private String servicePhone = "42746155";
     CameraModel cameraModel = CameraModel.getInstance();
 
     @Override
@@ -346,11 +351,67 @@ public class HomeView extends AppCompatActivity
                 }
 
                 break;
+            case R.id.nav_contact:
+                final AlertDialog.Builder contactBuilder = new AlertDialog.Builder(HomeView.this);
+                contactBuilder.setItems(contactOptions, new DialogInterface.OnClickListener() {
+                    /*
+                     * Give the user an option to either choose call the services
+                     * or send an email.
+                     * */
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (contactOptions[which].equals(contactOptions[0])) {
+                            //Call
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+                                if (checkSelfPermission(android.Manifest.permission.CALL_PHONE)
+                                        == PackageManager.PERMISSION_DENIED) {
+
+                                    Log.d(TAG, "permission denied to CALL - requesting it");
+                                    String[] permissions = {android.Manifest.permission.CALL_PHONE};
+
+                                    requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+                                    return;
+
+                                } else {
+                                    Log.d(TAG, "permission to CALL granted!");
+                                }
+                            }
+                            makeCall();
+                        }
+                        if (contactOptions[which].equals(contactOptions[1])) {
+                            sendEmail();
+                        }
+                    }
+                });
+                contactBuilder.show();
+                break;
         }
 
         drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void makeCall() {
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel: " + servicePhone));
+        Log.d(TAG, "Calling permission: " + intent);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(intent);
+    }
+
+    private void sendEmail() {
+        Log.d(TAG, "Email: " + serviceEmail);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        String[] receivers = {serviceEmail};
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, receivers);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+        startActivity(emailIntent);
     }
 
     private void openAccountDetails() {
