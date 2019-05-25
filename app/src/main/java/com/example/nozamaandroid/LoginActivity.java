@@ -42,8 +42,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, HomeView.class);
                             intent.putExtra(userKey, mAuth.getCurrentUser().getUid());
-                            finish();
                             startActivity(intent);
+                            finish();
 
                         } else {
                             // If sign in fails, display a message to the user.

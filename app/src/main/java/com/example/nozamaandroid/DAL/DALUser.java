@@ -29,6 +29,8 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -281,13 +283,14 @@ public class DALUser {
     public void removeAccount(String userId, final OnResponse response) {
 
         db = FirebaseFirestore.getInstance();
+
         db.collection("users").document(userId)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+                        Log.d(TAG, "onSuccess: " + user.getUid());
                         user.delete()
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -300,6 +303,8 @@ public class DALUser {
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                mAuth.signOut();
+                                Log.d(TAG, "bad" + e);
                                 response.onResponseReceived(null);
                             }
                         });

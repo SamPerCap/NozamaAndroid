@@ -68,6 +68,7 @@ public class AddProduct extends AppCompatActivity {
                             intent.putExtra(nameKey, products.getProdName());
                             intent.putExtra(detailKey, products.getProdDetails());
                             startActivity(intent);
+                            finish();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
