@@ -65,6 +65,8 @@ public class AddProduct extends AppCompatActivity {
                 @Override
                 public void onResponseReceived(Object response) {
                     if(response != null){
+                    		Intent intent = new Intent(AddProduct.this, HomeView.class);
+                            startActivity(intent);
                         finish();
                         cameraModel.changePreImage(null);
                     }else{
@@ -76,6 +78,7 @@ public class AddProduct extends AppCompatActivity {
         } else
             Toast.makeText(this, "More information is needed", Toast.LENGTH_SHORT).show();
     }
+
 
     public void gotoCamera(View view) {
         Log.d(TAG, "Going to camera");

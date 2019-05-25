@@ -170,12 +170,14 @@ public class HomeView extends AppCompatActivity
     public void loginView() {
         intent = new Intent(HomeView.this, LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void openCreateUser() {
         cameraModel.changePreImage(null);
         intent = new Intent(this, UserCreation.class);
         startActivity(intent);
+        finish();
     }
 
     private void clickOnList() {
@@ -223,6 +225,11 @@ public class HomeView extends AppCompatActivity
         });
     }
 
+    public void loginView() {
+        intent = new Intent(HomeView.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     public void setupSideNavBar() {
         Log.d(TAG, "Setting up the side navigation bar");
@@ -417,6 +424,7 @@ public class HomeView extends AppCompatActivity
     private void openAccountDetails() {
         intent = new Intent(this, UserAccountDetails.class);
         startActivity(intent);
+        finish();
     }
 
     private void getMenuItem() {
@@ -467,7 +475,6 @@ public class HomeView extends AppCompatActivity
             menuItemAccount.setTitle("Account details");
         }
     }
-
 
     private void askPremision() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

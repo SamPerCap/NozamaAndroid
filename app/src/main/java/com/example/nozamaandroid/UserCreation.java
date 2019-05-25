@@ -68,11 +68,20 @@ public class UserCreation extends AppCompatActivity {
             bllUser.createUser(user, cameraModel.preImage, new OnResponse() {
                 @Override
                 public void onResponseReceived(Object response) {
-                    if (response != null) {
+
+
+                    if( response != null)
+                    {
+
+                        userModel.changePreImage(null);
+                        Intent intent = new Intent(UserCreation.this, HomeView.class);
+                        startActivity(intent);
                         finish();
-                        cameraModel.changePreImage(null);
-                    } else {
-                        Toast.makeText(UserCreation.this, "ERROR. User not created because the image", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                       Toast.makeText(UserCreation.this, "ERROR. User not created because the image", Toast.LENGTH_LONG).show();
+
                     }
                     Log.d(TAG, "onResponseReceived: " + response);
                 }

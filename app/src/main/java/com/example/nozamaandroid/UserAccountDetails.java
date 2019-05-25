@@ -1,5 +1,6 @@
 package com.example.nozamaandroid;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -123,11 +124,16 @@ public class UserAccountDetails extends AppCompatActivity {
     }
 
     public void removeAccount(View view) {
+        //currentUser.getPassword()
         currentUserFirebase = mAuth.getCurrentUser();
-        bllUser.removeAccount(currentUser.getUserId(), new OnResponse() {
+        bllUser.removeAccount(currentUserFirebase.getUid(), new OnResponse() {
             @Override
             public void onResponseReceived(Object response) {
-                if (response != null) {
+
+                if(response != null)
+                {
+                   Intent intent = new Intent(UserAccountDetails.this, HomeView.class);
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(UserAccountDetails.this, "User not delete", Toast.LENGTH_SHORT).show();
