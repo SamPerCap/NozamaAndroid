@@ -73,7 +73,7 @@ public class UserCreation extends AppCompatActivity {
                     if( response != null)
                     {
 
-                        userModel.changePreImage(null);
+                        cameraModel.changePreImage(null);
                         Intent intent = new Intent(UserCreation.this, HomeView.class);
                         startActivity(intent);
                         finish();

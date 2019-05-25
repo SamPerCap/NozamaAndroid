@@ -225,11 +225,6 @@ public class HomeView extends AppCompatActivity
         });
     }
 
-    public void loginView() {
-        intent = new Intent(HomeView.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
     public void setupSideNavBar() {
         Log.d(TAG, "Setting up the side navigation bar");
